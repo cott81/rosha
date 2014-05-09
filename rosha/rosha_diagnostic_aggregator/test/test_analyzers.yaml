@@ -1,0 +1,4 @@
+analyzers:
+  prefixAnalyzer:
+    type: TestAnalyzer
+    power_board_name: Power board 1000

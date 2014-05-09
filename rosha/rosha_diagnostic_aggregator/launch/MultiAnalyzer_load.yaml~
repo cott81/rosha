@@ -1,0 +1,99 @@
+pub_rate: 1.0 
+# Optional
+base_path: ''
+# Optional, prepended to all diagnostic output
+das: "Hello World"
+
+analyzers:
+#     system:
+#         type: AnalyzerGroup
+#         analyzers:
+#             SysCheck:
+#                 type: AnalyzerGroup
+#                 analyzers:
+#                     SysAnalyzer:
+#                         path_group: System
+#                         cap: SysCheck
+#                         func: SysAnalyzer
+#                         type: SystemAnalyzer
+#                         node_to_analyze: cf
+    system:
+        type: AnalyzerGroup
+        analyzers:
+             SystemAnalyzers:
+                path_group: System
+#                 cap: Robot
+#                 func: RobotAnalyzer
+                systemNodesToAnalyze: [Robot, Cap1]
+                systemNodesStateToAnalyze: [failure, failure]
+                type: SystemAnalyzer
+                node_to_analyze: cf
+
+    sensors:
+        type: AnalyzerGroup
+        analyzers:
+            Cap1:
+                type: AnalyzerGroup
+                analyzers:
+                    Func1:
+                        path_group: Sensors
+                        cap: Cap1
+                        func: Func1
+                        type: RoboPkgCS_QBFD_Analyzer
+                        node_to_analyze: Cap1Func1
+                        systemNodesToAnalyze: [RoboPkgCS, FailureMode, FailureMode, FailureMode, FailureMode]
+                        systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                    Func2:
+                        path_group: Sensors
+                        cap: Cap1
+                        func: Func2
+                        type: RoboPkgCS_QBFD_Analyzer
+                        node_to_analyze: Cap1Func2
+                        systemNodesToAnalyze: [RoboPkgCS, FailureMode, FailureMode, FailureMode, FailureMode]
+                        systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+    actuator:
+       type: AnalyzerGroup
+       analyzers:
+           ActCap1:
+               type: AnalyzerGroup
+               analyzers:
+                    Func1:
+                        path_group: Actuators
+                        cap: ActCap1
+                        func: Func1
+                        type: RoboPkgCS_QBFD_Analyzer
+                        node_to_analyze: ActCap1Func1
+                        systemNodesToAnalyze: [RoboPkgCS, FailureMode, FailureMode, FailureMode, FailureMode]
+                        systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                    Func2:
+                        path_group: Actuators
+                        cap: ActCap1
+                        func: Func2
+                        type: RoboPkgCS_QBFD_Analyzer
+                        node_to_analyze: ActCap1Func2
+                        systemNodesToAnalyze: [RoboPkgCS, FailureMode, FailureMode, FailureMode, FailureMode]
+                        systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+#    control:
+#        type: AnalyzerGroup
+#        analyzers:
+#            Planner:
+#               type: AnalyzerGroup
+#               analyzers:
+#                   Planner:
+#                       path_group: Control
+#                       cap: Planner
+#                       func: DummyRobotPlanner
+#                       type: RoboPkgCSAnalyzer
+#                       node_to_analyze: Planner
+    #  CommManagment:
+#    path_group: Communication
+#    cap: CommManagment
+#    func: notYet
+#    type: DummyMapperAnalyzer
+#    node_to_analyze: mapper
+#  PowerManagment:
+#    path_group: Power
+#    cap: PowerManagment
+#    func: notYet
+#    type: DummyMapperAnalyzer    
+#    node_to_analyze: mapper

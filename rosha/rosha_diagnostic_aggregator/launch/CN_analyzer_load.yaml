@@ -1,0 +1,135 @@
+pub_rate: 1.0 # Optional
+base_path: '' # Optional, prepended to all diagnostic output
+#groups of caps
+# todo: AnalyzerGroup path usage. Right know structure in robot_mon is defined only through path_group/cap/func. AnalyzerGroups have no influence!
+
+# TODO: build CN Tree ... generate/set from model file
+
+# Problem: how to handle duplicates
+
+analyzers:
+    sensors:
+        type: AnalyzerGroup
+        analyzers:
+            localize:
+                type: AnalyzerGroup
+                analyzers:
+                    CNVision:
+                        path_group: Sensor
+                        cap: localize
+                        func: CNVision
+                        type: CNVisionAnalyzer
+                        node_to_analyze: CNVision
+                    Compass:
+                        path_group: Sensor
+                        cap: localize
+                        func: Compass
+                        type: CNCompassAnalyzer
+                        node_to_analyze: CNCompass
+# are called twice ... how to fix that ???
+                    GonzalesOdometrie:
+                        path_group: Sensor
+                        cap: localize
+                        func: EposGonzalesForRaw
+                        type: GonzalesAnalyzer
+                        node_to_analyze: Gonzales
+# problem if two nodes with same analyzer
+            detectObject:
+                type: AnalyzerGroup
+                analyzers:
+                    CNVision:
+                        path_group: Sensor
+                        cap: detectObject
+                        func: CNVision2
+                        type: CNVisionAnalyzer
+                        node_to_analyze: CNVision
+
+    actuator:
+        type: AnalyzerGroup
+        analyzers:
+            move:
+                type: AnalyzerGroup
+                analyzers:
+                    Gonzales:
+                        path_group: Actuators
+                        cap: move
+                        func: Gonzales
+                        type: GonzalesAnalyzer
+                        node_to_analyze: Gonzales
+            kick:
+                type: AnalyzerGroup
+                analyzers:
+                    CNKicker:
+                        path_group: Actuators
+                        cap: kick
+                        func: CNKicker
+                        type: CNKickerAnalyzer
+                        node_to_analyze: CNKicker
+# not yet supported
+                    CNCanProxy:
+                        path_group: Actuators
+                        cap: kick
+                        func: CNUsbCanProxyRos
+                        type: CNCanProxyAnalyzer
+                        node_to_analyze: CNCanProxy
+            dribble:
+                type: AnalyzerGroup
+                analyzers:
+                    CNActuator:
+                        path_group: Actuators
+                        cap: dribble
+                        func: CNActuationControl
+                        type: CNActuatorAnalyzer
+                        node_to_analyze: CNActuator
+# not yet supported
+#                     CNUsbCanProxyRos:
+#                         path_group: Actuators
+#                         cap: kick
+#                         func: CNUsbCanProxyRos
+#                         type: CNUsbCanProxyRosAnalyzer
+#                         node_to_analyze: CNUsbCanProxyRos
+            selectShovel:
+                type: AnalyzerGroup
+                analyzers:
+                    CNActuator:
+                        path_group: Actuators
+                        cap: selectShovel
+                        func: CNActuationControlShovel
+                        type: CNActuatorAnalyzer
+                        node_to_analyze: CNActuator
+# not yet supported
+#                     CNUsbCanProxyRos:
+#                         path_group: Actuators
+#                         cap: kick
+#                         func: CNUsbCanProxyRos
+#                         type: CNUsbCanProxyRosAnalyzer
+#                         node_to_analyze: CNUsbCanProxyRos
+
+# not yet supported
+    cognition:
+        type: AnalyzerGroup
+        analyzers:
+            plan:
+                type: AnalyzerGroup
+                analyzers:
+                    MSLBase:
+                        path_group: Cognition
+                        cap: plan
+                        func: MSLBase
+                        type: MSLBaseAnalyzer
+                        node_to_analyze: MSLBase
+    
+  
+
+#  CommManagment:
+#    path_group: Communication
+#    cap: CommManagment
+#    func: notYet
+#    type: DummyMapperAnalyzer
+#    node_to_analyze: mapper
+#  PowerManagment:
+#    path_group: Power
+#    cap: PowerManagment
+#    func: notYet
+#    type: DummyMapperAnalyzer    
+#    node_to_analyze: mapper

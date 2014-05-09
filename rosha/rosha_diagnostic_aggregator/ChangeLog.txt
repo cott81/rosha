@@ -1,0 +1,17 @@
+Change Log and known issues:
+---------------------------
+
+This document reports changes in the software and known issues that need attention.
+
+
+Changes:
+
+13.09.13	No-evidence-Update function integrated, to infer without new evidences (dki)
+16.09.13	support to change the observation history settings as a global parameter. Be aware of this. (dki)
+
+
+Known Issues:
+
+- no model merging. Build one model out of all part models.
+- no continiously DBN "history". When all the evidence drops out of the observation queue than the Probs jump back to the a-priori case.
+- no documentation, no unit tests, no illustrative example.

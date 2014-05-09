@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package>
+  <name>rosha_diagnostic_aggregator</name>
+  <version>0.0.1</version>
+  <description>>rosha_diagnostic_aggregator</description>
+
+  <maintainer email="kirchner@vs.uni-kassel.de">Dominik Kirchner</maintainer>
+
+  <license>BSD</license>
+
+  <!-- <url type="website">http://wiki.ros.org/test_pkg</url> -->
+
+  <author email="kirchner@vs.uni-kassel.de">Dominik Kirchner</author>
+  <author email="todo@todo.com">Kevin Watt</author>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <build_depend>roscpp</build_depend>
+  <build_depend>diagnostic_msgs</build_depend>
+  <build_depend>xmlrpcpp</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>rospy</build_depend> <!-- for testing -->
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>diagnostic_msgs</run_depend>
+  <run_depend>xmlrpcpp</run_depend>
+  <run_depend>pluginlib</run_depend>
+  <run_depend>rospy</run_depend> <!-- for testing -->
+
+
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+    <cpp cflags="-I${prefix}/include `rosboost-cfg --cflags` " 
+    lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lmy_diagnostic_aggregator `rosboost-cfg --lflags regex` "/> <!-- -lAnalyzerHelpr in compass pkg-->
+    <my_diagnostic_aggregator plugin="${prefix}/analyzer_plugins.xml" />
+
+  </export>
+</package>

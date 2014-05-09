@@ -1,0 +1,18 @@
+pub_rate: 1.0 # Optional
+base_path: ''
+# Optional, prepended to all diagnostic output
+
+analyzers:
+    sensors:
+        type: AnalyzerGroup
+        analyzers:
+            Cap:
+                type: AnalyzerGroup
+                analyzers:
+                    Func:
+                        path_group: Sensor
+                        cap: Cap1
+                        func: Func1
+                        type: Eth2CanAnalyzer
+                        #test only (rosbag file)
+                        node_to_analyze: UltraSonicSensor

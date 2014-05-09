@@ -1,0 +1,107 @@
+pub_rate: 1.0 # Optional
+base_path: '' # Optional, prepended to all diagnostic output
+#groups of caps
+# todo: AnalyzerGroup path usage. Right know structure in robot_mon is defined only through path_group/cap/func. AnalyzerGroups have no influence!
+
+# TODO: build CN Tree ... generate/set from model file
+
+analyzers:
+    sensors:
+        type: AnalyzerGroup
+        analyzers:
+
+#            localize:
+#                type: AnalyzerGroup
+#                analyzers:
+#                     CNVision:
+#                         path_group: Sensor
+#                         cap: localize
+#                         func: CNVision
+#                         type: CNVisionAnalyzer
+#                         node_to_analyze: CNVision
+#                    Compass:
+#                        path_group: Sensor
+#                        cap: localize
+#                        func: Compass
+#                        type: CNCompassAnalyzer
+#                        node_to_analyze: CNCompass 
+            Mapping:
+                type: AnalyzerGroup
+                analyzers:
+#                   Mapper:
+#                       path_group: Sensor
+#                       cap: Mapping
+#                       func: Mapper
+#                       type: DummyMapperAnalyzer
+#                       node_to_analyze: mapper
+#                     Compass:
+#                        path_group: Sensor
+#                        cap: Mapping
+#                        func: Compass
+#                        type: CNCompassAnalyzer
+#                        node_to_analyze: CNCompass
+
+#                     Scanner:
+#                         path_group: Sensor
+#                         cap: Mapping
+#                         func: Scanner
+#                         type: DummyScanDriver
+#                         node_to_analyze: DummyScanDriver
+                    Func:
+                        path_group: Sensor
+                        cap: Cap1
+                        func: Func1
+                        type: RoboPkgCSAnalyzer
+                        node_to_analyze: RoboPkgCS
+                    Func2:
+                        path_group: Sensor
+                        cap: Cap1
+                        func: Func2
+                        type: RoboPkgCSAnalyzer
+                        node_to_analyze: RoboPkgCS
+                     
+#    actuator:
+#        type: AnalyzerGroup
+#        analyzers:
+#            move:
+#                type: AnalyzerGroup
+#                analyzers:
+#                    EposGonzales:
+#                        path_group: Actuators
+#                        cap: move
+#                        func: EposGonzales
+#                        type: EposGonzales
+#                        node_to_analyze: EposGonzales
+#            Grpping:
+#                type: AnalyzerGroup
+#                analyzers:
+#                    ArmControl:
+#                        path_group: Actuators
+#                        cap: Grpping
+#                        func: ArmDriver
+#                        type: ArmControl
+#                        node_to_analyze: ArmControl
+#    control:
+#        type: AnalyzerGroup
+#        analyzers:
+#            Planner:
+#                type: AnalyzerGroup
+#                analyzers:
+#                    DummyRobotPlanner:
+#                        path_group: Control
+#                        cap: Planner
+#                        func: DummyPlanner
+#                        type: DummyRobotPlanner
+#                        node_to_analyze: DummyRobotPlanner
+    #  CommManagment:
+#    path_group: Communication
+#    cap: CommManagment
+#    func: notYet
+#    type: DummyMapperAnalyzer
+#    node_to_analyze: mapper
+#  PowerManagment:
+#    path_group: Power
+#    cap: PowerManagment
+#    func: notYet
+#    type: DummyMapperAnalyzer    
+#    node_to_analyze: mapper
