@@ -24,10 +24,9 @@ ErrorSeeder::ErrorSeeder(int argc, char** argv)
 
   //errorPub = n->advertise<std_msgs::Float64>("/ErrorSeeder/ErrorTrigger", 1000);
   errorPub = n->advertise<error_seeder_msgs::Error>("/ErrorSeeder/ErrorTrigger", 1000);
-  //errorFeedbackSub = n->subscribe("/ErrorSeeder/ErrorFeedback", 1000, &ErrorSeeder::ErrorFeedbackCallback, this);
+  errorConfPub = n->advertise<error_seeder_msgs::ErrorConf>("/ErrorSeeder/ErrorConf", 1000);
 
-  //temp only!!!
-  //ErrorSeederLib esl(n);
+  //errorFeedbackSub = n->subscribe("/ErrorSeeder/ErrorFeedback", 1000, &ErrorSeeder::ErrorFeedbackCallback, this);
 
   //ros::Subscriber errorSub = n->subscribe("/ErrorSeeder/ErrorTrigger", 1000, &ErrorSeeder::ErrorTriggerCallback, this);
 
@@ -92,6 +91,22 @@ void ErrorSeeder::HandleUserInteraction()
   return;
 }
 
+void ErrorSeeder::PrintHelp()
+{
+  cout <<"Help screen for ErrorSeeder:" << endl;
+  cout << endl;
+  cout << "\t h : prints this help text" << endl;
+  cout << "\t q : ends the program" << endl;
+  cout << "\t <compId>:<failureId> : sends a failure trigger msg, that should trigger a failure " << endl;
+  cout << "\t\t with failureId in the component with id " << endl;
+  cout << "\t\t supported failure types are: NP (nullpointer), AR (array index), DL (deadlock), EL (endless loop), EX (exception)" << endl;
+  cout << "\t <compId>:EP : enables random triggering of failures for component with this id." << endl;
+  cout << "\t <compId>:DP : disables random triggering for this component." << endl;
+  cout << "\t <compId>:<failureId>:<failureProb> : configures the occurance probability of a failure for a component" << endl;
+  cout << "\t\t by sending a error conf message to the component handled by the error lib" << endl;
+  cout << endl;
+
+}
 bool ErrorSeeder::IsValidCommand(string command)
 {
   bool valid = false;
@@ -100,6 +115,8 @@ bool ErrorSeeder::IsValidCommand(string command)
   if (command.compare("h") == 0 || command.compare("help") == 0)
   {
     //print help screen
+    PrintHelp();
+
   }
   else if (command.compare("q")==0 || command.compare("quit")==0 )
   {
@@ -121,7 +138,7 @@ bool ErrorSeeder::IsValidCommand(string command)
       //check each part
       //cout << elems[0] << " " << elems[1] << endl;
 
-      if (IsValidId(elems[0], &compId) && IsValidErrorId(elems[1], &errorId) )
+      if (IsValidId(elems[0], compId) && IsValidErrorId(elems[1], errorId) )
       {
         SendErrorMsg();
         valid = true;
@@ -130,6 +147,23 @@ bool ErrorSeeder::IsValidCommand(string command)
       {
         cout << "input error with command: " << command << endl;
       }
+    }
+    else if (elems.size() == 3)
+    {
+      //compId:failureId:occuranceProb  e.g. 1:NP:0.1
+      //cout << elems[0] << " " << elems[1] << " " << elems[2] << endl;
+      double errorTypeProb = 0;
+      if (IsValidId(elems[0], compId) && IsValidErrorId(elems[1], errorId) && IsValidProb(elems[2], errorTypeProb) )
+      {
+        //send conf msg
+        cout << "is valid -> send conf msg" << endl;
+        SendErrorConfMsg(errorTypeProb);
+      }
+      else
+      {
+        cout << "input error with command: " << command << endl;
+      }
+
     }
     else
     {
@@ -153,28 +187,27 @@ std::vector<std::string> ErrorSeeder::SplitString(const std::string &s, char del
     return elems;
 }
 
-bool ErrorSeeder::IsValidId(string s,  int* retVal)
+bool ErrorSeeder::IsValidId(string s,  int& retVal)
 {
   stringstream ss;
   ss << s;
 
-  ss >> *retVal;
+  ss >> retVal;
   if (ss.good())
   {
-    //cout << ss.goodbit << " " << ss.eofbit << " " << ss.failbit << " " << ss.badbit << endl;
-    //cout << ss.good() << " " << ss.eof() << " " << ss.fail() << " " << ss.bad() << endl;
+//    cout << ss.goodbit << " " << ss.eofbit << " " << ss.failbit << " " << ss.badbit << endl;
+//    cout << ss.good() << " " << ss.eof() << " " << ss.fail() << " " << ss.bad() << endl;
     cerr << "no valid number." << endl << endl;
     return false;
   }
-  else if (*retVal == 0 && s[0] != '0')
+  else if (retVal == 0 && s[0] != '0')
   {
     cerr << "no valid number 2." << endl << endl;
     return false;
   }
   else
   {
-    //cout << *retVal << " is a number" << endl;
-    if (*retVal > -1)
+    if (retVal > -1)
     {
       return true;
     }
@@ -188,37 +221,79 @@ bool ErrorSeeder::IsValidId(string s,  int* retVal)
   return false;
 }
 
-bool ErrorSeeder::IsValidErrorId(string errorShortcut, ErrorId* errorId)
+bool ErrorSeeder::IsValidProb(string errorProbString, double & errorProb)
+{
+  bool valid = true;
+
+  stringstream ss;
+  ss << errorProbString;
+
+  ss >> errorProb;
+  if (ss.good())
+  {
+    cerr << "no valid number." << endl << endl;
+    return false;
+  }
+  else if (errorProb == 0 && errorProbString[0] != '0')
+  {
+    cerr << "no valid number 2." << endl << endl;
+    return false;
+  }
+  else
+  {
+    if ( (errorProb >= 0) && (errorProb <= 1) )
+    {
+      return true;
+    }
+    else
+    {
+      cerr << "Probability have to be between 0 and 1." << endl << endl;
+      return false;
+    }
+  }
+
+  return valid;
+}
+
+bool ErrorSeeder::IsValidErrorId(string errorShortcut, ErrorId& errorId)
 {
   bool valid = true;;
 
   if (errorShortcut.compare("NP") == 0)
   {
-    *errorId = NULLPOINTER;
+    errorId = NULLPOINTER;
   }
   else if (errorShortcut.compare("AR") == 0)
   {
-    *errorId = ARRAYINDEXERROR;
+    errorId = ARRAYINDEXERROR;
   }
   else if (errorShortcut.compare("EL") == 0)
   {
-    *errorId = ENDLESSLOOP;
+    errorId = ENDLESSLOOP;
   }
   else if (errorShortcut.compare("!EL") == 0)
   {
-    *errorId = STOP_ENDLESSLOOP;
+    errorId = STOP_ENDLESSLOOP;
   }
   else if (errorShortcut.compare("DL") == 0)
   {
-    *errorId = DEADLOCK;
+    errorId = DEADLOCK;
   }
   else if (errorShortcut.compare("lDL") == 0)
   {
-    *errorId = LEASEDEADLOCK;
+    errorId = LEASEDEADLOCK;
   }
   else if (errorShortcut.compare("EX") == 0)
   {
-    *errorId = GENERAL_EXCEPTION;
+    errorId = GENERAL_EXCEPTION;
+  }
+  else if (errorShortcut.compare("EP") == 0)
+  {
+    errorId = ENABLE_PROBABILITY;
+  }
+  else if (errorShortcut.compare("DP") == 0)
+  {
+    errorId = DISABLE_PROBABILITY;
   }
   //
   // rest not yet supported
@@ -229,18 +304,24 @@ bool ErrorSeeder::IsValidErrorId(string errorShortcut, ErrorId* errorId)
     valid = false;
   }
 
-
-
   return valid;
 }
 
 void ErrorSeeder::SendErrorMsg()
 {
-  //msg = ...
   error_seeder_msgs::Error msg;
   msg.compId = this->compId;
   msg.errorId = this->errorId;
   errorPub.publish(msg);
+}
+
+void ErrorSeeder::SendErrorConfMsg(double errorProb)
+{
+  error_seeder_msgs::ErrorConf msg;
+  msg.compId = this->compId;
+  msg.errorId = this->errorId;
+  msg.errorProb = errorProb;
+  errorConfPub.publish(msg);
 }
 
 void ErrorSeeder::ErrorTriggerCallback(const error_seeder_msgs::Error::ConstPtr& msg)

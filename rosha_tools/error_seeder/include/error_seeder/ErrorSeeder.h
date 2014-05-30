@@ -14,6 +14,7 @@
 #include "std_msgs/Int32.h"
 #include "std_msgs/Float64.h"
 #include "error_seeder_msgs/Error.h"
+#include "error_seeder_msgs/ErrorConf.h"
 
 #include "ErrorSeederLib.h"
 #include "Defs.h"
@@ -48,9 +49,10 @@ private:
   //ros::NodeHandle nh;
   ros::Rate* pub_rate;
   ros::Publisher errorPub;
-  ros::Subscriber errorFeedbackSub;
+  ros::Publisher errorConfPub;
 
-  ros::Subscriber testSub;
+  //ros::Subscriber errorFeedbackSub;
+  //ros::Subscriber testSub;
 
   //error command
   int compId;
@@ -58,11 +60,14 @@ private:
 
   // BUG: build problem
   //void ErrorFeedbackCallback(const std_msgs::Int32::ConstPtr& msg);
-  bool IsValidId(std::string s, int* retVal);
-  bool IsValidErrorId (std::string errorShortcut, ErrorId* errorId);
+  bool IsValidId(std::string s, int& retVal);
+  bool IsValidErrorId (std::string errorShortcut, ErrorId& errorId);
   bool IsValidCommand (std::string command);
+  bool IsValidProb(std::string s, double& retVal);
   std::vector<std::string> SplitString(const std::string &s, char delim, std::vector<std::string> &elems);
   void SendErrorMsg();
+  void SendErrorConfMsg(double errorProb);
+  void PrintHelp();
 
   void ErrorTriggerCallback(const error_seeder_msgs::Error::ConstPtr& msg);
 

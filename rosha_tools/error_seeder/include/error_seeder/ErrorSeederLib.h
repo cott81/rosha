@@ -10,9 +10,11 @@
 
 #include <thread>
 #include <mutex>
+#include <random>
 
 #include "ros/ros.h"
 #include "error_seeder_msgs/Error.h"
+#include "error_seeder_msgs/ErrorConf.h"
 #include "Defs.h"
 
 namespace error_seeder
@@ -31,10 +33,12 @@ public:
 private:
   ros::NodeHandle nh;
   ros::Subscriber errorSub;
+  ros::Subscriber errorConfSub;
   //ros::Subscriber testSub;
   int ownCompId;
   bool elFlag;
   void ErrorTriggerCallback(const error_seeder_msgs::Error::ConstPtr& msg);
+  void ErrorConfCallback(const error_seeder_msgs::ErrorConf::ConstPtr& msg);
 
   bool runSpinLoop;
   void Spin();
@@ -42,9 +46,23 @@ private:
   bool runRandTrigger;
   std::thread* randErrorThread;
 
+  //! array of failure occurance rate for:
+  //! null pointer, array index, deadlock, endless loop, general exception  failures
+  //! (in this order (1/s)
+  const static int NUM_FAILURES = 5;
+  double failureRates [NUM_FAILURES];
+
+  //! random number generator
+  //std::default_random_engine generator;
+  std::random_device rd;
+  std::mt19937 gen;
+
+  //! uniform distribution
+  std::uniform_real_distribution<> uniformDistribution;
+
 protected:
   void TriggerError(int errorId);
-  void TriggerRandomError();
+  void StartRandErrorTrigger();
 
 
 
