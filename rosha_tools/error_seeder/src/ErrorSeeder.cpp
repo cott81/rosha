@@ -18,21 +18,8 @@ ErrorSeeder::ErrorSeeder(int argc, char** argv)
   n = new ros::NodeHandle();
   pub_rate = new ros::Rate(5.0);
 
-  //compId = -1;
-  //errorId = UNDEFINED;
-
-
-  //errorPub = n->advertise<std_msgs::Float64>("/ErrorSeeder/ErrorTrigger", 1000);
   errorPub = n->advertise<error_seeder_msgs::Error>("/ErrorSeeder/ErrorTrigger", 1000);
   errorConfPub = n->advertise<error_seeder_msgs::ErrorConf>("/ErrorSeeder/ErrorConf", 1000);
-
-  //errorFeedbackSub = n->subscribe("/ErrorSeeder/ErrorFeedback", 1000, &ErrorSeeder::ErrorFeedbackCallback, this);
-
-  //ros::Subscriber errorSub = n->subscribe("/ErrorSeeder/ErrorTrigger", 1000, &ErrorSeeder::ErrorTriggerCallback, this);
-
-  //ros::Subscriber testSub = n->subscribe("/test123", 1000, &ErrorSeeder::TestCallback, this);
-   //testSub = n->subscribe("/test123", 1000, &ErrorSeeder::TestCallback, this);
-
 }
 
 ErrorSeeder::~ErrorSeeder()
@@ -47,27 +34,12 @@ void ErrorSeeder::Start()
   cout << "Enter commands:" << endl;
   cout << "\t e.g. the component ID and the type of error Id -> 1:NP " << endl;
 
-  //bring in the lib: sub object must live during the process
-  //int ownId = 1;
-  //ErrorSeederLib esl(ownId);
-
   try
   {
     while (ros::ok())
     {
       ros::spinOnce();
-
-      //user interaction
       HandleUserInteraction();
-
-
-      //TODO: heart beat msg
-      /*
-      std_msgs::Float64 msg;
-      msg.data = 3.0;
-      errorPub.publish(msg);
-      */
-
       pub_rate->sleep();
     }
   }
@@ -84,9 +56,9 @@ void ErrorSeeder::HandleUserInteraction()
 {
   string s;
 
-    cout << "command:> ";
-    cin >> s;
-    IsValidCommand(s);
+  cout << "command:> ";
+  cin >> s;
+  IsValidCommand(s);
 
   return;
 }
@@ -116,7 +88,6 @@ bool ErrorSeeder::IsValidCommand(string command)
   {
     //print help screen
     PrintHelp();
-
   }
   else if (command.compare("q")==0 || command.compare("quit")==0 )
   {
@@ -145,7 +116,7 @@ bool ErrorSeeder::IsValidCommand(string command)
       }
       else
       {
-        cout << "input error with command: " << command << endl;
+        ROS_ERROR("Input error with command: %s", command.c_str());
       }
     }
     else if (elems.size() == 3)
@@ -161,14 +132,14 @@ bool ErrorSeeder::IsValidCommand(string command)
       }
       else
       {
-        cout << "input error with command: " << command << endl;
+        ROS_ERROR("Input error with command: %s", command.c_str());
       }
 
     }
     else
     {
-      cout << "\tcommand: "<< command << " not supported." << endl;
-      //print help text
+      ROS_WARN("Command not supported: %s", command.c_str());
+      PrintHelp();
       valid = false;
     }
   }
@@ -197,12 +168,12 @@ bool ErrorSeeder::IsValidId(string s,  int& retVal)
   {
 //    cout << ss.goodbit << " " << ss.eofbit << " " << ss.failbit << " " << ss.badbit << endl;
 //    cout << ss.good() << " " << ss.eof() << " " << ss.fail() << " " << ss.bad() << endl;
-    cerr << "no valid number." << endl << endl;
+    ROS_ERROR("no valid int number: %s\n", s.c_str());
     return false;
   }
   else if (retVal == 0 && s[0] != '0')
   {
-    cerr << "no valid number 2." << endl << endl;
+    ROS_ERROR("no valid int number (2): %s\n", s.c_str());
     return false;
   }
   else
@@ -213,7 +184,7 @@ bool ErrorSeeder::IsValidId(string s,  int& retVal)
     }
     else
     {
-      cerr << "needs to be bigger than 0." << endl << endl;
+      ROS_ERROR("Number needs to be bigger than 0");
       return false;
     }
   }
@@ -231,12 +202,12 @@ bool ErrorSeeder::IsValidProb(string errorProbString, double & errorProb)
   ss >> errorProb;
   if (ss.good())
   {
-    cerr << "no valid number." << endl << endl;
+    ROS_ERROR("no valid double number: %s\n", errorProbString.c_str());
     return false;
   }
   else if (errorProb == 0 && errorProbString[0] != '0')
   {
-    cerr << "no valid number 2." << endl << endl;
+    ROS_ERROR("no valid double number (2): %s\n", errorProbString.c_str());
     return false;
   }
   else
@@ -247,7 +218,7 @@ bool ErrorSeeder::IsValidProb(string errorProbString, double & errorProb)
     }
     else
     {
-      cerr << "Probability have to be between 0 and 1." << endl << endl;
+      ROS_ERROR("Probability have to be between 0 and 1.");
       return false;
     }
   }
@@ -300,7 +271,7 @@ bool ErrorSeeder::IsValidErrorId(string errorShortcut, ErrorId& errorId)
   //
   else
   {
-    ROS_ERROR("Error type (%s) not supported %d", errorShortcut.c_str(), 1);
+    ROS_ERROR("Failure type (%s) not supported %d", errorShortcut.c_str(), 1);
     valid = false;
   }
 
@@ -326,13 +297,9 @@ void ErrorSeeder::SendErrorConfMsg(double errorProb)
 
 void ErrorSeeder::ErrorTriggerCallback(const error_seeder_msgs::Error::ConstPtr& msg)
 {
-  cout << "received msg .. " << endl;
+  ROS_INFO(".. error feedback for changing dependend failure not yet supported");
 }
 
-void ErrorSeeder::TestCallback(const std_msgs::Int32::ConstPtr& msg)
-{
-  cout << "received msg .. " << endl;
-}
 
 } /* namespace error_seeder */
 

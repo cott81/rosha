@@ -12,7 +12,8 @@ using namespace std;
 namespace error_seeder
 {
 
-ErrorSeederLib::ErrorSeederLib(int ownCompId) : uniformDistribution(0, 1), gen(rd())
+ErrorSeederLib::ErrorSeederLib(int ownCompId) :
+    uniformDistribution(0, 1), gen(rd())
 {
   this->ownCompId = ownCompId;
   this->elFlag = true;
@@ -21,7 +22,6 @@ ErrorSeederLib::ErrorSeederLib(int ownCompId) : uniformDistribution(0, 1), gen(r
   this->runRandTrigger = true;
   errorSub = nh.subscribe("/ErrorSeeder/ErrorTrigger", 1000, &ErrorSeederLib::ErrorTriggerCallback, this);
   errorConfSub = nh.subscribe("/ErrorSeeder/ErrorConf", 1000, &ErrorSeederLib::ErrorConfCallback, this);
-  //errorFeedbackSub = nh.subscribe("/ErrorSeeder/ErrorFeedback", 1000, &ErrorSeeder::ErrorFeedbackCallback, this);
 
   //default values of failure rates (1/s)
   this->failureRates[0] = 0.001; //np MTTF=1000s
@@ -33,7 +33,6 @@ ErrorSeederLib::ErrorSeederLib(int ownCompId) : uniformDistribution(0, 1), gen(r
 
 ErrorSeederLib::~ErrorSeederLib()
 {
-  // TODO Auto-generated destructor stub
   delete this->randErrorThread;
   this->randErrorThread = NULL;
 }
@@ -44,9 +43,7 @@ void ErrorSeederLib::ErrorTriggerCallback(const error_seeder_msgs::Error::ConstP
   {
     return;
   }
-
-  cout << "received error trigger msg .. " << endl;
-  cout << "compId: " << msg->compId << " errorId: " << msg->errorId << endl;
+  ROS_INFO("received error trigger msg: compId: %d, errorId: %d", msg->compId, msg->errorId);
 
   TriggerError(msg->errorId);
 }
@@ -57,9 +54,8 @@ void ErrorSeederLib::ErrorConfCallback(const error_seeder_msgs::ErrorConf::Const
   {
     return;
   }
-
-  cout << "received error conf msg .. " << endl;
-  cout << "compId: " << msg->compId << " errorTypeId: " << msg->errorId << " errorProb: " << msg->errorProb << endl;
+  ROS_INFO("received error conf msg: compId: %d, errorId: %d, errorProb: %d", msg->compId, msg->errorId,
+           msg->errorProb);
 
   if (msg->errorId == NULLPOINTER)
   {
@@ -83,35 +79,33 @@ void ErrorSeederLib::ErrorConfCallback(const error_seeder_msgs::ErrorConf::Const
   }
   else
   {
-    cerr << "given type of failure ("<<msg->errorId<<") not supported! Do nothing." << endl;
+    ROS_ERROR("Type of failure not supported: %d", msg->errorId);
   }
-
 }
 
 void ErrorSeederLib::TriggerError(int errorId)
 {
   if (errorId == NULLPOINTER)
   {
-    cout << "trigger nullpointer" << endl;
+    ROS_INFO("trigger null pinter failure");
+
     int* a = NULL;
     int b = *a;
-
-    cout << "after np" << endl;
   }
   else if (errorId == ARRAYINDEXERROR)
   {
-    cout << "trigger arrayindex error" << endl;
+    ROS_INFO("trigger arrayindex failure");
 
-    //not deadly ... underminined behavior, because some arbitrary mem is changed
     int a[1];
     int b = a[2];
     a[3] = 123;
   }
-  else if (errorId == ENDLESSLOOP )
+  else if (errorId == ENDLESSLOOP)
   {
-    cout << "trigger endless loop" << endl;
+    ROS_INFO("trigger endless loop failure");
+
     this->elFlag = true;
-    while(this->elFlag)
+    while (this->elFlag)
     {
       //needed to receive messages
       ros::spinOnce();
@@ -120,49 +114,43 @@ void ErrorSeederLib::TriggerError(int errorId)
   }
   else if (errorId == STOP_ENDLESSLOOP)
   {
-    cout << "stop endless loop" << endl;
+    ROS_INFO("stops endless loop");
     this->elFlag = false;
   }
   else if (errorId == DEADLOCK)
   {
-    cout << "trigger deadlock" << endl;
+    ROS_INFO("trigger deadlock");
 
-    //create a deadlock
-    //create a second thread und start Blocking Func A
-    //std::thread t (&ErrorSeederLib::BlockingFuncA, this);
-    //BlockingFuncB();
     mutex.lock();
-    cout << "here" << endl;
     //run a spin loop in an extra thread to stay responsible
-    std::thread t (&ErrorSeederLib::Spin, this);
+    std::thread t(&ErrorSeederLib::Spin, this);
     mutex.lock();
 
     t.join();
-
   }
   else if (errorId == LEASEDEADLOCK)
   {
-    cout << "lease deadlock" << endl;
+    ROS_INFO("leases deadlock");
     this->runSpinLoop = false;
     mutex.unlock();
   }
   else if (errorId == GENERAL_EXCEPTION)
   {
-    cout << "trigger general exception" << endl;
+    ROS_INFO("trigger general exception");
     exception e;
     throw e;
   }
   else if (errorId == ENABLE_PROBABILITY)
   {
-    cout << "start random error triggering due to given probs" << endl;
+    ROS_INFO("start random error triggering due to given probs");
 
     //what happens if the object goes out of scope?
-    randErrorThread = new std::thread (&ErrorSeederLib::StartRandErrorTrigger, this);
+    randErrorThread = new std::thread(&ErrorSeederLib::StartRandErrorTrigger, this);
 
   }
   else if (errorId == DISABLE_PROBABILITY)
   {
-    cout << "stop random error triggering" << endl;
+    ROS_INFO("stop random error triggering");
 
     //stop the thread
     this->runRandTrigger = false;
@@ -171,7 +159,7 @@ void ErrorSeederLib::TriggerError(int errorId)
   }
   else
   {
-    cout << "errorId: " << errorId << " not known. Do nothing" << endl;
+    ROS_ERROR("Received failure id not supported: %d. Do nothing", errorId);
   }
   return;
 
@@ -181,25 +169,22 @@ void ErrorSeederLib::Spin()
 {
   this->runSpinLoop = true;
   ros::NodeHandle tmp_nh;
-  ros::Subscriber tmpSub = tmp_nh.subscribe("/ErrorSeeder/ErrorTrigger", 1000, &ErrorSeederLib::ErrorTriggerCallback, this);
+  ros::Subscriber tmpSub = tmp_nh.subscribe("/ErrorSeeder/ErrorTrigger", 1000, &ErrorSeederLib::ErrorTriggerCallback,
+                                            this);
   //choose a very slow rate to handle incoming messages not to intervere with rescource usage
   ros::Rate r(1.0);
   while (this->runSpinLoop)
   {
-    cout << "spin" << endl;
     ros::spinOnce();
     r.sleep();
   }
-
 }
-
 
 void ErrorSeederLib::StartRandErrorTrigger()
 {
-
   //start own thread that triggers the error types dependend on the given probs
   this->runRandTrigger = true;
-  double randVal_NP = -1.0, randVal_AR=-1.0, randVal_DL=-1.0, randVal_EL=-1.0, randVal_EX=-1.0;
+  double randVal_NP = -1.0, randVal_AR = -1.0, randVal_DL = -1.0, randVal_EL = -1.0, randVal_EX = -1.0;
   ros::Rate randTriggerRate(1.0);
   while (this->runRandTrigger)
   {
@@ -210,51 +195,42 @@ void ErrorSeederLib::StartRandErrorTrigger()
     randVal_EL = uniformDistribution(gen);
     randVal_EX = uniformDistribution(gen);
 
-    cout << "failure occurance probs: " <<
-        " np: " << randVal_NP <<
-        " ar: " << randVal_AR <<
-        " dl: " << randVal_DL <<
-        " el: " << randVal_EL <<
-        " ex: " << randVal_EX <<
-        endl;
+    ROS_DEBUG("failure occurance probs: NP: %f, AR: %f, DL: %f, EL: %f, EX: %f", randVal_NP, randVal_AR, randVal_DL,
+              randVal_EL, randVal_EX);
+
+    //FIXME: triggers error in this thread ... no blocking!
+    // ... send error message that is handled by the main thread?
+    // ... when deadly, close this thread
 
     //trigger only one failure at a time! ...
-      if (randVal_NP < this->failureRates[0])
-      {
-        cout << "trigger np failure" << endl;
-        TriggerError(NULLPOINTER);
-      }
-      else if(randVal_AR < this->failureRates[1])
-      {
-        cout << "trigger ar failure" << endl;
-        TriggerError(ARRAYINDEXERROR);
-      }
-      else if(randVal_DL < this->failureRates[2])
-      {
-        cout << "trigger dl failure" << endl;
-        TriggerError(DEADLOCK);
-      }
-      else if(randVal_EL < this->failureRates[3])
-      {
-        cout << "trigger el failure" << endl;
-        TriggerError(ENDLESSLOOP);
-      }
-      else if(randVal_EX < this->failureRates[4])
-      {
-        cout << "trigger ex failure" << endl;
-        TriggerError(GENERAL_EXCEPTION);
-      }
-      else
-      {
-        //no failure triggering
-      }
-
+    if (randVal_NP < this->failureRates[0])
+    {
+      TriggerError(NULLPOINTER);
+    }
+    else if (randVal_AR < this->failureRates[1])
+    {
+      TriggerError(ARRAYINDEXERROR);
+    }
+    else if (randVal_DL < this->failureRates[2])
+    {
+      TriggerError(DEADLOCK);
+    }
+    else if (randVal_EL < this->failureRates[3])
+    {
+      TriggerError(ENDLESSLOOP);
+    }
+    else if (randVal_EX < this->failureRates[4])
+    {
+      TriggerError(GENERAL_EXCEPTION);
+    }
+    else
+    {
+      //no failure triggering
+    }
 
     randTriggerRate.sleep();
   }
 
 }
-
-
 
 } /* namespace error_seeder */
