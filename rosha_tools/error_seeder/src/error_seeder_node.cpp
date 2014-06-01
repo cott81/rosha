@@ -31,9 +31,9 @@ int main (int argc, char** argv)
   }
   catch (exception& e)
   {
-    cerr << "Diagnostic aggregator node caught exception. Aborting." << e.what() << endl;
-    //ROS_FATAL("Diagnostic aggregator node caught exception. Aborting. %s", e.what());
-    //ROS_BREAK();
+    //cerr << "Diagnostic aggregator node caught exception. Aborting." << e.what() << endl;
+    ROS_FATAL("Diagnostic aggregator node caught exception. Aborting. %s", e.what());
+    ROS_BREAK();
   }
 
   exit(0);

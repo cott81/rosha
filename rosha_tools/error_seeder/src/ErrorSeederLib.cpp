@@ -20,6 +20,7 @@ ErrorSeederLib::ErrorSeederLib(int ownCompId) :
   this->runSpinLoop = true;
   this->randErrorThread = NULL;
   this->runRandTrigger = true;
+  this->isBlocked = false;
   errorSub = nh.subscribe("/ErrorSeeder/ErrorTrigger", 1000, &ErrorSeederLib::ErrorTriggerCallback, this);
   errorConfSub = nh.subscribe("/ErrorSeeder/ErrorConf", 1000, &ErrorSeederLib::ErrorConfCallback, this);
 
@@ -54,7 +55,7 @@ void ErrorSeederLib::ErrorConfCallback(const error_seeder_msgs::ErrorConf::Const
   {
     return;
   }
-  ROS_INFO("received error conf msg: compId: %d, errorId: %d, errorProb: %d", msg->compId, msg->errorId,
+  ROS_INFO("received error conf msg: compId: %d, errorId: %d, errorProb: %f", msg->compId, msg->errorId,
            msg->errorProb);
 
   if (msg->errorId == NULLPOINTER)
@@ -105,6 +106,7 @@ void ErrorSeederLib::TriggerError(int errorId)
     ROS_INFO("trigger endless loop failure");
 
     this->elFlag = true;
+    this->isBlocked = true;
     while (this->elFlag)
     {
       //needed to receive messages
@@ -115,7 +117,15 @@ void ErrorSeederLib::TriggerError(int errorId)
   else if (errorId == STOP_ENDLESSLOOP)
   {
     ROS_INFO("stops endless loop");
+
+    //endlessloop was the cause for the blocking active
+    if (this->elFlag == true)
+    {
+      this->isBlocked = false; //continue rand trigger loop when EP active
+    }
+
     this->elFlag = false;
+
   }
   else if (errorId == DEADLOCK)
   {
@@ -124,6 +134,7 @@ void ErrorSeederLib::TriggerError(int errorId)
     mutex.lock();
     //run a spin loop in an extra thread to stay responsible
     std::thread t(&ErrorSeederLib::Spin, this);
+    this->isBlocked = true;
     mutex.lock();
 
     t.join();
@@ -131,6 +142,12 @@ void ErrorSeederLib::TriggerError(int errorId)
   else if (errorId == LEASEDEADLOCK)
   {
     ROS_INFO("leases deadlock");
+    //not endless loop (-> deadlock) was the cause for the blocking
+    if (this->elFlag == false)
+    {
+      this->isBlocked = false; //continue rand trigger loop when EP active
+    }
+
     this->runSpinLoop = false;
     mutex.unlock();
   }
@@ -171,7 +188,7 @@ void ErrorSeederLib::Spin()
   ros::NodeHandle tmp_nh;
   ros::Subscriber tmpSub = tmp_nh.subscribe("/ErrorSeeder/ErrorTrigger", 1000, &ErrorSeederLib::ErrorTriggerCallback,
                                             this);
-  //choose a very slow rate to handle incoming messages not to intervere with rescource usage
+  //choose a very slow rate to handle incoming messages not to interfere with rescource usage
   ros::Rate r(1.0);
   while (this->runSpinLoop)
   {
@@ -182,12 +199,23 @@ void ErrorSeederLib::Spin()
 
 void ErrorSeederLib::StartRandErrorTrigger()
 {
+  //send error trigger msg to own component (handled in main thread) to block the main thread
+  ros::Publisher errorPub2 = nh.advertise<error_seeder_msgs::Error>("/ErrorSeeder/ErrorTrigger", 1000);
+  error_seeder_msgs::Error msg;
+  msg.compId = ownCompId;
+
   //start own thread that triggers the error types dependend on the given probs
   this->runRandTrigger = true;
   double randVal_NP = -1.0, randVal_AR = -1.0, randVal_DL = -1.0, randVal_EL = -1.0, randVal_EX = -1.0;
   ros::Rate randTriggerRate(1.0);
   while (this->runRandTrigger)
   {
+    //do not try to trigger failures if the component is blocked (deadlock, endlessloop)
+    if (isBlocked)
+    {
+      randTriggerRate.sleep();
+      continue;
+    }
     // ... throw the dices ...
     randVal_NP = uniformDistribution(gen);
     randVal_AR = uniformDistribution(gen);
@@ -195,7 +223,7 @@ void ErrorSeederLib::StartRandErrorTrigger()
     randVal_EL = uniformDistribution(gen);
     randVal_EX = uniformDistribution(gen);
 
-    ROS_DEBUG("failure occurance probs: NP: %f, AR: %f, DL: %f, EL: %f, EX: %f", randVal_NP, randVal_AR, randVal_DL,
+    ROS_INFO("failure occurance probs: NP: %f, AR: %f, DL: %f, EL: %f, EX: %f", randVal_NP, randVal_AR, randVal_DL,
               randVal_EL, randVal_EX);
 
     //FIXME: triggers error in this thread ... no blocking!
@@ -205,23 +233,33 @@ void ErrorSeederLib::StartRandErrorTrigger()
     //trigger only one failure at a time! ...
     if (randVal_NP < this->failureRates[0])
     {
-      TriggerError(NULLPOINTER);
+//      TriggerError(NULLPOINTER);
+      msg.errorId = NULLPOINTER;
+      errorPub2.publish(msg);
     }
     else if (randVal_AR < this->failureRates[1])
     {
-      TriggerError(ARRAYINDEXERROR);
+//      TriggerError(ARRAYINDEXERROR);
+      msg.errorId = ARRAYINDEXERROR;
+      errorPub2.publish(msg);
     }
     else if (randVal_DL < this->failureRates[2])
     {
-      TriggerError(DEADLOCK);
+//      TriggerError(DEADLOCK);
+      msg.errorId = DEADLOCK;
+      errorPub2.publish(msg);
     }
     else if (randVal_EL < this->failureRates[3])
     {
-      TriggerError(ENDLESSLOOP);
+//      TriggerError(ENDLESSLOOP);
+      msg.errorId = ENDLESSLOOP;
+      errorPub2.publish(msg);
     }
     else if (randVal_EX < this->failureRates[4])
     {
-      TriggerError(GENERAL_EXCEPTION);
+//      TriggerError(GENERAL_EXCEPTION);
+      msg.errorId = GENERAL_EXCEPTION;
+      errorPub2.publish(msg);
     }
     else
     {

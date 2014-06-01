@@ -45,6 +45,7 @@ private:
 
   bool runRandTrigger;
   std::thread* randErrorThread;
+  bool isBlocked;
 
   //! array of failure occurance rate for:
   //! null pointer, array index, deadlock, endless loop, general exception  failures
