@@ -12,6 +12,8 @@
 #include "vrep_msgs/Pose2D.h"
 #include "tf/tf.h"
 
+#include "error_seeder/ErrorSeederLib.h"
+
 #include <exception>
 
 using namespace std;
@@ -75,12 +77,44 @@ void SimLocalizationCallback2(const geometry_msgs::PoseStamped::ConstPtr& msg)
 
 int main (int argc, char** argv)
 {
+  //argument handling
+  string help = "Vrep Localizer\n"
+       "Synobsis: vrep_localizer_node OPTIONS\n"
+       "Options:\n\n"
+       "ROS params: paramter for ROS, check the ROS wiki for more details.\n"
+       "-help: prints this help text\n"
+       "-compId: specifies the Id of this component. (Used for failure simulation). Default is -1.\n"
+       ;
+
+   string helpParam = "-help";
+   string compIdParam = "-compId";
+   int ownId = -1;
+   for (int i=1; i<argc; i++)
+   {
+     if(helpParam.compare(argv[i]) == 0)
+     {
+     cout << help << endl;
+     exit(0);
+     }
+     else if (compIdParam.compare(argv[i]) == 0)
+     {
+       ownId = atoi(argv[i+1]);
+     }
+     else
+     {
+       //ros arguments ...
+     }
+   }
+
   cout << "start v_rep_localizer" << endl;
   //bring the lib in
   vrepLoc = new VrepLocalizer();
 
   ros::init(argc, argv, "vrep_localizer_node");
   ros::NodeHandle n;
+
+  error_seeder::ErrorSeederLib esl(ownId);
+
   //msg ...
   ros::Publisher pub = n.advertise<vrep_msgs::Pose2D>("/vrep/MagicCubeXY/localizationInfo", 1000);
   locPublisher = &pub;
@@ -96,6 +130,7 @@ int main (int argc, char** argv)
     {
       ros::spinOnce();
       //do something
+      cout << "loc loop" << endl;
       /*
       cout << "send test msg" << endl;
         vrep_msgs::Pose2D msg2;

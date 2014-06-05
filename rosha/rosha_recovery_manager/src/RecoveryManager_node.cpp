@@ -33,6 +33,7 @@ int main (int argc, char** argv)
   ros::Publisher pub = n.advertise<std_msgs::String>("recovery_action", 1000);
   actionPublisher = &pub;
 
+
   ros::Subscriber sub = n.subscribe("diagnostic_info", 1000, Callback);
 
   try

@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   tf
   vrep_msgs
+  error_seeder
 )
 
 ## System dependencies are found with CMake's conventions
@@ -90,6 +91,8 @@ catkin_package(
 ###########
 ## Build ##
 ###########
+
+set(CMAKE_CXX_FLAGS "-std=c++0x -pthread -Wl,--no-as-needed ${CMAKE_CXX_FLAGS}")
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations

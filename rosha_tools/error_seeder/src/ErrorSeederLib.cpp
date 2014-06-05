@@ -15,6 +15,7 @@ namespace error_seeder
 ErrorSeederLib::ErrorSeederLib(int ownCompId) :
     uniformDistribution(0, 1), gen(rd())
 {
+  ROS_INFO("... start the failure simulator lib: component id: %d", ownCompId);
   this->ownCompId = ownCompId;
   this->elFlag = true;
   this->runSpinLoop = true;

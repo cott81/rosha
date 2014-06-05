@@ -27,7 +27,7 @@ int correctionFactor;
 
 void SimMotionCmdCallback(const vrep_msgs::DriveCmd::ConstPtr& msg)
 {
-  cout << "get motion command" << endl;
+  //cout << "get motion command" << endl;
 
   std_msgs::Float64 leftWheelMsg;
   std_msgs::Float64 rightWheelMsg;
@@ -36,18 +36,21 @@ void SimMotionCmdCallback(const vrep_msgs::DriveCmd::ConstPtr& msg)
   if (msg->rotV_w > 0)
   {
     // rotate counter clock wise
-    leftWheelMsg.data = msg->rotV_w * -1 * correctionFactor;
-    rightWheelMsg.data = msg->rotV_w * correctionFactor;
+    //ROS_DEBUG("rotate counter clock wise");
+    leftWheelMsg.data = msg->rotV_w * correctionFactor;
+    rightWheelMsg.data = msg->rotV_w * correctionFactor * -1;
   }
   else if (msg->rotV_w < 0)
   {
     // rotate clock wise
-    leftWheelMsg.data = msg->rotV_w * correctionFactor;
-    rightWheelMsg.data = msg->rotV_w * -1 * correctionFactor;
+    //ROS_DEBUG("rotate clock wise");
+    leftWheelMsg.data = msg->rotV_w * correctionFactor; //switched order, because rotV_w is already negative
+    rightWheelMsg.data = msg->rotV_w * correctionFactor * -1;
   }
   else
   {
     //drive straight
+    //ROS_DEBUG("drive straight");
     leftWheelMsg.data = msg->transV_x * correctionFactor;
     rightWheelMsg.data = msg->transV_x * correctionFactor;
   }
@@ -57,16 +60,37 @@ void SimMotionCmdCallback(const vrep_msgs::DriveCmd::ConstPtr& msg)
   rightWheelPublisher->publish(rightWheelMsg);
 }
 
-/*
-void ErrorTriggerCallback(const error_seeder_msgs::Error::ConstPtr& msg)
-{
-  cout << "received msg .. " << endl;
-}
-*/
-
 
 int main (int argc, char** argv)
 {
+  string help = "Vrep Motion\n"
+      "Synobsis: vrep_motion_node OPTIONS\n"
+      "Options:\n\n"
+      "ROS params: paramter for ROS, check the ROS wiki for more details.\n"
+      "-help: prints this help text\n"
+      "-compId: specifies the Id of this component. (Used for failure simulation). Default is -1.\n"
+      ;
+
+  string helpParam = "-help";
+  string compIdParam = "-compId";
+  int ownId = -1;
+  for (int i=1; i<argc; i++)
+  {
+    if(helpParam.compare(argv[i]) == 0)
+    {
+    cout << help << endl;
+    exit(0);
+    }
+    else if (compIdParam.compare(argv[i]) == 0)
+    {
+      ownId = atoi(argv[i+1]);
+    }
+    else
+    {
+      //ros arguments ...
+    }
+  }
+
   cout << "start v_rep_motion" << endl;
   //bring the lib in
   vrepMotion = new VrepMotion();
@@ -74,12 +98,6 @@ int main (int argc, char** argv)
   ros::init(argc, argv, "vrep_motion_node");
   ros::NodeHandle n;
 
-  int a[1] = {1};
-
-  int b = a[25];
-  cout << b << endl;
-
-  int ownId = 1;
   error_seeder::ErrorSeederLib esl(ownId);
 
   correctionFactor = -1; //magic cube in vrep wheel orientation twisted
@@ -97,8 +115,8 @@ int main (int argc, char** argv)
 
   try
   {
-    //ros::Rate pub_rate(30.0);
-    ros::Rate pub_rate(1.0);
+    ros::Rate pub_rate(30.0);
+    //ros::Rate pub_rate(1.0);
     while (ros::ok())
     {
       ros::spinOnce();
