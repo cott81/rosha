@@ -1,0 +1,33 @@
+<library path="lib/libMy_repair_plugins">
+
+ 	<class name="repair_executer_plugins/test_plug" 
+		type = "gen_repair_plugins::TestRepair" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+    <description>
+    	This is a test repair plugin.
+    </description>
+    
+	</class>
+	
+ 	<class name="repair_executer_plugins/restart_plug" 
+		type = "gen_repair_plugins::RestartRepair" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+    <description>
+    	Plugin to restart a component. Uses CARE to do that.
+    </description>
+    
+	</class>
+	
+ 	<class name="repair_executer_plugins/cap_report_plug" 
+		type = "gen_repair_plugins::CapFailureReport" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+    <description>
+    	Plugin to report a capability failure to the planner(here ALICA) to react.
+    </description>
+    
+	</class>
+		
+</library>
