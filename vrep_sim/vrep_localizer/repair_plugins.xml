@@ -1,0 +1,23 @@
+<library path="lib/libVrepLoc_repair_plugins">
+
+<!--
+ 	<class name="vrep_localizer_plugins/redundancy_repair" 
+		type = "vrep_localization_repair_plugins::CompRedundancyRepair" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	This is a test repair plugin in an external package ... yet.
+	    </description>    
+	</class>
+-->	
+	
+	<class name="vrep_localizer_plugins/redundant_replace" 
+		type = "vrep_localization_repair_plugins::LocalizerRedundantReplace" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	This is a repair plugin specially for the vrep_localizer component that replaces the orignal component by a redundant version.
+	    </description>    
+	</class>
+		
+</library>
