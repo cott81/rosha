@@ -40,15 +40,18 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
+  
   <build_depend>pluginlib</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
-  <build_depend>SimBaseMsgs</build_depend>
+  <build_depend>rosha_msgs</build_depend>
+  <build_depend>system_config</build_depend>
   
   <run_depend>pluginlib</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
-  <run_depend>SimBaseMsgs</run_depend>
+  <run_depend>rosha_msgs</run_depend>
+  <run_depend>system_config</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
@@ -60,7 +63,6 @@
   	
     
   	<!-- problem with multiple plugin xmls in one package -->
-  	<!-- <RepairExecuter plugin="${prefix}/polygon_plugins.xml" /> -->
   	<rosha_repair_executor plugin="${prefix}/repair_plugins.xml" />
 
   </export>

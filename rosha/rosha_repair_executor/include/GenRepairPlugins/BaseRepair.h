@@ -24,8 +24,33 @@
 
 #include <iostream>
 
+#include <ros/ros.h>
+#include <rosha_msgs/CareRepairControl.h>
+
 namespace gen_repair_plugins
 {
+
+// now defined in the msg
+/*
+enum repair_t {
+  dummyMapperRedundancyRepair = 0,
+  capFailureReport,
+  restartRepair,
+  ifaceRestart,
+  testRepair = 100
+} repairPlugins;
+*/
+
+//at first plain listing ... now in msg
+/*
+enum repairActionId_t {
+  REPAIR_ACTION__RESTART = 0,
+  REPAIR_ACTION__STOP,
+  REPAIR_ACTION__START,
+  REPAIR_ACTION__REPLACE
+} repairActionId;
+*/
+
   class BaseRepair
   {
     public:
@@ -38,8 +63,29 @@ namespace gen_repair_plugins
         return "Error: Base Clase func call";
       }
 
+      virtual void SetData(int compId, std::string compName, int ownId)
+      {
+        targetCompId = compId;
+        targetCompName = compName;
+        this->ownId = ownId;
+      }
+
+      unsigned short repairType;
+
+
     protected:
-      BaseRepair(){}
+      BaseRepair()
+    {
+        this->repairType = 100;
+        this->nh = new ros::NodeHandle();
+        this->repairControlPup = nh->advertise<rosha_msgs::CareRepairControl>("Care/RepairControl", 1000); //call Care to do some repair stuff
+    }
+
+      ros::NodeHandle* nh;
+      ros::Publisher repairControlPup;
+      int targetCompId;
+      std::string targetCompName;
+      int ownId;
 
   };
 };

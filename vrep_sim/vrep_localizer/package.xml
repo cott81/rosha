@@ -46,12 +46,15 @@
   <build_depend>tf</build_depend>
   <build_depend>vrep_msgs</build_depend>
   <build_depend>error_seeder</build_depend>
+  <build_depend>rosha_msgs</build_depend>
   
   <run_depend>roscpp</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>vrep_msgs</run_depend>
   <run_depend>error_seeder</run_depend>
+  <run_depend>rosha_repair_executor</run_depend>
+  <run_depend>rosha_msgs</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
@@ -60,6 +63,7 @@
     <!-- <metapackage/> -->
 
     <!-- Other tools can request additional information be placed here -->
+    <rosha_repair_executor plugin="${prefix}/repair_plugins.xml" />
 
   </export>
 </package>

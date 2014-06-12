@@ -27,9 +27,8 @@
 
 #include "ros/ros.h"
 
-//#include <pluginlib/class_list_macros.h>
-
 #include "GenRepairPlugins/BaseRepair.h"
+#include <rosha_msgs/RepairAction.h>
 
 
 namespace gen_repair_plugins

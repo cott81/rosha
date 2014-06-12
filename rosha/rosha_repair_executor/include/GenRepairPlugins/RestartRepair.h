@@ -25,6 +25,8 @@
 #include <iostream>
 
 #include "ros/ros.h"
+#include <rosha_msgs/CareRepairControl.h>
+#include <rosha_msgs/RepairAction.h>
 
 //#include <pluginlib/class_list_macros.h>
 #include "GenRepairPlugins/BaseRepair.h"
@@ -42,6 +44,9 @@ namespace gen_repair_plugins
 
     private:
       std::string pluginName;
+      int stopRepairAction;
+      int startRepairAction;
+      static const int SLEEP_TIME = 3;
   };
 }
 

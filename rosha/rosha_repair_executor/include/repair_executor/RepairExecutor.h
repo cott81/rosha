@@ -14,6 +14,7 @@
 
 #include "ros/ros.h"
 #include "std_msgs/Int32.h"
+#include "SystemConfig.h"
 #include <pluginlib/class_loader.h>
 
 //msg not tested
@@ -26,14 +27,6 @@ namespace repair_executor {
 
 class RepairExecutor {
 
-  enum repair_t {
-    dummyMapperRedundancyRepair = 0,
-    capFailureReport,
-    restartRepair,
-    ifaceRestart,
-    testRepair = 100
-  } repairPlugins;
-
 public :
   RepairExecutor(int argc, char** argv);
   ~RepairExecutor();
@@ -45,13 +38,16 @@ private:
 
   std::string repairCmdTopic;
   ros::Subscriber repairCmdSub;
-  ros::Publisher lebtControlPup;
 
-  std::vector<gen_repair_plugins::BaseRepair*> genericRepairPlugins;
+  int ownId;
+
+  std::map<unsigned short, gen_repair_plugins::BaseRepair*> lookUp_IdtoPlugin;
 
   pluginlib::ClassLoader<gen_repair_plugins::BaseRepair>* repairPluginClassLoader;
 
   void RepairActionCallback(const rosha_msgs::RepairAction::ConstPtr& msg);
+
+  inline void HandleFailureType(int repairAction, int compId, std::string compName);
 
 
 };

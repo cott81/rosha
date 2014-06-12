@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   vrep_msgs
   error_seeder
+  rosha_repair_executor
 )
 
 ## System dependencies are found with CMake's conventions
@@ -82,8 +83,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES vrep_localizer
+  INCLUDE_DIRS include
+  LIBRARIES vrep_localizer VrepLoc_repair_plugins
 #  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
 )
@@ -99,16 +100,27 @@ set(CMAKE_CXX_FLAGS "-std=c++0x -pthread -Wl,--no-as-needed ${CMAKE_CXX_FLAGS}")
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  include
 )
 
 ## Declare a cpp library
  add_library(vrep_localizer
    src/VrepLocalizer.cpp
  )
+ 
+ add_library(VrepLoc_repair_plugins
+   src/repair_plugins/CompRedundancyRepair.cpp
+   src/repair_plugins/LocalizerRedundantReplace.cpp   
+   src/repair_plugins/RegisterPlugins.cpp
+ )
 
 ## Declare a cpp executable
  add_executable(vrep_localizer_node 
      src/vrep_localizer_node.cpp
+ )
+ 
+add_executable(vrep_localizer_redundant 
+     src/vrep_localizer_node_Redundant.cpp
  )
 
 ## Add cmake target dependencies of the executable/library
@@ -120,6 +132,15 @@ include_directories(
    ${catkin_LIBRARIES}
    vrep_localizer
  )
+ 
+  target_link_libraries(vrep_localizer_redundant
+   ${catkin_LIBRARIES}
+   vrep_localizer
+ )
+ 
+ target_link_libraries(VrepLoc_repair_plugins
+   ${catkin_LIBRARIES}
+ ) 
 
 #############
 ## Install ##

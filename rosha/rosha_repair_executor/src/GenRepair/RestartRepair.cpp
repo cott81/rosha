@@ -22,14 +22,17 @@
 
 #include "../include/GenRepairPlugins/RestartRepair.h"
 
-//PLUGINLIB_DECLARE_CLASS(repair_executer_plugins, restart_plug, gen_repair_plugins::RestartRepair, gen_repair_plugins::BaseRepair)
-
 using namespace gen_repair_plugins;
+using namespace std;
 
 
 RestartRepair::RestartRepair() {
 
   this->pluginName = "RestartRepair";
+  this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__RESTART;
+
+  this->stopRepairAction = rosha_msgs::CareRepairControl::StopProcess;
+  this->startRepairAction = rosha_msgs::CareRepairControl::StartProcess;
 }
 
 RestartRepair::~RestartRepair() {
@@ -42,8 +45,35 @@ void  RestartRepair::initialize()
 }
 
 void RestartRepair::Repair() {
-  ROS_INFO("doing repair stuff ...");
-  //std::cout << "doing repair stuff ..." << std::endl;
+  ROS_INFO("doing repair stuff RESTART ...");
+
+  // universal repair action (same for all components anf failures types) / indirect (command Care to do the restart)
+
+  //send msg ...
+  rosha_msgs::CareRepairControl stopMsg;
+  stopMsg.robotId = this->ownId;
+  stopMsg.repairActionToPerform = stopRepairAction;
+  stopMsg.compName = this->targetCompName;
+  ROS_INFO("... send repair control msg to care: robotId: %d repairAction: %d compName: %s",
+           stopMsg.robotId, stopMsg.repairActionToPerform, stopMsg.compName.c_str());
+
+  repairControlPup.publish(stopMsg);
+
+  //wait for some time ...
+  sleep(SLEEP_TIME);
+
+  //send new message to restart the component
+  rosha_msgs::CareRepairControl startMsg;
+  startMsg.robotId = this->ownId;
+  startMsg.repairActionToPerform = startRepairAction;
+  startMsg.compName = this->targetCompName;
+  ROS_INFO("... send repair control msg to care: robotId: %d repairAction: %d compName: %s",
+           startMsg.robotId, startMsg.repairActionToPerform, startMsg.compName.c_str());
+
+  repairControlPup.publish(startMsg);
+
+  //feedback to the recovery controller if successfull or not ... cant say here! -> no feedback
+  // ... perhaps feedback if repair sequence was finshed
 }
 
 std::string RestartRepair::GetName() {

@@ -29,6 +29,8 @@ using namespace gen_repair_plugins;
 TestRepair::TestRepair() {
 
   this->pluginName = "TestRepair";
+  //just for testing ...
+  this->repairType = 81;
 }
 
 TestRepair::~TestRepair() {
@@ -42,6 +44,7 @@ void  TestRepair::initialize()
 
 void TestRepair::Repair() {
   ROS_INFO("doing repair stuff ...");
+  ROS_INFO("dummy TEST repair action JUST FOR TESTING");
   //std::cout << "doing repair stuff ..." << std::endl;
 }
 

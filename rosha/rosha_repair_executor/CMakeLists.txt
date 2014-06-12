@@ -9,7 +9,14 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   rosha_msgs
+  system_config
 )
+
+#message ( "rosha_repair_executor: catkin include dirs: " ${catkin_INCLUDE_DIRS})
+#message ( "rosha_repair_executor: catkin libraries: " ${catkin_LIBRARIES})
+
+## Use c++ 11x std
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -81,7 +88,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES rosha_repair_executor
 #  CATKIN_DEPENDS pluginlib roscpp std_msgs
 #  DEPENDS system_lib
@@ -118,6 +125,10 @@ add_library(My_repair_plugins
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(rosha_repair_executor_node rosha_repair_executor_generate_messages_cpp)
+add_dependencies(rosha_repair_executor_node ${catkin_EXPORTED_TARGETS})
+add_dependencies(My_repair_plugins ${catkin_EXPORTED_TARGETS})
+add_dependencies(RepairExecutor ${catkin_EXPORTED_TARGETS})
+
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(rosha_repair_executor_node

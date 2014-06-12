@@ -98,6 +98,7 @@ set(CMAKE_CXX_FLAGS "-std=c++0x -pthread -Wl,--no-as-needed ${CMAKE_CXX_FLAGS}")
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -113,9 +114,13 @@ add_library(error_seeder_lib
 ## Declare a cpp executable
 add_executable(error_seeder_node src/error_seeder_node.cpp)
 
+
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(error_seeder_node error_seeder_generate_messages_cpp)
+add_dependencies(error_seeder_node ${catkin_EXPORTED_TARGETS})
+add_dependencies(error_seeder_lib ${catkin_EXPORTED_TARGETS})
+add_dependencies(error_seeder ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(error_seeder_node

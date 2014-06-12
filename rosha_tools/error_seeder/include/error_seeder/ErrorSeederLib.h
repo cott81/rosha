@@ -13,8 +13,8 @@
 #include <random>
 
 #include "ros/ros.h"
-#include "error_seeder_msgs/Error.h"
-#include "error_seeder_msgs/ErrorConf.h"
+#include <error_seeder_msgs/Error.h>
+#include <error_seeder_msgs/ErrorConf.h>
 #include "Defs.h"
 
 namespace error_seeder

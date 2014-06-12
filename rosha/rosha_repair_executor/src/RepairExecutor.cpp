@@ -22,6 +22,7 @@
 
 #include "../include/repair_executor/RepairExecutor.h"
 
+
 //#include "Care/LebtControl.h"
 
 using namespace std;
@@ -39,7 +40,8 @@ RepairExecutor::RepairExecutor(int argc, char** argv)
   this->repairCmdTopic = "repair_action";
   this->repairCmdSub = this->nh->subscribe(this->repairCmdTopic, 1000, &RepairExecutor::RepairActionCallback, this);
 
-  //this->lebtControlPup = nh->advertise<Care::LebtControl>("LebtControl", 1000); //call Care to do some repair stuff
+  this->ownId = supplementary::SystemConfig::GetOwnRobotID();
+  ROS_INFO("own robot Id: %d\n", this->ownId);
 
   //load all declared plugin objects
   this->repairPluginClassLoader = new pluginlib::ClassLoader<gen_repair_plugins::BaseRepair>("rosha_repair_executor", "gen_repair_plugins::BaseRepair");
@@ -51,9 +53,21 @@ RepairExecutor::RepairExecutor(int argc, char** argv)
     {
       gen_repair_plugins::BaseRepair* pluginItem = this->repairPluginClassLoader->createClassInstance(declaredPlugins[i]);
       pluginItem->initialize();
-      this->genericRepairPlugins.push_back(pluginItem);
-      ROS_INFO("registered Plugin: %s", pluginItem->GetName().c_str());
-      //this->genericRepairPlugins[i]->Repair(); //resgistered output
+
+      //create the loop up table
+      map<unsigned short, gen_repair_plugins::BaseRepair*>::iterator it;
+      it = this->lookUp_IdtoPlugin.find(pluginItem->repairType); //check if the key already in map
+      if (it == this->lookUp_IdtoPlugin.end() )
+      {
+        //not found, not yet inserted
+        this->lookUp_IdtoPlugin.insert( std::pair<unsigned short, gen_repair_plugins::BaseRepair*>(pluginItem->repairType, pluginItem));
+        ROS_INFO("registered Plugin in LookUp: %s", pluginItem->GetName().c_str());
+      }
+      else
+      {
+        ROS_ERROR("Key already exists in the lookup table.");
+      }
+
     }
     catch(pluginlib::PluginlibException& ex)
     {
@@ -68,7 +82,7 @@ RepairExecutor::RepairExecutor(int argc, char** argv)
 RepairExecutor::~RepairExecutor() {
 
   //delete all new vars
-  //delete this->repairPluginClassLoader;
+  delete this->repairPluginClassLoader;
   delete this->loopRate;
   delete this->nh;
 }
@@ -77,7 +91,6 @@ void RepairExecutor::Start()
 {
   while(ros::ok()) {
     ros::spinOnce();
-    //this->genericRepairPlugins[0]->Repair();
     this->loopRate->sleep();
   }
 }
@@ -88,77 +101,43 @@ void RepairExecutor::RepairActionCallback(const rosha_msgs::RepairAction::ConstP
   ROS_INFO("received msg for robotId: %d, repairAction: %d, compName: %s, compId: %d",
            msg->robotId, msg->repairActionToPerform, msg->compName.c_str(), msg->compId);
 
-  /*
-
-  //need comp info and action ... dummy just call repair plugin
-  if (msg->data == dummyMapperRedundancyRepair) {
-    cout << "data match" << endl;
-    //cout << "size " << this->genericRepairPlugins.size() << endl;
-
-    if (this->genericRepairPlugins.size() > 0 && this->genericRepairPlugins[dummyMapperRedundancyRepair] != NULL) {
-      this->genericRepairPlugins[0]->Repair();
-    } else {
-      ROS_ERROR("no repair actions are defined. Can't do anything.");
-    }
-
-  } else if (msg->data == capFailureReport) {
-    ROS_INFO("do dummy restart ...");
-    //hard coded !!!
-    Care::LebtControl m;
-    m.receiverID = 53;
-    m.ProcessAction = 11; // use enum from msg... here stop
-    m.processID = 4;
-    Care::BundleMd5 bundleHashMsg;
-    char data[16] = {14, 251, 87, 121, 71, 128, 223, 19, 251, 89, 2, 132, 23, 95, 20, 145};
-    for (int i= 0; i<16; i++) {
-      bundleHashMsg.bundleHash[i] = data[i];
-    }
-
-    m.currentBundle = bundleHashMsg;
-
-    //TODO: infos needed hash code need
-
-    cout << "stop cmd" << endl;
-    this->lebtControlPup.publish(m);
-
-
-    Care::LebtControl mm;
-    mm.receiverID = 53;
-    mm.ProcessAction = 10; // use enum from msg... here stop
-    mm.processID = 4;
-
-
-    mm.currentBundle = bundleHashMsg;
-
-    ros::Duration(1.0).sleep();
-
-    //TODO: infos needed hash code need
-    cout << "start cmd" << endl;
-    this->lebtControlPup.publish(mm);
-
-    //directly start ...
-
-  } else if (msg->data == restartRepair) {
-
-    cout <<"restart repair " << endl;
-
-  } else if (msg->data == ifaceRestart) {
-    cout <<"restart repair " << endl;
-    system("sudo ~/work/impera/cn-care-ros-pkg/RepairExecuter/ifupdown.sh");
-  } else if (msg->data == ifaceRestart) {
-    cout <<"restart interface " << endl;
-
-  } else if (msg->data == testRepair) {
-    cout <<"TEST REPAIR " << endl;
-
-    //BOESE BOESE but is working
-    //system("echo \"2know_it\" | sudo -S ~/work/impera/cn-care-ros-pkg/RepairExecuter/ifupdown.sh");
-    system("sudo ~/work/impera/cn-care-ros-pkg/RepairExecuter/ifupdown.sh");
-
-
+  //check if the msg is local
+  if (msg->robotId != this->ownId)
+  {
+    ROS_INFO("... ignore non local messages. msg id: %d != ownid: %d", msg->robotId, this->ownId);
+    return;
   } else {
-    ROS_ERROR("can't intertrept the data");
+    //silent
   }
 
-  */
+  HandleFailureType(msg->repairActionToPerform, msg->compId, msg->compName);
+
 }
+
+
+inline void RepairExecutor::HandleFailureType(int repairAction, int compId, string compName)
+{
+  //need comp info and action ... dummy just call repair plugin
+
+  //use parameter space to "register" the pugins to a repair action ... problem with the c# behavior, not supported!
+  //or use enum here ... all plugin-packagas needs to depend on the RepairAction msg, SimBase as well ... as repair ID
+
+  //need to identify/find the matched plugin the vector of registered plugins ... forech ... is static in runtime ... calc fix mapping. -> loop up table!
+
+  //map find faster than vector for bigger amount of elements (binary tree)
+  map<unsigned short, gen_repair_plugins::BaseRepair*>::iterator iter;
+  iter = this->lookUp_IdtoPlugin.find(repairAction);
+  if (iter != this->lookUp_IdtoPlugin.end() )
+  {
+    //set the data
+    iter->second->SetData(compId, compName, this->ownId);
+    iter->second->Repair();
+  }
+  else
+  {
+    ROS_ERROR("Error while accessing the plugin for repair id: %d. The corresponding plugin seems not to be registered.", repairAction);
+  }
+
+  return;
+}
+

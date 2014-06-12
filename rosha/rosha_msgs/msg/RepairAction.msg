@@ -3,7 +3,10 @@ uint8 REPAIR_ACTION__RESTART = 0
 uint8 REPAIR_ACTION__STOP = 1
 uint8 REPAIR_ACTION__START = 2
 uint8 REPAIR_ACTION__REPLACE = 3
-# ... more to come
+#
+# ... special component repairs
+#
+uint8 REPAIR_ACTION__VREP_LOC_REPLACE = 32
 # 
 # ... special team repairs
 
