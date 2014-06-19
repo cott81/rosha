@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>	
+
+<!-- <chan name="TestChanName" senderNode="ChanSenderNode" channel="/channel" msgType="MsgType" msg_intervall="1000"> --> <!-- dont matches --> 
+<!-- <chan name="LocalizationInfo" senderNode="vrep_localizer_node" channel="/vrep/MagicCube12/localizationInfo" msgType="Pose2D" msg_intervall="1000"> --> <!-- matches --> 
+	<func name="SLAM" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/vrep_slam" filename="vrep_slam_node" arguments="">
+	    <chan name="TestChanName2" senderNode="ChanSenderNode2" channel="/channel2" msgType="MsgType2" msg_intervall="1000">
+	      <func name="LaserDriver" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/vrep_laser_driver" filename="vrep_laser_driver_node" arguments="">
+<!-- 		<chan name="TestChanName3" senderNode="ChanSenderNode3" channel="/channel3" msgType="MsgType3" msg_intervall="1000"> -->
+		<chan name="someChan" senderNode="vrep_some_node" channel="/vrep/MagicCube12/some" msgType="Data" msg_intervall="1000">
+		</chan>
+	      </func>
+	    </chan>
+	</func>
+<!-- </chan> -->

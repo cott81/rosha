@@ -1,0 +1,24 @@
+<library path="lib/libVrepSLAM_repair_plugins">
+	
+	<class name="vrep_slam_plugins/adapter_replace" 
+		type = "vrep_slam_repair_plugins::SlamAdapterReplace" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	This is a repair plugin specially for the vrep_slam component that replaces the orignal 
+	    	component by an adapter. Use Case: remote processing of the original slam.
+	    </description>    
+	</class>
+	
+	<class name="vrep_slam_plugins/remote_processing" 
+		type = "vrep_slam_repair_plugins::RemoteSlamProcessing" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	This is a repair plugin specially for the vrep_slam component that integrates slam processing 
+	    	for remote processing in combination with the adapter_replace. 
+	    	Use Case: remote processing of the original slam.
+	    </description>    
+	</class>
+		
+</library>
