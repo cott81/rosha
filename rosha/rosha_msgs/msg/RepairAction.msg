@@ -3,10 +3,15 @@ uint8 REPAIR_ACTION__RESTART = 0
 uint8 REPAIR_ACTION__STOP = 1
 uint8 REPAIR_ACTION__START = 2
 uint8 REPAIR_ACTION__REPLACE = 3
+uint8 REPAIR_ACTION__ADD_COMM_LINK = 4
 #
 # ... special component repairs
 #
 uint8 REPAIR_ACTION__VREP_LOC_REPLACE = 32
+uint8 REPAIR_ACTION__VREP_LOC_RECOMPOSE = 33
+#
+uint8 REPAIR_ACTION__VREP_SLAM_ADAPTER_REPLACE = 40
+uint8 REPAIR_ACTION__VREP_SLAM_REMOTE_PROCESS = 41
 # 
 # ... special team repairs
 
@@ -19,3 +24,4 @@ int32 repairActionToPerform
 #component to repair ... how to indentify?
 string compName
 int32 compId
+string msgType	#for channel component 

@@ -38,7 +38,7 @@ RestartRepair::RestartRepair() {
 RestartRepair::~RestartRepair() {
 }
 
-void  RestartRepair::initialize()
+void  RestartRepair::Initialize(void** data, int length)
 {
   //use this for init some vars
   //side_length_ = side_length;

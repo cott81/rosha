@@ -21,7 +21,7 @@ class LocalizerRedundantReplace : public gen_repair_plugins::BaseRepair
 public:
   LocalizerRedundantReplace();
   virtual ~LocalizerRedundantReplace();
-  void initialize();
+  void Initialize(void** data, int length);
   void Repair();
   std::string GetName() {return this->pluginName;}
 

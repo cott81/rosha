@@ -52,7 +52,7 @@ RepairExecutor::RepairExecutor(int argc, char** argv)
     try
     {
       gen_repair_plugins::BaseRepair* pluginItem = this->repairPluginClassLoader->createClassInstance(declaredPlugins[i]);
-      pluginItem->initialize();
+      //pluginItem->Initialize();
 
       //create the loop up table
       map<unsigned short, gen_repair_plugins::BaseRepair*>::iterator it;
@@ -65,7 +65,7 @@ RepairExecutor::RepairExecutor(int argc, char** argv)
       }
       else
       {
-        ROS_ERROR("Key already exists in the lookup table.");
+        ROS_ERROR("Plugin: %s .Key: %d already exists in the lookup table.", pluginItem->GetName().c_str(), pluginItem->repairType);
       }
 
     }
@@ -110,12 +110,13 @@ void RepairExecutor::RepairActionCallback(const rosha_msgs::RepairAction::ConstP
     //silent
   }
 
-  HandleFailureType(msg->repairActionToPerform, msg->compId, msg->compName);
+  //msg->repairActionToPerform, msg->compId, msg->compName
+  HandleFailureType(msg);
 
 }
 
 
-inline void RepairExecutor::HandleFailureType(int repairAction, int compId, string compName)
+inline void RepairExecutor::HandleFailureType(const rosha_msgs::RepairAction::ConstPtr& msg)
 {
   //need comp info and action ... dummy just call repair plugin
 
@@ -126,16 +127,20 @@ inline void RepairExecutor::HandleFailureType(int repairAction, int compId, stri
 
   //map find faster than vector for bigger amount of elements (binary tree)
   map<unsigned short, gen_repair_plugins::BaseRepair*>::iterator iter;
-  iter = this->lookUp_IdtoPlugin.find(repairAction);
+  iter = this->lookUp_IdtoPlugin.find(msg->repairActionToPerform);
   if (iter != this->lookUp_IdtoPlugin.end() )
   {
-    //set the data
-    iter->second->SetData(compId, compName, this->ownId);
+    //set the data. all needed data (for generic repairs) should be included in the msg (set be recovery manager/alica)
+    //specific data (for specific repairs) should be specified directly in these classes
+    // ... Initialize(void**, int length) provides an addidional way to set data
+    //iter->second->Initialize(NULL, 0);
+
+    iter->second->SetData(msg);
     iter->second->Repair();
   }
   else
   {
-    ROS_ERROR("Error while accessing the plugin for repair id: %d. The corresponding plugin seems not to be registered.", repairAction);
+    ROS_ERROR("Error while accessing the plugin for repair id: %d. The corresponding plugin seems not to be registered.", msg->repairActionToPerform);
   }
 
   return;

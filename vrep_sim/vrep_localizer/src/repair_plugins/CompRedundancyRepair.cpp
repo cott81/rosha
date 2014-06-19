@@ -37,7 +37,7 @@ CompRedundancyRepair::~CompRedundancyRepair() {
 
 }
 
-void  CompRedundancyRepair::initialize()
+void  CompRedundancyRepair::Initialize(void** data, int length)
 {
   //inti vars
 }

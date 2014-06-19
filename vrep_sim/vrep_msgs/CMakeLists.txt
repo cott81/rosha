@@ -48,6 +48,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
 	Pose2D.msg
 	DriveCmd.msg
+	LaserScanData.msg
  )
 
 ## Generate services in the 'srv' folder

@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   vrep_msgs
   error_seeder
   rosha_repair_executor
+  roslib
+  system_config
 )
 
 ## System dependencies are found with CMake's conventions
@@ -83,7 +85,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+  #INCLUDE_DIRS include
   LIBRARIES vrep_localizer VrepLoc_repair_plugins
 #  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
@@ -111,6 +113,7 @@ include_directories(
  add_library(VrepLoc_repair_plugins
    src/repair_plugins/CompRedundancyRepair.cpp
    src/repair_plugins/LocalizerRedundantReplace.cpp   
+   src/repair_plugins/LocalizerSLAMRecompose.cpp   
    src/repair_plugins/RegisterPlugins.cpp
  )
 

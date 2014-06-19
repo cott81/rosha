@@ -23,7 +23,7 @@ LocalizerRedundantReplace::~LocalizerRedundantReplace()
   // TODO Auto-generated destructor stub
 }
 
-void LocalizerRedundantReplace::initialize()
+void LocalizerRedundantReplace::Initialize(void** data, int length)
 {
   return;
 }

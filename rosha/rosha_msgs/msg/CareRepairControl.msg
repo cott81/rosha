@@ -4,6 +4,8 @@ int16 StartProcess = 10
 int16 StopProcess = 11
 int16 KillProcess = 12
 int16 ReplaceProcess = 20
+int16 RecomposeProcess = 21
+int16 IntegrateRemoteProcess = 22
 
 # id of the robot
 int32 robotId
@@ -17,3 +19,6 @@ int32 compId
 
 # replacement infos
 RedundanceInfo compToPlace
+
+#recomposition infos
+RecompositionInfo structureToPlace

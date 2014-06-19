@@ -26,35 +26,14 @@
 
 #include <ros/ros.h>
 #include <rosha_msgs/CareRepairControl.h>
+#include <rosha_msgs/RepairAction.h>
 
 namespace gen_repair_plugins
 {
-
-// now defined in the msg
-/*
-enum repair_t {
-  dummyMapperRedundancyRepair = 0,
-  capFailureReport,
-  restartRepair,
-  ifaceRestart,
-  testRepair = 100
-} repairPlugins;
-*/
-
-//at first plain listing ... now in msg
-/*
-enum repairActionId_t {
-  REPAIR_ACTION__RESTART = 0,
-  REPAIR_ACTION__STOP,
-  REPAIR_ACTION__START,
-  REPAIR_ACTION__REPLACE
-} repairActionId;
-*/
-
   class BaseRepair
   {
     public:
-      virtual void initialize() = 0;
+      virtual void Initialize(void** data, int length) = 0;
       virtual ~BaseRepair(){}
       virtual void Repair() {
         std::cout << "BaseRepair: empty Repair" << std::endl;
@@ -63,11 +42,11 @@ enum repairActionId_t {
         return "Error: Base Clase func call";
       }
 
-      virtual void SetData(int compId, std::string compName, int ownId)
+      virtual void SetData(const rosha_msgs::RepairAction::ConstPtr& msg)
       {
-        targetCompId = compId;
-        targetCompName = compName;
-        this->ownId = ownId;
+        this->ownId = msg->robotId;
+        this->targetCompId = msg->compId;
+        this->targetCompName = msg->compName;
       }
 
       unsigned short repairType;
@@ -79,6 +58,8 @@ enum repairActionId_t {
         this->repairType = 100;
         this->nh = new ros::NodeHandle();
         this->repairControlPup = nh->advertise<rosha_msgs::CareRepairControl>("Care/RepairControl", 1000); //call Care to do some repair stuff
+        this->targetCompId = -1;
+        this->ownId = -1;
     }
 
       ros::NodeHandle* nh;

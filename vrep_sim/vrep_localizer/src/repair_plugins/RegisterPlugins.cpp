@@ -10,8 +10,10 @@
 #include <GenRepairPlugins/BaseRepair.h>
 //#include <repair_plugins/CompRedundancyRepair.h>
 #include <repair_plugins/LocalizerRedundantReplace.h>
+#include <repair_plugins/LocalizerSLAMRecompose.h>
 
 //PLUGINLIB_EXPORT_CLASS(vrep_localization_repair_plugins::CompRedundancyRepair, gen_repair_plugins::BaseRepair)
 PLUGINLIB_EXPORT_CLASS(vrep_localization_repair_plugins::LocalizerRedundantReplace, gen_repair_plugins::BaseRepair)
+PLUGINLIB_EXPORT_CLASS(vrep_localization_repair_plugins::LocalizerSLAMRecompose, gen_repair_plugins::BaseRepair)
 
 

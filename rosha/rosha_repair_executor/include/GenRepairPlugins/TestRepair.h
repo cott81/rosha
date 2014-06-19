@@ -38,7 +38,7 @@ namespace gen_repair_plugins
     public:
       TestRepair();
       ~TestRepair();
-      void initialize();
+      void Initialize(void** data, int length);
       void Repair();
       std::string GetName();
 

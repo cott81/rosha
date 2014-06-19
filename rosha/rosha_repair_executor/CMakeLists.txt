@@ -112,6 +112,7 @@ add_library(RepairExecutor
 )
 
 add_library(My_repair_plugins 
+    src/GenRepair/AddCommLink.cpp
 	src/GenRepair/TestRepair.cpp
 	src/GenRepair/RestartRepair.cpp
 	src/GenRepair/CapFailureReport.cpp

@@ -47,8 +47,7 @@ private:
 
   void RepairActionCallback(const rosha_msgs::RepairAction::ConstPtr& msg);
 
-  inline void HandleFailureType(int repairAction, int compId, std::string compName);
-
+  inline void HandleFailureType(const rosha_msgs::RepairAction::ConstPtr& msg);
 
 };
 

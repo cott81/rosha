@@ -11,6 +11,7 @@
 #include "geometry_msgs/PoseStamped.h"
 #include "vrep_msgs/Pose2D.h"
 #include "tf/tf.h"
+#include <SystemConfig.h>
 
 #include "error_seeder/ErrorSeederLib.h"
 
@@ -23,6 +24,7 @@ VrepLocalizer* vrepLoc;
 ros::Publisher* locPublisher;
 ros::Publisher* locPublisher2;
 
+int robotId = 0; //robotId
 
 void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
@@ -77,6 +79,8 @@ void SimLocalizationCallback2(const geometry_msgs::PoseStamped::ConstPtr& msg)
 
 int main (int argc, char** argv)
 {
+  bool robotIdByArg = false;
+  bool useRobotIdInTopic = false;
   //argument handling
   string help = "Vrep Localizer\n"
        "Synobsis: vrep_localizer_node OPTIONS\n"
@@ -84,10 +88,14 @@ int main (int argc, char** argv)
        "ROS params: paramter for ROS, check the ROS wiki for more details.\n"
        "-help: prints this help text\n"
        "-compId: specifies the Id of this component. (Used for failure simulation). Default is -1.\n"
+      "-useRobotIdInTopic: code the robotId in the topic. E.g. /vrep/MagicCube12/localizationInfo instead of /vrep/MagicCube/localizationInfo. Default is false. \n"
+      "-robotId: specifies the Id of this system/robot. If not set, the config file (Global.conf, in the configuration path) is used. \n"
        ;
 
    string helpParam = "-help";
    string compIdParam = "-compId";
+   string robotIdParam = "-robotId";
+   string useRobotIdInTopicParam = "-useRobotIdInTopic";
    int ownId = -1;
    for (int i=1; i<argc; i++)
    {
@@ -99,6 +107,16 @@ int main (int argc, char** argv)
      else if (compIdParam.compare(argv[i]) == 0)
      {
        ownId = atoi(argv[i+1]);
+     }
+     else if (robotIdParam.compare(argv[i]) == 0)
+     {
+       robotId = atoi(argv[i+1]);
+       robotIdByArg = true;
+       useRobotIdInTopic = true;
+     }
+     else if (useRobotIdInTopicParam.compare(argv[i]) == 0)
+     {
+       useRobotIdInTopic = true;
      }
      else
      {
@@ -113,13 +131,38 @@ int main (int argc, char** argv)
   ros::init(argc, argv, "vrep_localizer_node");
   ros::NodeHandle n;
 
+  if (!robotIdByArg)
+  {
+    robotId = supplementary::SystemConfig::GetOwnRobotID();
+  }
+  ROS_INFO("own robot Id: %d\n", robotId);
+
   error_seeder::ErrorSeederLib esl(ownId);
 
-  //msg ...
-  ros::Publisher pub = n.advertise<vrep_msgs::Pose2D>("/vrep/MagicCubeXY/localizationInfo", 1000);
+  // build topic name
+  string locResultTopic;
+  string locGroundTruthSubTopic;
+  stringstream ss;
+  if (useRobotIdInTopic) {
+    ss << "/vrep/MagicCube" << robotId << "/localizationInfo";
+    ss >> locResultTopic;
+
+    ss.str("");
+    ss.clear();
+    ss << "/vrep/MagicCube" << robotId << "/localizationData";
+    ss >> locGroundTruthSubTopic;
+  }
+  else
+  {
+    locResultTopic = "/vrep/MagicCube/localizationInfo";
+    locGroundTruthSubTopic = "/vrep/MagicCube/localizationData";
+  }
+
+
+  ros::Publisher pub = n.advertise<vrep_msgs::Pose2D>(locResultTopic, 1000);
   locPublisher = &pub;
 
-  ros::Subscriber locDataSub = n.subscribe("/vrep/MagicCubeXY/localizationData", 1000, SimLocalizationCallback);
+  ros::Subscriber locDataSub = n.subscribe(locGroundTruthSubTopic, 1000, SimLocalizationCallback);
 
   // use command line remapping of ROS: executable origTopic:=/namespace/newTopic
 

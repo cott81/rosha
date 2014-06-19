@@ -49,6 +49,7 @@ find_package(catkin REQUIRED COMPONENTS
    RepairAction.msg
    CareRepairControl.msg
    RedundanceInfo.msg
+   RecompositionInfo.msg
  )
 
 ## Generate services in the 'srv' folder

@@ -36,7 +36,7 @@ TestRepair::TestRepair() {
 TestRepair::~TestRepair() {
 }
 
-void  TestRepair::initialize()
+void  TestRepair::Initialize(void** data, int length)
 {
   //use this for init some vars
   //side_length_ = side_length;

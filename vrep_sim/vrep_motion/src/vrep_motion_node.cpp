@@ -12,6 +12,7 @@
 #include "std_msgs/Float64.h"
 //#include "error_seeder_msgs/Error.h"
 #include "error_seeder/ErrorSeederLib.h"
+#include "SystemConfig.h"
 
 #include <exception>
 
@@ -23,7 +24,7 @@ ros::Publisher* leftWheelPublisher;
 ros::Publisher* rightWheelPublisher;
 
 int correctionFactor;
-
+int robotId = 0; //robotId
 
 void SimMotionCmdCallback(const vrep_msgs::DriveCmd::ConstPtr& msg)
 {
@@ -63,16 +64,22 @@ void SimMotionCmdCallback(const vrep_msgs::DriveCmd::ConstPtr& msg)
 
 int main (int argc, char** argv)
 {
+  bool robotIdByArg = false;
+  bool useRobotIdInTopic = false;
   string help = "Vrep Motion\n"
       "Synobsis: vrep_motion_node OPTIONS\n"
       "Options:\n\n"
       "ROS params: paramter for ROS, check the ROS wiki for more details.\n"
       "-help: prints this help text\n"
       "-compId: specifies the Id of this component. (Used for failure simulation). Default is -1.\n"
+      "-useRobotIdInTopic: code the robotId in the topic. E.g. /vrep/MagicCube12/localizationInfo instead of /vrep/MagicCube/localizationInfo. Default is false. \n"
+      "-robotId: specifies the Id of this system/robot. If not set, the config file (Global.conf, in the configuration path) is used. \n"
       ;
 
   string helpParam = "-help";
   string compIdParam = "-compId";
+  string robotIdParam = "-robotId";
+  string useRobotIdInTopicParam = "-useRobotIdInTopic";
   int ownId = -1;
   for (int i=1; i<argc; i++)
   {
@@ -84,6 +91,16 @@ int main (int argc, char** argv)
     else if (compIdParam.compare(argv[i]) == 0)
     {
       ownId = atoi(argv[i+1]);
+    }
+    else if (robotIdParam.compare(argv[i]) == 0)
+    {
+      robotId = atoi(argv[i+1]);
+      robotIdByArg = true;
+      useRobotIdInTopic = true;
+    }
+    else if (useRobotIdInTopicParam.compare(argv[i]) == 0)
+    {
+      useRobotIdInTopic = true;
     }
     else
     {
@@ -98,16 +115,49 @@ int main (int argc, char** argv)
   ros::init(argc, argv, "vrep_motion_node");
   ros::NodeHandle n;
 
+  if (!robotIdByArg)
+  {
+    robotId = supplementary::SystemConfig::GetOwnRobotID();
+  }
+  ROS_INFO("own robot Id: %d\n", robotId);
+
   error_seeder::ErrorSeederLib esl(ownId);
 
   correctionFactor = -1; //magic cube in vrep wheel orientation twisted
 
-  ros::Publisher pub = n.advertise<std_msgs::Float64>("/vrep/MagicCubeXY/leftWheelVel", 1000);
+  // build topic name
+  string leftWheelpubTopic;
+  string rightWheelpubTopic;
+  string motionCmdSubTopic;
+  stringstream ss;
+  if (useRobotIdInTopic) {
+    ss << "/vrep/MagicCube" << robotId << "/leftWheelVel";
+    ss >> leftWheelpubTopic;
+
+    ss.str("");
+    ss.clear();
+    ss << "/vrep/MagicCube" << robotId << "/rightWheelVel";
+    ss >> rightWheelpubTopic;
+
+    ss.str("");
+    ss.clear();
+    ss << "/vrep/MagicCube" << robotId << "/MotionCmd";
+    ss >> motionCmdSubTopic;
+  }
+  else
+  {
+    leftWheelpubTopic = "/vrep/MagicCube/leftWheelVel";
+    rightWheelpubTopic = "/vrep/MagicCube/rightWheelVel";
+    motionCmdSubTopic = "/vrep/MagicCube/MotionCmd";
+  }
+
+  ros::Publisher pub = n.advertise<std_msgs::Float64>(leftWheelpubTopic, 1000);
   leftWheelPublisher = &pub;
-  ros::Publisher pub2 = n.advertise<std_msgs::Float64>("/vrep/MagicCubeXY/rightWheelVel", 1000);
+
+  ros::Publisher pub2 = n.advertise<std_msgs::Float64>(rightWheelpubTopic, 1000);
   rightWheelPublisher = &pub2;
 
-  ros::Subscriber motionCmdSub = n.subscribe("/vrep/MagicCubeXY/MotionCmd", 1000, SimMotionCmdCallback);
+  ros::Subscriber motionCmdSub = n.subscribe(motionCmdSubTopic, 1000, SimMotionCmdCallback);
 
   //ros::Subscriber errorSub = n.subscribe("/ErrorSeeder/ErrorTrigger", 1000, ErrorTriggerCallback);
 

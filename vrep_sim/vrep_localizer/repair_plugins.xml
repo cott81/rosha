@@ -19,5 +19,15 @@
 	    	This is a repair plugin specially for the vrep_localizer component that replaces the orignal component by a redundant version.
 	    </description>    
 	</class>
+	
+	<class name="vrep_localizer_plugins/slam_recompose" 
+		type = "vrep_localization_repair_plugins::LocalizerSLAMRecompose" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	This is a repair plugin specially for the vrep_localizer component that replaces the orignal component by 
+	    	a dummy SLAM version. This version consists of 2 components, a laser driver and a slam component.
+	    </description>    
+	</class>	
 		
 </library>

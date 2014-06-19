@@ -35,7 +35,7 @@ namespace vrep_localization_repair_plugins
     public:
       CompRedundancyRepair();
       ~CompRedundancyRepair();
-      void initialize();
+      void Initialize(void** data, int length);
       void Repair();
       std::string GetName();
 

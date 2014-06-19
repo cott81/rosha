@@ -37,7 +37,7 @@ namespace gen_repair_plugins
     public:
     CapFailureReport();
       ~CapFailureReport();
-      void initialize();
+      void Initialize(void** data, int length);
       void Repair();
       std::string GetName();
 

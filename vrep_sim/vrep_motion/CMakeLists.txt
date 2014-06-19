@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   vrep_msgs
   std_msgs
   error_seeder
+  system_config
 )
 
 message ( "vrep_motion: catkin include dirs: " ${catkin_INCLUDE_DIRS})
@@ -102,6 +103,7 @@ set(CMAKE_CXX_FLAGS "-std=c++0x -pthread -Wl,--no-as-needed ${CMAKE_CXX_FLAGS}")
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  include
 )
 
 ## Declare a cpp library

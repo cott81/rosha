@@ -34,7 +34,7 @@ CapFailureReport::CapFailureReport() {
 CapFailureReport::~CapFailureReport() {
 }
 
-void  CapFailureReport::initialize()
+void  CapFailureReport::Initialize(void** data, int length)
 {
   //use this for init some vars
   //side_length_ = side_length;

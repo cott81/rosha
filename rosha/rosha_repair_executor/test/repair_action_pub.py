@@ -19,12 +19,15 @@ from rosha_msgs.msg import RepairAction
 if __name__ == '__main__':
     rospy.init_node('repair_action_pub')
     pub = rospy.Publisher('/repair_action', RepairAction)
+    #pub = rospy.Publisher('/testOut4', RepairAction)
     
     msg = RepairAction()
     msg.robotId = 12
-    msg.repairActionToPerform = 32
-    msg.compName = "GPS"
+    # add comm channel
+    msg.repairActionToPerform = 4
+    msg.compName = "/testDki"
     msg.compId = -1
+    msg.msgType = "std_msgs/Int32"
 
     
     #pub.publish(msg)
@@ -33,5 +36,5 @@ if __name__ == '__main__':
     
     while not rospy.is_shutdown():
         pub.publish(msg)
-        sleep(10)
+        sleep(5)
     
