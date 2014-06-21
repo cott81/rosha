@@ -29,6 +29,11 @@ int robotId = 0; //robotId
 void SimMotionCmdCallback(const vrep_msgs::DriveCmd::ConstPtr& msg)
 {
   //cout << "get motion command" << endl;
+  if (robotId != msg->robotId)
+  {
+    // just process local msgs
+    return;
+  }
 
   std_msgs::Float64 leftWheelMsg;
   std_msgs::Float64 rightWheelMsg;
@@ -73,8 +78,7 @@ int main (int argc, char** argv)
       "-help: prints this help text\n"
       "-compId: specifies the Id of this component. (Used for failure simulation). Default is -1.\n"
       "-useRobotIdInTopic: code the robotId in the topic. E.g. /vrep/MagicCube12/localizationInfo instead of /vrep/MagicCube/localizationInfo. Default is false. \n"
-      "-robotId: specifies the Id of this system/robot. If not set, the config file (Global.conf, in the configuration path) is used. \n"
-      ;
+      "-robotId: specifies the Id of this system/robot. If not set, the config file (Global.conf, in the configuration path) is used. \n";
 
   string helpParam = "-help";
   string compIdParam = "-compId";
@@ -96,11 +100,12 @@ int main (int argc, char** argv)
     {
       robotId = atoi(argv[i+1]);
       robotIdByArg = true;
-      useRobotIdInTopic = true;
+      //useRobotIdInTopic = true;
     }
     else if (useRobotIdInTopicParam.compare(argv[i]) == 0)
     {
       useRobotIdInTopic = true;
+      ROS_WARN(" ... msg still contain the field \"robotId\". TODO: Create separate msg without that field! ");
     }
     else
     {
@@ -146,8 +151,16 @@ int main (int argc, char** argv)
   }
   else
   {
-    leftWheelpubTopic = "/vrep/MagicCube/leftWheelVel";
-    rightWheelpubTopic = "/vrep/MagicCube/rightWheelVel";
+    //leftWheelpubTopic = "/vrep/MagicCube/leftWheelVel";
+    ROS_WARN(" ... use still robotId in interface topics (leftWheelVel, rightWheelVel) to vrep simulator for simplicity!");
+    ss << "/vrep/MagicCube" << robotId << "/leftWheelVel";
+    ss >> leftWheelpubTopic;
+    ss.str("");
+    ss.clear();
+    ss << "/vrep/MagicCube" << robotId << "/rightWheelVel";
+    ss >> rightWheelpubTopic;
+    //rightWheelpubTopic = "/vrep/MagicCube/rightWheelVel";
+
     motionCmdSubTopic = "/vrep/MagicCube/MotionCmd";
   }
 

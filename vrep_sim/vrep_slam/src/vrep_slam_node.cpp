@@ -32,12 +32,18 @@ int robotId = 0; //robotId
 
 void LaserScanDataCallback(const vrep_msgs::LaserScanData::ConstPtr& msg)
 {
+  if (robotId != msg->robotId)
+  {
+    // just process local msgs
+    return;
+  }
   cout << "get laser scan data" << endl;
 
   //to some processing ... dummy ... simple use the loc data received directly from the sim
 
   //send position
   vrep_msgs::Pose2D msg2;
+  msg2.robotId = robotId;
   msg2.x = x;
   msg2.y = y;
   msg2.w = w;
@@ -100,11 +106,12 @@ int main (int argc, char** argv)
     {
       robotId = atoi(argv[i+1]);
       robotIdByArg = true;
-      useRobotIdInTopic = true;
+      //useRobotIdInTopic = true;
     }
     else if (useRobotIdInTopicParam.compare(argv[i]) == 0)
     {
       useRobotIdInTopic = true;
+      ROS_WARN(" ... msg still contain the field \"robotId\". TODO: Create separate msg without that field! ");
     }
     else
     {
@@ -150,7 +157,11 @@ int main (int argc, char** argv)
   {
     locResultTopic = "/vrep/MagicCube/localizationInfo";
     motionCmdSubTopic = "/vrep/MagicCube/LaserScanData";
-    locGroundTruthSubTopic = "/vrep/MagicCube/localizationData";
+
+    //locGroundTruthSubTopic = "/vrep/MagicCube/localizationData";
+    ROS_WARN(" ... use still robotId in interface topics to vrep simulator for simplicity!");
+    ss << "/vrep/MagicCube" << robotId << "/localizationData";
+    ss >> locGroundTruthSubTopic;
   }
 
   ros::Publisher pub = n.advertise<vrep_msgs::Pose2D>( locResultTopic, 1000);

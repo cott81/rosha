@@ -22,7 +22,6 @@ using namespace vrep_localizer;
 
 VrepLocalizer* vrepLoc;
 ros::Publisher* locPublisher;
-ros::Publisher* locPublisher2;
 
 int robotId = 0; //robotId
 
@@ -39,40 +38,12 @@ void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 
   //publish msg with "resulting" localiation infos
   vrep_msgs::Pose2D msg2;
+  msg2.robotId = robotId;
   msg2.x = msg->pose.position.x;
   msg2.y = msg->pose.position.y;
   msg2.w = yaw_angle;
 
   locPublisher->publish(msg2);
-
-  /*
-  int stateId = msg->data;
-    int actionId = recM->GetAction(stateId);
-
-    std_msgs::String actionMsg;
-    actionMsg.data = "test";
-    actionPublisher->publish(actionMsg);
-    */
-}
-
-void SimLocalizationCallback2(const geometry_msgs::PoseStamped::ConstPtr& msg)
-{
-
-  cout << "get pose" << endl;
-
-  tf::Pose pose;
-  tf::poseMsgToTF(msg->pose, pose);
-
-  double yaw_angle = tf::getYaw(pose.getRotation());
-  cout << "\tyaw: " << yaw_angle << endl;
-
-  //publish msg with "resulting" localiation infos
-  vrep_msgs::Pose2D msg2;
-  msg2.x = msg->pose.position.x;
-  msg2.y = msg->pose.position.y;
-  msg2.w = yaw_angle;
-
-  locPublisher2->publish(msg2);
 }
 
 
@@ -112,11 +83,12 @@ int main (int argc, char** argv)
      {
        robotId = atoi(argv[i+1]);
        robotIdByArg = true;
-       useRobotIdInTopic = true;
+       //useRobotIdInTopic = true;
      }
      else if (useRobotIdInTopicParam.compare(argv[i]) == 0)
      {
        useRobotIdInTopic = true;
+       ROS_WARN(" ... msg still contain the field \"robotId\". TODO: Create separate msg without that field! ");
      }
      else
      {
@@ -155,7 +127,10 @@ int main (int argc, char** argv)
   else
   {
     locResultTopic = "/vrep/MagicCube/localizationInfo";
-    locGroundTruthSubTopic = "/vrep/MagicCube/localizationData";
+    //locGroundTruthSubTopic = "/vrep/MagicCube/localizationData";
+    ROS_WARN(" ... use still robotId in interface topics to vrep simulator for simplicity!");
+    ss << "/vrep/MagicCube" << robotId << "/localizationData";
+    ss >> locGroundTruthSubTopic;
   }
 
 

@@ -32,6 +32,11 @@ int robotId = 0; //robotId
 
 void LaserScanDataCallback(const vrep_msgs::LaserScanData::ConstPtr& msg)
 {
+  if (robotId != msg->robotId)
+  {
+    // just process local msgs
+    return;
+  }
 
   //relay msg to remote topic
   remote_LaserScanPub->publish(msg);
@@ -90,11 +95,12 @@ int main (int argc, char** argv)
     {
       robotId = atoi(argv[i+1]);
       robotIdByArg = true;
-      useRobotIdInTopic = true;
+      //useRobotIdInTopic = true;
     }
     else if (useRobotIdInTopicParam.compare(argv[i]) == 0)
     {
       useRobotIdInTopic = true;
+      ROS_WARN(" ... msg still contain the field \"robotId\". TODO: Create separate msg without that field! ");
     }
     else
     {
