@@ -66,11 +66,12 @@ int main (int argc, char** argv)
     {
       robotId = atoi(argv[i+1]);
       robotIdByArg = true;
-      useRobotIdInTopic = true;
+      //useRobotIdInTopic = true;
     }
     else if (useRobotIdInTopicParam.compare(argv[i]) == 0)
     {
       useRobotIdInTopic = true;
+      ROS_WARN(" ... msg still contain the field \"robotId\". TODO: Create separate msg without that field! ");
     }
     else
     {
@@ -102,6 +103,7 @@ int main (int argc, char** argv)
   else
   {
     pubTopic = "/vrep/MagicCube/LaserScanData";
+    // no interface to vrep yet, just provide some dummy data (see main loop)
   }
 
 
@@ -122,6 +124,7 @@ int main (int argc, char** argv)
 
       //instead forwarding/ processing/ noising/ data from the simulator
       vrep_msgs::LaserScanData msgLaserScan;
+      msgLaserScan.robotId = robotId;
       for (unsigned int i = 0; i < 100; i++)
       {
         msgLaserScan.laserScanData.push_back(12);
