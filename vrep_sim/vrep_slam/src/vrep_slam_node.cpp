@@ -93,6 +93,7 @@ int main (int argc, char** argv)
   int compId = -1;
   for (int i=1; i<argc; i++)
   {
+    cout << argv[i] << " ";
     if(helpParam.compare(argv[i]) == 0)
     {
     cout << help << endl;
