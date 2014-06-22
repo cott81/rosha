@@ -25,3 +25,6 @@ int32 repairActionToPerform
 string compName
 int32 compId
 string msgType	#for channel component 
+
+# id of the failed robot
+int32 failedRobotId

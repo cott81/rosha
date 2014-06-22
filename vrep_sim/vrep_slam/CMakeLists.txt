@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   system_config
   rosha_repair_executor
+  roslib
 )
 
 #message ( "vrep_motion: catkin include dirs: " ${catkin_INCLUDE_DIRS})

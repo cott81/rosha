@@ -22,7 +22,7 @@ using namespace std;
 ros::Publisher* locPublisher;
 //publish to remote
 ros::Publisher* remote_LaserScanPub;
-ros::Publisher* remote_motionCmdPub;
+ros::Publisher* remote_locGroundTruthPub;
 
 double x = 0;
 double y = 0;
@@ -47,7 +47,7 @@ void LaserScanDataCallback(const vrep_msgs::LaserScanData::ConstPtr& msg)
 void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
   // relay msg to remote topic
-  remote_motionCmdPub->publish(msg);
+  remote_locGroundTruthPub->publish(msg);
 
   return;
 }
@@ -122,18 +122,9 @@ int main (int argc, char** argv)
   //error_seeder::ErrorSeederLib esl(compId);
 
 
-
-
-
-  //CONTINUE HERE to integrate the robotId in topic switch ...
-
-
-
-
-
   // build topic name
   string locResultTopic;
-  string motionCmdSubTopic;
+  string laserScanSubTopic;
   string locGroundTruthSubTopic;
   stringstream ss;
   if (useRobotIdInTopic) {
@@ -143,7 +134,7 @@ int main (int argc, char** argv)
     ss.str("");
     ss.clear();
     ss << "/vrep/MagicCube" << robotId << "/LaserScanData";
-    ss >> motionCmdSubTopic;
+    ss >> laserScanSubTopic;
 
     ss.str("");
     ss.clear();
@@ -153,8 +144,11 @@ int main (int argc, char** argv)
   else
   {
     locResultTopic = "/vrep/MagicCube/localizationInfo";
-    motionCmdSubTopic = "/vrep/MagicCube/LaserScanData";
-    locGroundTruthSubTopic = "/vrep/MagicCube/localizationData";
+   laserScanSubTopic = "/vrep/MagicCube/LaserScanData";
+    //locGroundTruthSubTopic = "/vrep/MagicCube/localizationData";
+    ROS_WARN(" ... use still robotId in interface topics to vrep simulator for simplicity!");
+    ss << "/vrep/MagicCube" << robotId << "/localizationData";
+    ss >> locGroundTruthSubTopic;
   }
 
   ros::Publisher pub = n.advertise<vrep_msgs::Pose2D>( locResultTopic, 1000);
@@ -162,15 +156,15 @@ int main (int argc, char** argv)
   string remote_locResultSubTopic = locResultTopic+"_REMOTE";
   ros::Subscriber remote_locResultSub = n.subscribe(remote_locResultSubTopic, 1000, RemoteLocalizationResultCallback);
 
-  ros::Subscriber motionCmdSub = n.subscribe(motionCmdSubTopic, 1000, LaserScanDataCallback);
-  string remote_motionCmdSubTopic = motionCmdSubTopic+"_REMOTE";
-  ros::Publisher  temp_pub1 = n.advertise<vrep_msgs::LaserScanData>( remote_motionCmdSubTopic, 1000);
-  remote_motionCmdPub = &temp_pub1;
+  ros::Subscriber motionCmdSub = n.subscribe(laserScanSubTopic, 1000, LaserScanDataCallback);
+  string remote_laserScanPubTopic = laserScanSubTopic+"_REMOTE";
+  ros::Publisher  temp_pub1 = n.advertise<vrep_msgs::LaserScanData>( remote_laserScanPubTopic, 1000);
+  remote_LaserScanPub = &temp_pub1;
 
   ros::Subscriber locGroundTruthSub = n.subscribe(locGroundTruthSubTopic, 1000, SimLocalizationCallback);
-  string remote_locGroundTruthSubTopic = locGroundTruthSubTopic+"_REMOTE";
-  ros::Publisher temp_pub2 = n.advertise<geometry_msgs::PoseStamped>( remote_locGroundTruthSubTopic, 1000);
-  remote_LaserScanPub = &temp_pub1;
+  string remote_locGroundTruthPubTopic = locGroundTruthSubTopic+"_REMOTE";
+  ros::Publisher temp_pub2 = n.advertise<geometry_msgs::PoseStamped>( remote_locGroundTruthPubTopic, 1000);
+  remote_locGroundTruthPub = &temp_pub2;
 
 
   try

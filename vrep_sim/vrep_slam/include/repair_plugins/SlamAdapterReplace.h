@@ -9,6 +9,7 @@
 #define SLAMADAPTERREPLACE_H_
 
 #include "ros/ros.h"
+#include <ros/package.h>
 
 #include <GenRepairPlugins/BaseRepair.h>
 #include <rosha_msgs/RepairAction.h>

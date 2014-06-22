@@ -26,11 +26,21 @@ public:
   void Repair();
   std::string GetName() {return this->pluginName;}
 
+  void SetData(const rosha_msgs::RepairAction::ConstPtr& msg)
+  {
+    this->ownId = msg->robotId;
+    this->targetCompId = msg->compId;
+    this->targetCompName = msg->compName;
+    this->failedRobotId = msg->failedRobotId;
+  }
+
 private:
   std::string pluginName;
   std::string packagePath;
   const std::string corrsepondingCompName;
   const int REPAIR_MSG_DELAY;
+  std::string pathedModelFilename;
+  int failedRobotId;
 };
 
 } /* namespace vrep_localization_repair_plugins */

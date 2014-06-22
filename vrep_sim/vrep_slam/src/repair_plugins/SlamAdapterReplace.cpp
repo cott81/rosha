@@ -7,6 +7,9 @@
 
 #include <repair_plugins/SlamAdapterReplace.h>
 
+using std::cout;
+using std::endl;
+
 namespace vrep_slam_repair_plugins
 {
 
@@ -16,17 +19,19 @@ SlamAdapterReplace::SlamAdapterReplace()
   this->pluginName = "SlamAdapterReplace";
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_SLAM_ADAPTER_REPLACE;
   //this->corrsepondingCompName = "vrep_localizer_node";
+
+  // TODO: replace hard coded relative path of the working directory (../../devel ...)
+  std::string path = ros::package::getPath("vrep_slam");
+  this->packagePath = path + "/../../../devel/lib/vrep_slam/";
+  //this->packagePath = "/home/dominik/work/rosha_ws/devel/lib/vrep_slam";
 }
 
 SlamAdapterReplace::~SlamAdapterReplace()
 {
-  // TODO Auto-generated destructor stub
 }
 
 void SlamAdapterReplace::Initialize(void** data, int length)
 {
-  //TODO replace hard coded path ... search in package path?
-  this->packagePath = "/home/dominik/work/rosha_ws/devel/lib/vrep_slam";
   return;
 }
 
