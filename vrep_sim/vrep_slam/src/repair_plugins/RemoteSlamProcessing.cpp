@@ -16,6 +16,11 @@ RemoteSlamProcessing::RemoteSlamProcessing()
   this->pluginName = "RemoteSlamProcessing";
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_SLAM_REMOTE_PROCESS;
   //this->corrsepondingCompName = "vrep_localizer_node";
+
+  //get path to this package ...
+  std::string path = ros::package::getPath("vrep_slam");
+  path = path + "/src/repair_plugins/";
+  this->pathedModelFilename = path + "RemoteSlamComp.xml";
 }
 
 RemoteSlamProcessing::~RemoteSlamProcessing()
@@ -25,8 +30,6 @@ RemoteSlamProcessing::~RemoteSlamProcessing()
 
 void RemoteSlamProcessing::Initialize(void** data, int length)
 {
-  //TODO replace hard coded path ... search in package path?
-  this->packagePath = "/home/dominik/work/rosha_ws/devel/lib/vrep_slam";
   return;
 }
 
@@ -41,12 +44,8 @@ void RemoteSlamProcessing::Repair()
   remoteCompMsg.compName = "SLAM_REMOTE";
   remoteCompMsg.compId = -1; //not known
   remoteCompMsg.repairActionToPerform = rosha_msgs::CareRepairControl::IntegrateRemoteProcess;
-
-  //get path to this package ...
-  std::string path = ros::package::getPath("vrep_slam");
-  path = path + "/src/repair_plugins/";
-  std::string pathedModelFilename = path + "RemoteSlamComp.xml";
-  remoteCompMsg.structureToPlace.modelFilename = pathedModelFilename;
+  remoteCompMsg.structureToPlace.modelFilename = this->pathedModelFilename;
+  remoteCompMsg.structureToPlace.failedRobotId = this->failedRobotId;
 
   this->repairControlPup.publish(remoteCompMsg);
 

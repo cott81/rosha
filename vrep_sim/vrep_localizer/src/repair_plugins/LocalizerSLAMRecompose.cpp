@@ -83,6 +83,8 @@ void LocalizerSLAMRecompose::Repair()
 
   this->repairControlPup.publish(startMsg_laser);
 
+  sleep(REPAIR_MSG_DELAY);
+
   ROS_INFO("... start vrep_slam_node");
   rosha_msgs::CareRepairControl startMsg_slam;
   startMsg_slam.robotId = this->ownId;

@@ -22,20 +22,12 @@ if __name__ == '__main__':
     #pub = rospy.Publisher('/testOut4', RepairAction)
     
     msg = RepairAction()
-    msg.robotId = 12
+    msg.robotId = 12    
     #
-    # add comm channel
+    # slam adapter replace
     #
-    #msg.repairActionToPerform = 4
-    #msg.compName = "/testDki"
-    #msg.compId = -1
-    #msg.msgType = "std_msgs/Int32"
-    
-    #
-    # recompose loc
-    #
-    msg.repairActionToPerform = 33
-    msg.compName = "GPS"
+    msg.repairActionToPerform = 40
+    msg.compName = "SLAM"
     msg.compId = -1
     msg.msgType = ""
     

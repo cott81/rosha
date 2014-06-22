@@ -35,6 +35,7 @@ void LaserScanDataCallback(const vrep_msgs::LaserScanData::ConstPtr& msg)
   if (robotId != msg->robotId)
   {
     // just process local msgs
+    cout << "non local laser scan msg. msg robotId: " << msg->robotId << " != " << "own robotID:"<< robotId << std::endl;
     return;
   }
   cout << "get laser scan data" << endl;
@@ -55,7 +56,7 @@ void LaserScanDataCallback(const vrep_msgs::LaserScanData::ConstPtr& msg)
 
 void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
-  //cout << "get pose" << endl;
+  cout << "get pose info from vrep" << endl;
 
   //convert to a 2D pose
   tf::Pose pose;

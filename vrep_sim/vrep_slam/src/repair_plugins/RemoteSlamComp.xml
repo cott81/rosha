@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>	
+
+<cos name="remoteProcessing" id="1" prio="1" used_in_role="">
+<chan name="LocalizationInfo" senderNode="vrep_localizer_node" channel="/vrep/MagicCube/localizationInfo" msgType="Pose2D" msg_intervall="1000"> <!-- matches  -->
+	<func name="SLAM_REMOTE" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/vrep_slam" filename="vrep_slam_node" 
+		arguments="-robotId XY __name:=vrep_slam_node_REMOTE /vrep/MagicCube/localizationInfo:=/vrep/MagicCube/localizationInfo_REMOTE /vrep/MagicCube/LaserScanData:=/vrep/MagicCube/LaserScanData_REMOTE">
+		<!-- loc ground truth not part of the "normal" processing /vrep/MagicCube/localizationData:=/vrep/MagicCube/localizationData_REMOTE -->
+	    <chan name="TestChanName2" senderNode="ChanSenderNode2" channel="/channel2" msgType="MsgType2" msg_intervall="1000">
+	    </chan>
+	</func>
+</chan>
+</cos>
