@@ -1,5 +1,5 @@
 /*
- * AddCommLink.cpp
+ * RemoveCommLink.cpp
  *
  * Copyright 2012 Carpe Noctem, Distributed Systems Group,
  * University of Kassel. All right reserved.
@@ -20,47 +20,37 @@
  */
 
 
-#include "../include/GenRepairPlugins/AddCommLink.h"
+#include "../include/GenRepairPlugins/RemoveCommLink.h"
 
 using namespace gen_repair_plugins;
 using namespace std;
 
 
-AddCommLink::AddCommLink()
+RemoveCommLink::RemoveCommLink()
 : CONF_FILE_NAME("relayMsgs.conf"), COMM_PROXY_COMP_NAME("MSLDDSProxy")
 {
+  this->pluginName = "RemoveCommLink";
 
-
-  this->pluginName = "AddCommLink";
-
-  this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__ADD_COMM_LINK;
+  this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__REMOVE_COMM_LINK;
 
   this->stopRepairAction = rosha_msgs::CareRepairControl::StopProcess;
   this->startRepairAction = rosha_msgs::CareRepairControl::StartProcess;
 
   proxyPackagePath = ros::package::getPath(COMM_PROXY_COMP_NAME);
-  //string pathedrelayConfFile = path + "/relayMsgs.conf";
   this->pathedrelayConfFile = proxyPackagePath + "/" + CONF_FILE_NAME;
-
-  //this->topicNames = new vector<string>();
-  //this->msgTypes = new vector<string>();
 }
 
-AddCommLink::~AddCommLink()
+RemoveCommLink::~RemoveCommLink()
 {
-//  delete this->topicNames;
-//  this->topicNames = NULL;
-//  delete this->msgTypes;
-//  this->msgTypes = NULL;
 }
 
-void  AddCommLink::Initialize(void** data, int length)
+void  RemoveCommLink::Initialize(void** data, int length)
 {
   //use this for init some vars
   //side_length_ = side_length;
 }
 
-void AddCommLink::SetData(const rosha_msgs::RepairAction::ConstPtr& msg)
+void RemoveCommLink::SetData(const rosha_msgs::RepairAction::ConstPtr& msg)
 {
   this->ownId = msg->robotId;
   this->targetCompId = msg->compId;
@@ -72,54 +62,19 @@ void AddCommLink::SetData(const rosha_msgs::RepairAction::ConstPtr& msg)
   ParseTopics(this->msgType, this->msgTypes);
 }
 
-void AddCommLink::Repair()
+void RemoveCommLink::Repair()
 {
 
   if (this->topicNames.size() != this->msgTypes.size())
   {
     ROS_ERROR("Number of given topics (%d) and number of given types (%d) do not match!.", this->topicNames.size(), this->msgTypes.size());
   }
-  ROS_INFO("doing repair stuff ADD COMM LINK.");
+  ROS_INFO("doing repair stuff REMOVE COMM LINK.");
 
-  cout << this->topicNames.size() << endl;
-
-
-
-  for (int i=0; i<this->topicNames.size(); i++)
+  // remove the topic in the file
+  if (!RemoveTopicInFile(pathedrelayConfFile, this->topicNames))
   {
-    string topicName = this->topicNames[i];
-    string msgType = this->msgTypes[i];
-
-    //add to relayMsgs.conf
-
-    ROS_INFO(" ... add comm link: (topic: %s, type: %s) to udp proxy conf: %s",
-             topicName.c_str(), msgType.c_str(), pathedrelayConfFile.c_str() );
-
-    stringstream ss;
-    ss << "Topic: " << topicName << "\t\tMsg: " << msgType << "\t\tOpt:[] \n";
-    string confTextLine = ss.str();
-
-    // check if the topic is already present ... look for /testA
-    if (CheckForIdenticalTopic(pathedrelayConfFile, topicName))
-    {
-      //already present ... nothing to do
-      ROS_INFO("... topic: %s already in conf file. Nothing to do.", topicName.c_str());
-    }
-    else
-    {
-      //write to relayMsgs.conf
-      ofstream relayMsgFile;
-      relayMsgFile.open (pathedrelayConfFile, ios::out | ios::app);
-      if (relayMsgFile.is_open())
-      {
-        relayMsgFile << confTextLine;
-        relayMsgFile.close();
-      } else {
-        ROS_ERROR("AddCommLink: Unable to open udp proxy conf file: %s", pathedrelayConfFile.c_str());
-        return;
-      }
-    }
-
+    ROS_WARN("... nothing found to remove in conf file. Nothing to do.");
   }
 
   //rebuild the code generaded udpProxy. call make
@@ -128,7 +83,7 @@ void AddCommLink::Repair()
   int out = system(cmd.c_str());
   if (out != 0)
   {
-    ROS_ERROR("AddCommLink: Reapair failed. Make failure with error code: %d", out);
+    ROS_ERROR("RemoveCommLink: Reapair failed. Make failure with error code: %d", out);
   }
   cout << endl << endl << endl;
 
@@ -138,12 +93,12 @@ void AddCommLink::Repair()
   out = system(killCmd.c_str());
   if (out != 0)
   {
-    ROS_ERROR("AddCommLink: Restart( killall) of udpProxy failed with error code: %d. Assume that udpProxy was already started AND managed by Care", out);
+    ROS_ERROR("RemoveCommLink: Restart( killall) of udpProxy failed with error code: %d. Assume that udpProxy was already started AND managed by Care", out);
   }
 
 }
 
-void AddCommLink::RemoveWhiteSpacesAtBegin(std::string& s)
+void RemoveCommLink::RemoveWhiteSpacesAtBegin(std::string& s)
 {
   for (int i=0; i<s.size(); i++) {
     if (s[i] == ' ' || s[i] == '\t')
@@ -158,73 +113,88 @@ void AddCommLink::RemoveWhiteSpacesAtBegin(std::string& s)
   return;
 }
 
-bool AddCommLink::CheckForIdenticalTopic(const std::string& confFile, const std::string& topic)
+bool RemoveCommLink::RemoveTopicInFile(const std::string& confFile, const std::vector<std::string>& topicsToRemove)
 {
-  bool alreayInFile = false;
+  bool removed = false;
 
   string line;
   ifstream relayMsgFileToCheck (confFile);
-  if (relayMsgFileToCheck.is_open())
+  string tempOutFileName = confFile+".tmp";
+  ofstream tempOutFile (tempOutFileName);
+
+  if (relayMsgFileToCheck.is_open() && tempOutFile.is_open())
   {
     while ( getline (relayMsgFileToCheck, line) )
     {
       //cout << line << endl;
-
-      //ignore comments
-      if (line[0] == '#')
-      {
-        continue;
-      }
 
       stringstream iss (line);
 
       //parse first static token: Topic
       string ss;
       getline(iss, ss, ':');
-      RemoveWhiteSpacesAtBegin(ss);
-      if (ss.compare("Topic") != 0)
-      {
-        //no valid line
-        continue;
-      }
 
       //parse topic name parameter ... <topicName> ws  Msg:
       string topicNameInConf;
       getline(iss, topicNameInConf, ':');
       RemoveWhiteSpacesAtBegin(topicNameInConf);
 
-      if (!topicNameInConf.compare(0, topic.size(), topic))
+      //check the line against all lines to remove
+      bool found = false;
+
+      for (int i=0; i<topicsToRemove.size(); i++)
       {
-        if (topicNameInConf.size() <= topic.size())
+        if (!topicNameInConf.compare(0, topicsToRemove[i].size(), topicsToRemove[i]))
         {
-          //no match ...
-        }
-        else
-        {
-          //only match if the following char is a white space
-          if (topicNameInConf[topic.size()] == ' ' || topicNameInConf[topic.size()] == '\t')
+          if (topicNameInConf.size() <= topicsToRemove[i].size())
           {
-            //cout << "MATCH !!!!" << endl;
-            return true;
+            //no match ... add to output file
+          }
+          else
+          {
+            //only match if the following char is a white space
+            if (topicNameInConf[topicsToRemove[i].size()] == ' ' || topicNameInConf[topicsToRemove[i].size()] == '\t')
+            {
+              //cout << "MATCH !!!!" << endl;
+              found = true;
+              //remove this line ... do NOT add to output file!
+              removed = true;
+            }
           }
         }
       }
 
+      if (found )
+      {
+        //found the line
+        //remove this line ... do NOT add to output file!
+        ROS_INFO("... removed line: %s", line.c_str());
+      }
+      else
+      {
+        // add not matching lines to output file
+        tempOutFile << line << endl;
+      }
+
     }
     relayMsgFileToCheck.close();
+    tempOutFile.close();
+
+    remove(confFile.c_str());
+    rename(tempOutFileName.c_str() ,confFile.c_str());
   }
   else {
-    printf("AddCommLink: Unable to open udp proxy conf file: %s", confFile.c_str());
+    printf("RemoveCommLink: Unable to open udp proxy conf file: %s, or temp output file: %s", confFile.c_str(), tempOutFileName.c_str());
     return true;
   }
-  return alreayInFile;
+  return removed;
 }
 
-std::string AddCommLink::GetName() {
+std::string RemoveCommLink::GetName() {
   return this->pluginName;
 }
 
-int AddCommLink::ParseTopics(std::string& topics, std::vector<std::string>& parsedTopicNames)
+int RemoveCommLink::ParseTopics(std::string& topics, std::vector<std::string>& parsedTopicNames)
 {
   cout << topics << endl;
 

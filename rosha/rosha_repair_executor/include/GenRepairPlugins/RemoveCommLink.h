@@ -1,5 +1,5 @@
 /*
- * AddCommLink.h
+ * RemoveCommLink.h
  *
  * Copyright 2012 Carpe Noctem, Distributed Systems Group,
  * University of Kassel. All right reserved.
@@ -19,8 +19,8 @@
  *      Author: Dominik Kirchner
  */
 
-#ifndef ADDCOMMLINK_H_
-#define ADDCOMMLINK_H_
+#ifndef REMOVECOMMLINK_H_
+#define REMOVECOMMLINK_H_
 
 #include <iostream>
 #include <fstream>
@@ -39,11 +39,11 @@
 
 namespace gen_repair_plugins
 {
-  class AddCommLink : public BaseRepair
+  class RemoveCommLink : public BaseRepair
   {
     public:
-      AddCommLink();
-      ~AddCommLink();
+      RemoveCommLink();
+      ~RemoveCommLink();
       void Initialize(void** data, int length);
       void Repair();
       std::string GetName();
@@ -66,10 +66,10 @@ namespace gen_repair_plugins
 
 
       void RemoveWhiteSpacesAtBegin(std::string& s);
-      bool CheckForIdenticalTopic(const std::string& confFile, const std::string& topic);
+      bool RemoveTopicInFile(const std::string& confFile, const std::vector<std::string>& linesToRemove);
       int ParseTopics(std::string& topics, std::vector<std::string>& parsedTopicNames);
   };
 }
 
 
-#endif /* ADDCOMMLINK_H_ */
+#endif /* REMOVECOMMLINK_H_ */

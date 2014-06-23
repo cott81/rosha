@@ -26,7 +26,7 @@ if __name__ == '__main__':
     #
     # add comm channel
     #
-    msg.repairActionToPerform = 4
+    msg.repairActionToPerform = 5
     msg.compName = "/vrep/MagicCube/localizationInfo_REMOTE:outTopic1: OutTopic2"
     msg.compId = -1
     msg.msgType = "vrep_msgs/Pose2D: std_msgs/Int32: std_msgs/Int32"
