@@ -61,10 +61,13 @@ namespace gen_repair_plugins
       int startRepairAction;
       static const int SLEEP_TIME = 3;
       std::string msgType;
+      std::vector<std::string> topicNames;
+      std::vector<std::string> msgTypes;
 
 
       void RemoveWhiteSpacesAtBegin(std::string& s);
       bool CheckForIdenticalTopic(const std::string& confFile, const std::string& topic);
+      int ParseTopics(std::string& topics, std::vector<std::string>& parsedTopicNames);
   };
 }
 

@@ -4,6 +4,7 @@ uint8 REPAIR_ACTION__STOP = 1
 uint8 REPAIR_ACTION__START = 2
 uint8 REPAIR_ACTION__REPLACE = 3
 uint8 REPAIR_ACTION__ADD_COMM_LINK = 4
+uint8 REPAIR_ACTION__REMOVE_COMM_LINK = 5
 #
 # ... special component repairs
 #

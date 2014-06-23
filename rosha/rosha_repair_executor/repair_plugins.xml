@@ -26,10 +26,20 @@
 		base_class_type = "gen_repair_plugins::BaseRepair" >
   
 	    <description>
-	    	Adds to remote communication link. Uses the udpProxy (MSLDDSProxy).
+	    	Adds remote communication links. Uses the udpProxy (MSLDDSProxy).
 	    </description>
     
 	</class>
+	
+	<class name="repair_executer_plugins/remove_remote_communication" 
+		type = "gen_repair_plugins::RemoveCommLink" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	Removes remote communication links. Uses the udpProxy (MSLDDSProxy).
+	    </description>
+    
+	</class>	
 	
 	<!--
  	<class name="repair_executer_plugins/cap_report_plug" 

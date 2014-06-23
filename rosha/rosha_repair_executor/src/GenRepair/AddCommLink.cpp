@@ -41,9 +41,17 @@ AddCommLink::AddCommLink()
   proxyPackagePath = ros::package::getPath(COMM_PROXY_COMP_NAME);
   //string pathedrelayConfFile = path + "/relayMsgs.conf";
   this->pathedrelayConfFile = proxyPackagePath + "/" + CONF_FILE_NAME;
+
+  //this->topicNames = new vector<string>();
+  //this->msgTypes = new vector<string>();
 }
 
-AddCommLink::~AddCommLink() {
+AddCommLink::~AddCommLink()
+{
+//  delete this->topicNames;
+//  this->topicNames = NULL;
+//  delete this->msgTypes;
+//  this->msgTypes = NULL;
 }
 
 void  AddCommLink::Initialize(void** data, int length)
@@ -56,49 +64,70 @@ void AddCommLink::SetData(const rosha_msgs::RepairAction::ConstPtr& msg)
 {
   this->ownId = msg->robotId;
   this->targetCompId = msg->compId;
+
   this->targetCompName = msg->compName; //here topic name
+  ParseTopics(this->targetCompName, this->topicNames);
+
   this->msgType = msg->msgType;
+  ParseTopics(this->msgType, this->msgTypes);
 }
 
-void AddCommLink::Repair() {
-  ROS_INFO("doing repair stuff ADD COMM LINK for topic: %s msgType: %s", this->targetCompName.c_str(), this->msgType.c_str());
+void AddCommLink::Repair()
+{
 
-  string topicName = this->targetCompName;
-  string msgType = this->msgType;
-
-  //add to relayMsgs.conf
-
-  ROS_INFO(" ... add topic: %s (type: %s) to udp proxy conf: %s",
-           topicName.c_str(), msgType.c_str(), pathedrelayConfFile.c_str() );
-
-  stringstream ss;
-  ss << "Topic: " << topicName << "\t\tMsg: " << msgType << "\t\tOpt:[] \n";
-  string confTextLine = ss.str();
-
-  // check if the topic is already present ... look for /testA
-  if (CheckForIdenticalTopic(pathedrelayConfFile, topicName))
+  if (this->topicNames.size() != this->msgTypes.size())
   {
-    //already present ... nothing to do
-    ROS_INFO("... topic: %s already in conf file. Nothing to do.", topicName.c_str());
-    return;
+    ROS_ERROR("Number of given topics (%d) and number of given types (%d) do not match!.", this->topicNames.size(), this->msgTypes.size());
   }
+  ROS_INFO("doing repair stuff ADD COMM LINK.");
 
-  //write to relayMsgs.conf
-  ofstream relayMsgFile;
-  relayMsgFile.open (pathedrelayConfFile, ios::out | ios::app);
-  if (relayMsgFile.is_open()) {
-    relayMsgFile << confTextLine;
-    relayMsgFile.close();
-  } else {
-    ROS_ERROR("AddCommLink: Unable to open udp proxy conf file: %s", pathedrelayConfFile.c_str());
-    return;
+  cout << this->topicNames.size() << endl;
+
+
+
+  for (int i=0; i<this->topicNames.size(); i++)
+  {
+    string topicName = this->topicNames[i];
+    string msgType = this->msgTypes[i];
+
+    //add to relayMsgs.conf
+
+    ROS_INFO(" ... add comm link: (topic: %s, type: %s) to udp proxy conf: %s",
+             topicName.c_str(), msgType.c_str(), pathedrelayConfFile.c_str() );
+
+    stringstream ss;
+    ss << "Topic: " << topicName << "\t\tMsg: " << msgType << "\t\tOpt:[] \n";
+    string confTextLine = ss.str();
+
+    // check if the topic is already present ... look for /testA
+    if (CheckForIdenticalTopic(pathedrelayConfFile, topicName))
+    {
+      //already present ... nothing to do
+      ROS_INFO("... topic: %s already in conf file. Nothing to do.", topicName.c_str());
+    }
+    else
+    {
+      //write to relayMsgs.conf
+      ofstream relayMsgFile;
+      relayMsgFile.open (pathedrelayConfFile, ios::out | ios::app);
+      if (relayMsgFile.is_open())
+      {
+        relayMsgFile << confTextLine;
+        relayMsgFile.close();
+      } else {
+        ROS_ERROR("AddCommLink: Unable to open udp proxy conf file: %s", pathedrelayConfFile.c_str());
+        return;
+      }
+    }
+
   }
 
   //rebuild the code generaded udpProxy. call make
   string cmd = "make -C " + this->proxyPackagePath;
   ROS_INFO(" ... (re)make the udpProxy to integrate the new comm link. Call %s \n\n\n", cmd.c_str());
   int out = system(cmd.c_str());
-  if (out != 0) {
+  if (out != 0)
+  {
     ROS_ERROR("AddCommLink: Reapair failed. Make failure with error code: %d", out);
   }
   cout << endl << endl << endl;
@@ -107,7 +136,8 @@ void AddCommLink::Repair() {
   string killCmd = "killall udpProxy";
   ROS_INFO("... restart/kill the udpProxy. Call %s", killCmd.c_str());
   out = system(killCmd.c_str());
-  if (out != 0) {
+  if (out != 0)
+  {
     ROS_ERROR("AddCommLink: Restart( killall) of udpProxy failed with error code: %d. Assume that udpProxy was already started AND managed by Care", out);
   }
 
@@ -192,5 +222,27 @@ bool AddCommLink::CheckForIdenticalTopic(const std::string& confFile, const std:
 
 std::string AddCommLink::GetName() {
   return this->pluginName;
+}
+
+int AddCommLink::ParseTopics(std::string& topics, std::vector<std::string>& parsedTopicNames)
+{
+  cout << topics << endl;
+
+  //remove all whitespaces
+  topics.erase(std::remove_if( topics.begin(), topics.end(),
+       [](char c){ return (c =='\r' || c =='\t' || c == ' ' || c == '\n');}),
+               topics.end() );
+
+  cout << topics << endl;
+
+  stringstream ss(topics);
+  string topic;
+  while(getline(ss, topic, ':'))
+  {
+    cout << topic << endl;
+    parsedTopicNames.push_back(topic);
+  }
+
+  return parsedTopicNames.size();
 }
 

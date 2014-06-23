@@ -27,25 +27,27 @@ if __name__ == '__main__':
     # add comm channel
     #
     msg.repairActionToPerform = 4
-    msg.compName = "/vrep/MagicCube/localizationInfo_REMOTE"
+    msg.compName = "/vrep/MagicCube/localizationInfo_REMOTE:outTopic1: OutTopic2"
     msg.compId = -1
-    msg.msgType = "vrep_msgs/Pose2D"
+    msg.msgType = "vrep_msgs/Pose2D: std_msgs/Int32: std_msgs/Int32"
 
     pub.publish(msg)
     sleep(2)
     pub.publish(msg)
     sleep(2)
 
+    '''
     msg = RepairAction()
     msg.robotId = 12    
     msg.repairActionToPerform = 4
-    msg.compName = "/vrep/MagicCube/localizationInfo_REMOTE2"
+    msg.compName = "/vrep/MagicCube/LaserScanData_REMOTE"
     msg.compId = -1
-    msg.msgType = "vrep_msgs/Pose2D"
+    msg.msgType = "vrep_msgs/LaserScanData"
     
     pub.publish(msg)
     sleep(2)
-    
+    '''
+
     '''
     while not rospy.is_shutdown():
         pub.publish(msg)
