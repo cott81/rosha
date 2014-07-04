@@ -30,6 +30,7 @@ private:
   std::string pluginName;
   const std::string corrsepondingCompName;
   const int REPAIR_MSG_DELAY;
+  std::string pathedModelFilename;
 };
 
 } /* namespace vrep_localization_repair_plugins */

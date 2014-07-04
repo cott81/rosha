@@ -15,11 +15,15 @@ LocalizerSLAMRecompose::LocalizerSLAMRecompose()
 {
   this->pluginName = "LocalizerSLAMRecompose";
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_LOC_RECOMPOSE;
+
+  //get path to this package ...
+  std::string path = ros::package::getPath("vrep_localizer");
+  path = path + "/src/repair_plugins/";
+  this->pathedModelFilename = path + "LocalizerSLAMRecomposeModel.xml";
 }
 
 LocalizerSLAMRecompose::~LocalizerSLAMRecompose()
 {
-  // TODO Auto-generated destructor stub
 }
 
 void LocalizerSLAMRecompose::Initialize(void** data, int length)
@@ -31,20 +35,13 @@ void LocalizerSLAMRecompose::Repair()
 {
   ROS_INFO("%s: recompose repair (vrep_localizer_node -> <slam>  (vrep_laser_scanner, vrep_slam)", this->pluginName.c_str());
 
-  //stop localizer component
-
-  //send recompose msg ... what infos are needed ... just the filename
-
-  //start all (both) components in the composition ... manual ...
-
-
   //send stop msg ... in case the comp is still alive ... no effect if not
   ROS_INFO("... stop vrep_localizer_node");
   rosha_msgs::CareRepairControl stopMsg;
   stopMsg.robotId = this->ownId;
   stopMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StopProcess;
   //stopMsg.compName = this->corrsepondingCompName; //Care manages func by given names ... here GPS
-  stopMsg.compName = "GPS";
+  stopMsg.compName = this->targetCompName;
 
   this->repairControlPup.publish(stopMsg);
 
@@ -55,25 +52,19 @@ void LocalizerSLAMRecompose::Repair()
   ROS_INFO("... replace vrep_localizer_node with vrep_localizer_redundant in the robot configuration model");
   rosha_msgs::CareRepairControl replaceMsg;
   replaceMsg.robotId = this->ownId;
-  replaceMsg.compName = "GPS";
+  replaceMsg.compName = this->targetCompName;
   replaceMsg.compId = -1; //not known
   replaceMsg.repairActionToPerform = rosha_msgs::CareRepairControl::RecomposeProcess;
-
-  //get path to this package ...
-  std::string path = ros::package::getPath("vrep_localizer");
-  path = path + "/src/repair_plugins/";
-  std::string pathedModelFilename = path + "LocalizerSLAMRecomposeModel.xml";
-  replaceMsg.structureToPlace.modelFilename = pathedModelFilename;
-
+  replaceMsg.structureToPlace.modelFilename = this->pathedModelFilename;
 
   this->repairControlPup.publish(replaceMsg);
 
   //time delay needed
   sleep(REPAIR_MSG_DELAY);
 
-
   //send start msg ... recovery manager that triggers this reoair is only active if the system should perform its task
   // start all funcs in the model ... maunal by name
+  //TODO: replace the hard coded names ... read this from the model file
 
   ROS_INFO("... start vrep_laser_driver_node");
   rosha_msgs::CareRepairControl startMsg_laser;

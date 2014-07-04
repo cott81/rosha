@@ -20,9 +20,19 @@ SlamAdapterReplace::SlamAdapterReplace()
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_SLAM_ADAPTER_REPLACE;
   //this->corrsepondingCompName = "vrep_localizer_node";
 
-  // TODO: replace hard coded relative path of the working directory (../../devel ...)
-  std::string path = ros::package::getPath("vrep_slam");
-  this->packagePath = path + "/../../../devel/lib/vrep_slam/";
+  std::string path;
+  char* roshaRoot = getenv("ROSHA_ROOT");
+  if ( strcmp(roshaRoot, "") == 0)
+  {
+    ROS_WARN("Environment variable ROSHA_ROOT is empty. Use three level above from ROS package path vrep slam.");
+    std::string path = ros::package::getPath("vrep_slam");
+    this->packagePath = path + "/../../../devel/lib/vrep_slam/";
+  }
+  else
+  {
+    this->packagePath = path + "/lib/vrep_slam/";
+  }
+
   //this->packagePath = "/home/dominik/work/rosha_ws/devel/lib/vrep_slam";
 }
 
