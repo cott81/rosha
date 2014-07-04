@@ -1,0 +1,11 @@
+TODOs
+======
+
+state things to do for an improvement of the RoSHA framework
+
+- Recovery controller: SimBase: replace the hard coded failure model in the world model with an more generic version
+- replace the need of the ROSHA_ROOT env to facilitate the installation
+- Recover controller: SimBase is started with start.sh in Care -> is not stoppable (extra bash process)
+- Care: the udp proxy that is started at the start of Care is not closed -> second start of Care does not manage the proxy because it is already running 
+- Care/SimBase are in C# (impera repo). The msgs define a depency to the rosha repo! Translate to C++ (catkin)
+- Knowledge Base: there is no consistent knowledge base. E.g. repair restructurs (recompose) the robot conf. Monitoring may adapt but doagnosis needs to be adapted as well. New diagnostic plugins must be activated, old ones needs to be removed! Without restart possible? ... Remote diagnosis for the remote processing? Remote monitoring ... 
