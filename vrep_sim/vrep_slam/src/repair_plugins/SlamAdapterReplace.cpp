@@ -21,7 +21,14 @@ SlamAdapterReplace::SlamAdapterReplace()
   //this->corrsepondingCompName = "vrep_localizer_node";
 
   std::string path;
-  char* roshaRoot = getenv("ROSHA_ROOT");
+  char* roshaRoot;
+  try
+  {
+    roshaRoot = getenv("ROSHA_ROOT");
+  } catch (std::exception& e) {
+    ROS_WARN("WARN: Environment variable (ROSHA_ROOT) not found. ");
+  }
+
   if ( strcmp(roshaRoot, "") == 0)
   {
     ROS_WARN("Environment variable ROSHA_ROOT is empty. Use three level above from ROS package path vrep slam.");

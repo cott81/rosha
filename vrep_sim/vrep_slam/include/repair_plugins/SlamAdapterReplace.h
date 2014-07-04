@@ -8,8 +8,10 @@
 #ifndef SLAMADAPTERREPLACE_H_
 #define SLAMADAPTERREPLACE_H_
 
+#include <exception>
 #include "ros/ros.h"
 #include <ros/package.h>
+
 
 #include <GenRepairPlugins/BaseRepair.h>
 #include <rosha_msgs/RepairAction.h>
