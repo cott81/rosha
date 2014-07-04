@@ -44,8 +44,6 @@ namespace gen_repair_plugins
 
     private:
       std::string pluginName;
-      int stopRepairAction;
-      int startRepairAction;
       static const int SLEEP_TIME = 3;
   };
 }

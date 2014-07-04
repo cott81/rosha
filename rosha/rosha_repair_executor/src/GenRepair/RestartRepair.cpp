@@ -30,9 +30,6 @@ RestartRepair::RestartRepair() {
 
   this->pluginName = "RestartRepair";
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__RESTART;
-
-  this->stopRepairAction = rosha_msgs::CareRepairControl::StopProcess;
-  this->startRepairAction = rosha_msgs::CareRepairControl::StartProcess;
 }
 
 RestartRepair::~RestartRepair() {
@@ -52,7 +49,7 @@ void RestartRepair::Repair() {
   //send msg ...
   rosha_msgs::CareRepairControl stopMsg;
   stopMsg.robotId = this->ownId;
-  stopMsg.repairActionToPerform = stopRepairAction;
+  stopMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StopProcess;
   stopMsg.compName = this->targetCompName;
   ROS_INFO("... send repair control msg to care: robotId: %d repairAction: %d compName: %s",
            stopMsg.robotId, stopMsg.repairActionToPerform, stopMsg.compName.c_str());
@@ -65,7 +62,7 @@ void RestartRepair::Repair() {
   //send new message to restart the component
   rosha_msgs::CareRepairControl startMsg;
   startMsg.robotId = this->ownId;
-  startMsg.repairActionToPerform = startRepairAction;
+  startMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartProcess;
   startMsg.compName = this->targetCompName;
   ROS_INFO("... send repair control msg to care: robotId: %d repairAction: %d compName: %s",
            startMsg.robotId, startMsg.repairActionToPerform, startMsg.compName.c_str());
