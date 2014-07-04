@@ -80,7 +80,7 @@ int main (int argc, char** argv)
   }
 
   cout << "start v_rep_laser_driver" << endl;
-  vrepLaserDriver = new VrepLaserDriver(); //currently empty ...
+  //vrepLaserDriver = new VrepLaserDriver(); //currently empty ...
 
   ros::init(argc, argv, "vrep_laser_driver_node");
   ros::NodeHandle n;
