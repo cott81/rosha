@@ -49,6 +49,10 @@ find_package(catkin REQUIRED COMPONENTS
 	Pose2D.msg
 	DriveCmd.msg
 	LaserScanData.msg
+	SharedHealthInfo.msg
+	RobotHealthInfo.msg
+	CapHealthInfo.msg
+	FuncHealthInfo.msg
  )
 
 ## Generate services in the 'srv' folder
