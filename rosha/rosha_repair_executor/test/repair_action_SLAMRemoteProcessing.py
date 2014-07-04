@@ -30,7 +30,7 @@ if __name__ == '__main__':
     msg.compName = "SLAM"
     msg.compId = -1
     msg.msgType = ""
-    msg.failedRobotId = 12
+    msg.failedRobotId = 11
     
     #pub.publish(msg)
     #sleep(2)
