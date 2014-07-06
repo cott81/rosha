@@ -24,6 +24,7 @@ SlamAdapterReplace::SlamAdapterReplace()
   char* roshaRoot = NULL;
 
   roshaRoot = getenv("ROSHA_ROOT");
+  ROS_INFO("... get rosha env var: %s", roshaRoot);
 
   if ( roshaRoot == NULL || strcmp(roshaRoot, "") == 0)
   {
@@ -33,6 +34,7 @@ SlamAdapterReplace::SlamAdapterReplace()
   }
   else
   {
+    std::string path(roshaRoot);
     this->packagePath = path + "/lib/vrep_slam/";
   }
 
@@ -73,6 +75,7 @@ void SlamAdapterReplace::Repair()
   replaceMsg.compId = -1; //not known
   replaceMsg.repairActionToPerform = rosha_msgs::CareRepairControl::ReplaceProcess;
   replaceMsg.compToPlace.name = "SLAM_Adapter";
+  ROS_INFO("SlamAdapterReplace::Repair: working directory: %s", this->packagePath.c_str());
   replaceMsg.compToPlace.workingDirectory = this->packagePath;
   replaceMsg.compToPlace.filename = "vrep_slam_adapter";
   replaceMsg.compToPlace.arguments = ""; //remote topics already hardcoded
