@@ -66,6 +66,8 @@ void LocalizerSLAMRecompose::Repair()
   // start all funcs in the model ... maunal by name
   //TODO: replace the hard coded names ... read this from the model file
 
+  //do not need this, because we simply start the complete system
+  /*
   ROS_INFO("... start vrep_laser_driver_node");
   rosha_msgs::CareRepairControl startMsg_laser;
   startMsg_laser.robotId = this->ownId;
@@ -83,6 +85,17 @@ void LocalizerSLAMRecompose::Repair()
   startMsg_slam.compName = "SLAM";
 
   this->repairControlPup.publish(startMsg_slam);
+  */
+
+  sleep(REPAIR_MSG_DELAY);
+
+  ROS_INFO("... (starts and) monitors the system");
+  rosha_msgs::CareRepairControl startMonMsg;
+  startMonMsg.robotId = this->ownId;
+  startMonMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartNMonSys;
+  startMonMsg.compName = "";
+
+  this->repairControlPup.publish(startMonMsg);
 
 
   return;

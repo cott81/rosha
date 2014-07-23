@@ -24,7 +24,6 @@ SlamAdapterReplace::SlamAdapterReplace()
   char* roshaRoot = NULL;
 
   roshaRoot = getenv("ROSHA_ROOT");
-  ROS_INFO("... get rosha env var: %s", roshaRoot);
 
   if ( roshaRoot == NULL || strcmp(roshaRoot, "") == 0)
   {
@@ -85,7 +84,7 @@ void SlamAdapterReplace::Repair()
   //time delay needed
   sleep(REPAIR_MSG_DELAY);
 
-
+  /*
   //send start msg ... recovery manager that triggers this reoair is only active if the system should perform its task
   // ... not yet possible ... process dictionary is not yet updated with the new func name ... still the old!
   ROS_INFO("... (re)start vrep_slam_adapter");
@@ -95,6 +94,15 @@ void SlamAdapterReplace::Repair()
   startMsg.compName = "SLAM_Adapter";
 
   this->repairControlPup.publish(startMsg);
+  */
+
+  ROS_INFO("... (starts and) monitors the system");
+  rosha_msgs::CareRepairControl startMonMsg;
+  startMonMsg.robotId = this->ownId;
+  startMonMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartNMonSys;
+  startMonMsg.compName = "";
+
+  this->repairControlPup.publish(startMonMsg);
 
   return;
 }
