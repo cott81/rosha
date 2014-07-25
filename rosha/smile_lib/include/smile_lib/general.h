@@ -26,7 +26,7 @@
 #else
 	#define DSL_stricmp strcasecmp
 	#define DSL_strnicmp strncasecmp
-	inline bool DSL_isnan(double x) { using namespace std; return isnan(x) != 0; }
+	inline bool DSL_isnan(double x) { using namespace std; return std::isnan(x); /* change to c++ 11 isnan(x) != 0;*/ }
 #endif
 
 time_t DSL_time(time_t *);
