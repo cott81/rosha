@@ -1,0 +1,14 @@
+<library path="lib/libVrepLaserDriver_analyzer_plugins" >
+
+  <class name="vrep_laser_driver_analyzer_plugins/VrepLaserDriver_QBFD_Analyzer" 
+  	type="vrep_laser_driver_analyzer_plugins::VrepLaserDriver_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the vrep laser driver component
+    </description>
+    
+  </class>
+  
+</library>
+

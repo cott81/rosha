@@ -13,9 +13,9 @@ find_package(catkin REQUIRED COMPONENTS
   smile_lib
 )
 
-message ( "rosha_diagnostic_aggregator: catkin include dirs: " ${catkin_INCLUDE_DIRS})
+#message ( "rosha_diagnostic_aggregator: catkin include dirs: " ${catkin_INCLUDE_DIRS})
 
-message ( "rosha_diagnostic_aggregator: catkin libraries: " ${catkin_LIBRARIES})
+#message ( "rosha_diagnostic_aggregator: catkin libraries: " ${catkin_LIBRARIES})
 
 #find_library(PVAPI NAMES "DiagnosticEngine" PATHS "/home/dominik/work/rosha_ws/src/rosha/rosha_diagnostic_aggregator/")
 
@@ -91,7 +91,7 @@ message ( "rosha_diagnostic_aggregator: catkin libraries: " ${catkin_LIBRARIES})
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES ${PVAPI}
   CATKIN_DEPENDS roscpp diagnostic_msgs xmlrpcpp pluginlib rospy
 #  DEPENDS system_lib

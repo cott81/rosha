@@ -13,6 +13,9 @@ find_package(catkin REQUIRED COMPONENTS
   rosha_repair_executor
   roslib
   system_config
+  roslib
+  smile_lib
+  rosha_diagnostic_aggregator
 )
 
 ## System dependencies are found with CMake's conventions
@@ -116,6 +119,11 @@ include_directories(
    src/repair_plugins/LocalizerSLAMRecompose.cpp   
    src/repair_plugins/RegisterPlugins.cpp
  )
+ 
+ add_library(VrepLoc_analyzer_plugins
+   src/analyzer_plugins/vrep_localizer_QBFD_analyzer.cpp
+   src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
+) 
 
 ## Declare a cpp executable
  add_executable(vrep_localizer_node 
@@ -144,6 +152,11 @@ add_executable(vrep_localizer_redundant
  target_link_libraries(VrepLoc_repair_plugins
    ${catkin_LIBRARIES}
  ) 
+ 
+target_link_libraries(VrepLoc_analyzer_plugins
+   ${catkin_LIBRARIES}
+   # smile DiagnosticEngine DkiHelpersCpp
+) 
 
 #############
 ## Install ##

@@ -14,11 +14,13 @@ find_package(catkin REQUIRED COMPONENTS
   system_config
   rosha_repair_executor
   roslib
+  smile_lib
+  rosha_diagnostic_aggregator
 )
 
-#message ( "vrep_motion: catkin include dirs: " ${catkin_INCLUDE_DIRS})
+message ( "vrep_slam: catkin include dirs: " ${catkin_INCLUDE_DIRS})
 
-#message ( "vrep_motion: catkin libraries: " ${catkin_LIBRARIES})
+message ( "vrep_slam: catkin libraries: " ${catkin_LIBRARIES})
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -91,7 +93,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-  LIBRARIES VrepSLAM_repair_plugins
+  LIBRARIES VrepSLAM_repair_plugins 
+  #VrepSLAM_analyzer_plugins
 #  CATKIN_DEPENDS roscpp vrep_msgs
 #  DEPENDS system_lib
 )
@@ -120,6 +123,11 @@ add_library(vrep_slam
    src/repair_plugins/SlamAdapterReplace.cpp
    src/repair_plugins/RegisterPlugins.cpp
  ) 
+ 
+add_library(VrepSLAM_analyzer_plugins
+   src/analyzer_plugins/vrep_slam_QBFD_analyzer.cpp
+   src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
+) 
 
 ## Declare a cpp executable
 add_executable(vrep_slam_node src/vrep_slam_node.cpp)
@@ -137,6 +145,11 @@ target_link_libraries(vrep_slam_node
 )
 target_link_libraries(vrep_slam_adapter
    ${catkin_LIBRARIES}
+)
+
+target_link_libraries(VrepSLAM_analyzer_plugins
+   ${catkin_LIBRARIES}
+   # smile DiagnosticEngine DkiHelpersCpp
 )
 
 #############

@@ -10,6 +10,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   error_seeder
   system_config
+  roslib
+  smile_lib
+  rosha_diagnostic_aggregator
 )
 
 #essage ( "vrep_motion: catkin include dirs: " ${catkin_INCLUDE_DIRS})
@@ -110,6 +113,11 @@ include_directories(
 add_library(vrep_laser_driver
    src/VrepLaserDriver.cpp
  )
+ 
+add_library(VrepLaserDriver_analyzer_plugins
+   src/analyzer_plugins/vrep_laser_driver_QBFD_analyzer.cpp
+   src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
+) 
 
 ## Declare a cpp executable
 add_executable(vrep_laser_driver_node src/vrep_laser_driver_node.cpp)
@@ -122,6 +130,11 @@ add_executable(vrep_laser_driver_node src/vrep_laser_driver_node.cpp)
 target_link_libraries(vrep_laser_driver_node
    ${catkin_LIBRARIES}
    vrep_laser_driver
+)
+
+target_link_libraries(VrepLaserDriver_analyzer_plugins
+   ${catkin_LIBRARIES}
+   # smile DiagnosticEngine DkiHelpersCpp
 )
 
 #############

@@ -1,0 +1,66 @@
+pub_rate: 1.0 # Optional
+base_path: '' # Optional, prepended to all diagnostic output
+
+analyzers:
+
+        sensors:
+                type: AnalyzerGroup
+                analyzers:
+                        localize:
+                                type: AnalyzerGroup
+                                analyzers:
+                                        #SLAM:
+                                                ## defines a tree structure for the robot_monitor (not tested any more)
+                                                #path_group: Sensor
+                                                #cap: localize
+                                                #func: SLAM
+                                                ## fully qualified type of the Analyzer (as specified in the plugin xml)
+                                                #type: vrep_slam_analyzer_plugins/VrepSlam_QBFD_Analyzer
+                                                ## specifies the nodes and states of the model (DBN) to query 
+                                                #systemNodesToAnalyze: [SLAM, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                #systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                #node_to_analyze: vrep_slam_node # needed?
+                                                ## ... paramters for mon classification? Up to now hard coded.
+                                        #LaserDriver:
+                                                ## defines a tree structure for the robot_monitor (not tested any more)
+                                                #path_group: Sensor
+                                                #cap: localize
+                                                #func: LaserDriver
+                                                ## fully qualified type of the Analyzer (as specified in the plugin xml)
+                                                #type: vrep_laser_driver_analyzer_plugins/VrepLaserDriver_QBFD_Analyzer
+                                                ## specifies the nodes and states of the model (DBN) to query 
+                                                #systemNodesToAnalyze: [LaserDriver, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                #systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                #node_to_analyze: vrep_laser_driver_node # needed?
+                                                ## ... paramters for mon classification? Up to now hard coded.                                                
+                                        GPS:
+                                                # defines a tree structure for the robot_monitor (not tested any more)
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: GPS
+                                                # fully qualified type of the Analyzer (as specified in the plugin xml)
+                                                type: vrep_localizer_analyzer_plugins/VrepLocalizer_QBFD_Analyzer
+                                                # specifies the nodes and states of the model (DBN) to query 
+                                                systemNodesToAnalyze: [GPS, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: vrep_localizer_node # needed?
+                                                # ... paramters for mon classification? Up to now hard coded.
+
+        #actuators:
+                #type: AnalyzerGroup
+                #analyzers:
+                        #move:
+                                #type: AnalyzerGroup
+                                #analyzers:
+                                        #Motion:
+                                                ## defines a tree structure for the robot_monitor (not tested any more)
+                                                #path_group: Actuators
+                                                #cap: move
+                                                #func: Motion
+                                                ## fully qualified type of the Analyzer (as specified in the plugin xml)
+                                                #type: vrep_motion_analyzer_plugins/VrepMotion_QBFD_Analyzer
+                                                ## specifies the nodes and states of the model (DBN) to query 
+                                                #systemNodesToAnalyze: [Motion, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                #systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                #node_to_analyze: vrep_motion_node # needed?
+                                                ## ... paramters for mon classification? Up to now hard coded.

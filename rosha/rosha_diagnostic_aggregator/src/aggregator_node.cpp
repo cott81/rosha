@@ -54,7 +54,7 @@ int main(int argc, char **argv)
   DiagnosticEngine* de = DiagnosticEngine::getInstance();
   de->Init("SystemModel.xdsl");
 
-  ros::init(argc, argv, "my_diagnostic_aggregator");
+  ros::init(argc, argv, "rosha_diagnostic_aggregator");
 
   try
   {

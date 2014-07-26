@@ -43,7 +43,7 @@ PLUGINLIB_DECLARE_CLASS(diagnostic_aggregator, AnalyzerGroup, diagnostic_aggrega
                         diagnostic_aggregator::Analyzer)
 
 AnalyzerGroup::AnalyzerGroup() :
-    path_(""), nice_name_(""), analyzer_loader_("my_diagnostic_aggregator", "diagnostic_aggregator::Analyzer")
+    path_(""), nice_name_(""), analyzer_loader_("rosha_diagnostic_aggregator", "diagnostic_aggregator::Analyzer")
 {
   //hard coded package name!
   //analyzer_loader_("diagnostic_aggregator", "diagnostic_aggregator::Analyzer") //orignal line
@@ -101,6 +101,7 @@ bool AnalyzerGroup::init(const string base_path, const ros::NodeHandle &n)
         vector<string> classes = analyzer_loader_.getDeclaredClasses();
         for (unsigned int i = 0; i < classes.size(); ++i)
         {
+          cout << "declared class: " << classes[i] << endl;
           if (an_type == analyzer_loader_.getName(classes[i]))
           {
             //if we've found a match... we'll get the fully qualified name and break out of the loop

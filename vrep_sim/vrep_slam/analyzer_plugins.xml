@@ -1,0 +1,14 @@
+<library path="lib/libVrepSLAM_analyzer_plugins" >
+
+  <class name="vrep_slam_analyzer_plugins/VrepSlam_QBFD_Analyzer" 
+  	type="vrep_slam_analyzer_plugins::VrepSlam_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the vrep slam component
+    </description>
+    
+  </class>
+  
+</library>
+

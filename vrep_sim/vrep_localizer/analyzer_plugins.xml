@@ -1,0 +1,14 @@
+<library path="lib/libVrepLoc_analyzer_plugins" >
+
+  <class name="vrep_localizer_analyzer_plugins/VrepLocalizer_QBFD_Analyzer" 
+  	type="vrep_localizer_analyzer_plugins::VrepLocalizer_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the vrep localizer (gps) component
+    </description>
+    
+  </class>
+  
+</library>
+

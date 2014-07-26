@@ -10,11 +10,14 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   error_seeder
   system_config
+  roslib
+  smile_lib
+  rosha_diagnostic_aggregator
 )
 
-message ( "vrep_motion: catkin include dirs: " ${catkin_INCLUDE_DIRS})
+#message ( "vrep_motion: catkin include dirs: " ${catkin_INCLUDE_DIRS})
 
-message ( "vrep_motion: catkin libraries: " ${catkin_LIBRARIES})
+#message ( "vrep_motion: catkin libraries: " ${catkin_LIBRARIES})
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -110,6 +113,11 @@ include_directories(
 add_library(vrep_motion
    src/VrepMotion.cpp
  )
+ 
+add_library(VrepMotion_analyzer_plugins
+   src/analyzer_plugins/vrep_motion_QBFD_analyzer.cpp
+   src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
+)
 
 ## Declare a cpp executable
 add_executable(vrep_motion_node src/vrep_motion_node.cpp)
@@ -122,6 +130,11 @@ add_executable(vrep_motion_node src/vrep_motion_node.cpp)
 target_link_libraries(vrep_motion_node
    ${catkin_LIBRARIES}
    vrep_motion
+)
+
+target_link_libraries(VrepMotion_analyzer_plugins
+   ${catkin_LIBRARIES}
+   # smile DiagnosticEngine DkiHelpersCpp
 )
 
 #############
