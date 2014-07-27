@@ -110,8 +110,10 @@ void ErrorSeederLib::TriggerError(int errorId)
     this->isBlocked = true;
     while (this->elFlag)
     {
-      //needed to receive messages
-      ros::spinOnce();
+      //needed to receive messages to release the endless loop again
+      // problem for a component that simply receives and process msgs -> spinning still ok -> no blocking! -> no effect
+
+      //ros::spinOnce(); // comment it, but no way to recover here
     }
 
   }
