@@ -26,7 +26,7 @@ namespace supplementary
 	 */
 	SystemConfig::SystemConfig()
 	{
-	  SystemConfig::ownRobotID = 0;
+	  //SystemConfig::ownRobotID = 0;
 		// set the domain folder (1. by env-variable 2. by cwd)
 		//char *x = ::getenv(DOMAIN_FOLDER.c_str());
 	        char *x = ::getenv(DOMAIN_FOLDER.c_str());

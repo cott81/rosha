@@ -29,29 +29,29 @@ VrepLaserDriver_QBFD_Analyzer::VrepLaserDriver_QBFD_Analyzer() :
 
   // a better way to do this? ... a config File for the analyzer (-> additional paramter for disturbances)
   // ros parameter server ?
-  this->cpuNodeStateLimits[0] = 200;    //lower threshhold [100 x % cpu]
-  this->cpuNodeStateLimits[1] = 400;    //upper threshhold
+  this->cpuNodeStateLimits[0] = 5;    //lower threshhold [100 x % cpu]
+  this->cpuNodeStateLimits[1] = 100;    //upper threshhold
 
 
-  this->memNodeStateLimits[0] = 15500.0;    //low bound [kB]
-  this->memNodeStateLimits[1] = 17000.0;   //upper bound
+  this->memNodeStateLimits[0] = 8000.0;    //low bound [kB]
+  this->memNodeStateLimits[1] = 11000.0;   //upper bound
 
-  //heart beat interval: 1s
+  //heart beat interval: 1s (NOT INCLUDED)
   this->heartBeatIntervalLimits[0] = 900;      //low: below 900ms
   this->heartBeatIntervalLimits[1] = 1100;     //high: over 1100ms
 
   //thread usage limits
-  this->threadNodeStateLimits[0] = 11;   //lower bound
-  this->threadNodeStateLimits[1] = 13;  //upper bound
+  this->threadNodeStateLimits[0] = 5;   //lower bound
+  this->threadNodeStateLimits[1] = 6;  //upper bound
 
   //stream match count limits
-  this->streamNodeStateLimits_nl[0] = 7.0;    //lower bound old: 8
-  this->streamNodeStateLimits_nl[1] = 12.0;   //upper bound old: 10.0
+  this->streamNodeStateLimits_nl[0] = 28.0;    //lower bound old: 8
+  this->streamNodeStateLimits_nl[1] = 32.0;   //upper bound old: 10.0
 
   //stream rate exceptions per s
   this->streamNodeStateLimits_ex[0] = 0;        //everything above 0 is abnormal
 
-  //msg Freq limits
+  //msg Freq limits (NOT INCLUDED)
   this->msgFreqNodeStateLimits[0] = 0.8;  //lower bound old: .9
   this->msgFreqNodeStateLimits[1] = 1.2; //upper bound  old: 1.1
 
@@ -59,6 +59,11 @@ VrepLaserDriver_QBFD_Analyzer::VrepLaserDriver_QBFD_Analyzer() :
 
   this->linkRegistered = false;
 
+  //get the robot id
+  this->robotId = supplementary::SystemConfig::GetOwnRobotID();
+  stringstream ss;
+  ss << this->robotId;
+  ss >> this->robotIdString;
 }
 
 VrepLaserDriver_QBFD_Analyzer::~VrepLaserDriver_QBFD_Analyzer()
@@ -192,8 +197,7 @@ bool VrepLaserDriver_QBFD_Analyzer::init(const string base_name, const ros::Node
   */
 
   this->de = DiagnosticEngine::getInstance();
-  //std::string path2 = path+"RoboPkgCSFailureModel_dbn.xdsl";
-  std::string path2 = path+"vrep_laser_driver_FailureModel_dbn.xdsl"; //dbn for the fdd eval experiment
+  std::string path2 = path+"vrep_laser_driver_FailureModel_dbn.xdsl";
   //TODO: class parameters
   unsigned int numOfHistorySlices = 20;
   unsigned int sliceTime = 3000;
@@ -841,7 +845,14 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepLaserDriver_QB
     return output;
   }
 
-  boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> ds = report_item_->toStatusMsg(path_);
+  //boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> ds = report_item_->toStatusMsg(path_);
+  boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> ds(new diagnostic_msgs::DiagnosticStatus());
+
+  //set the name
+  ds->name = this->fullName;
+
+  //set the robotId
+  ds->hardware_id = this->robotIdString;
 
   vector<diagnostic_msgs::KeyValue> kvs;
 
@@ -875,20 +886,20 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepLaserDriver_QB
   // MAPE-K use ros parameter space as holistic(?) knowledge/model
 
   //TODO: hard coded case specific numbers -> needs more precise meaningfull classification ... HOW???
-  if (compFailureProp < 0.33)
+  if (compFailureProp < 0.50)
   {
     ds->level = diagnostic_msgs::DiagnosticStatus::OK;
-    ds->message = "OK: Estimated failure probability < 33%. All in normal range";
+    ds->message = "OK: Estimated failure probability < 50%. All in normal range";
   }
-  else if (compFailureProp < 0.66)
+  else if (compFailureProp < 0.85)
   {
     ds->level = diagnostic_msgs::DiagnosticStatus::WARN;
-    ds->message = "WARN: Estimated failure probability x between 33% < x < 66%. Is in unusual range, but not critical";
+    ds->message = "WARN: Estimated failure probability x between 50% < x < 85%. Is in unusual range, but not critical";
   }
   else if (compFailureProp <= 1.0)
   {
     ds->level = diagnostic_msgs::DiagnosticStatus::ERROR;
-    ds->message = "ERROR: Estimated failure probability > 66%. In critical range.";
+    ds->message = "ERROR: Estimated failure probability > 85%. In critical range.";
   }
   else
   {

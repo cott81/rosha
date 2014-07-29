@@ -19,7 +19,7 @@
 			<state id="normal" />
 			<state id="high" />
 			<parents>FailureMode</parents>
-			<probabilities>0.1 0.2 0.7 0.7 0.15 0.15 0.7 0.2 0.1 0.15 0.7 0.15</probabilities>
+			<probabilities>0.1 0.2 0.7 0.7 0.25 0.05 0.99 0.01 0 0.15 0.7 0.15</probabilities>
 		</cpt>
 		<cpt id="Motion" dynamic="plate">
 			<state id="failure" />
@@ -32,20 +32,20 @@
 			<state id="normal" />
 			<state id="high" />
 			<parents>FailureMode</parents>
-			<probabilities>0.1 0.2 0.7 0.7 0.2 0.1 0.7 0.2 0.1 0.15 0.7 0.15</probabilities>
+			<probabilities>0.6 0.01 0.39 0.8 0.15 0.05 0.9 0.05 0.04999999999999998 0.15 0.7 0.15</probabilities>
 		</cpt>
 		<cpt id="MemObs" diagtype="observation" dynamic="plate" ranked="true">
 			<state id="low" />
 			<state id="normal" />
 			<state id="high" />
 			<parents>FailureMode</parents>
-			<probabilities>0.1500000000000001 0.7 0.15 0.1500000000000001 0.7 0.15 0.7 0.2 0.1 0.15 0.7 0.15</probabilities>
+			<probabilities>0.1500000000000001 0.7 0.15 0.1500000000000001 0.7 0.15 0.99 0.01 0 0.15 0.7 0.15</probabilities>
 		</cpt>
 		<cpt id="ThreadObs" diagtype="observation" dynamic="plate" ranked="true">
 			<state id="normal" />
 			<state id="abnormal" />
 			<parents>FailureMode</parents>
-			<probabilities>0.7 0.3 0.7 0.3 0.3 0.7 0.7 0.3</probabilities>
+			<probabilities>0.4 0.6 0.4 0.6 0.01 0.99 0.7 0.3</probabilities>
 		</cpt>
 		<cpt id="HeartBeatIntervallReceiver" diagtype="observation" dynamic="plate" ranked="true">
 			<state id="low" />
@@ -129,7 +129,7 @@
 				<interior color="ccffcc" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>710 483 830 540</position>
+				<position>712 483 832 540</position>
 			</node>
 			<node id="CpuObs">
 				<name>CpuObs</name>

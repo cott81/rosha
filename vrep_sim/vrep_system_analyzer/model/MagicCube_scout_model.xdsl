@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<smile version="1.0" id="Network1" numsamples="1000" discsamples="10000">
+	<nodes>
+		<cpt id="Motion">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0.1 0.9</probabilities>
+		</cpt>
+		<cpt id="Move">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>Motion</parents>
+			<probabilities>1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="GPS">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0.15 0.85</probabilities>
+		</cpt>
+		<cpt id="Localize">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>GPS</parents>
+			<probabilities>1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="Robot">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>Move Localize</parents>
+			<probabilities>1 0 1 0 1 0 0 1</probabilities>
+		</cpt>
+	</nodes>
+	<extensions>
+		<genie version="1.0" app="GeNIe 2.0.4535.0" name="Network1" faultnameformat="nodestate">
+			<node id="Motion">
+				<name>Motion</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>381 440 478 484</position>
+			</node>
+			<node id="Move">
+				<name>Move</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>385 283 482 327</position>
+			</node>
+			<node id="GPS">
+				<name>GPS</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>856 458 953 502</position>
+			</node>
+			<node id="Localize">
+				<name>Localize</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>858 298 955 342</position>
+			</node>
+			<node id="Robot">
+				<name>Robot</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>630 111 730 170</position>
+			</node>
+		</genie>
+	</extensions>
+</smile>

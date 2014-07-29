@@ -19,7 +19,7 @@ analyzers:
                                                 # specifies the nodes and states of the model (DBN) to query 
                                                 systemNodesToAnalyze: [SLAM, FailureMode, FailureMode, FailureMode, FailureMode]
                                                 systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
-                                                node_to_analyze: vrep_slam_node # needed?
+                                                node_to_analyze: SLAM # needed for matching the monitoring information match() ... needs to be the name in the robot model
                                                 # ... paramters for mon classification? Up to now hard coded.
                                         LaserDriver:
                                                 # defines a tree structure for the robot_monitor (not tested any more)
@@ -31,5 +31,5 @@ analyzers:
                                                 # specifies the nodes and states of the model (DBN) to query 
                                                 systemNodesToAnalyze: [LaserDriver, FailureMode, FailureMode, FailureMode, FailureMode]
                                                 systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
-                                                node_to_analyze: vrep_laser_driver_node # needed?
+                                                node_to_analyze: LaserDriver # needed for matching the monitoring information match() ... needs to be the name in the robot model
                                                 # ... paramters for mon classification? Up to now hard coded.                                                

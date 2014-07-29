@@ -1,6 +1,8 @@
 #ifndef VREP_LOCALIZER_ANALYZER_H
 #define VREP_LOCALIZER_ANALYZER_H
 
+
+
 //#include "DiagnosticAnalyzers/ObservationQueue.h"
 //#include <AnalyzerHelper/ObservationQueue.h>
 #include <diagnostic_aggregator/analyzer.h>
@@ -30,6 +32,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include <smile_lib/smile.h>
+#include <SystemConfig.h>
 
 
 namespace vrep_localizer_analyzer_plugins {
@@ -61,6 +64,8 @@ private:
   std::string fullName;
   std::string channelName;
   //dki_helpers::DataLogger* logger;
+  int robotId;
+  std::string robotIdString;
 
   boost::shared_ptr<diagnostic_aggregator::StatusItem> report_item_;
 

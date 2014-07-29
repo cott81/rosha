@@ -59,6 +59,7 @@ void RestartRepair::Repair() {
   //wait for some time ...
   sleep(SLEEP_TIME);
 
+  /*
   //send new message to restart the component
   rosha_msgs::CareRepairControl startMsg;
   startMsg.robotId = this->ownId;
@@ -68,6 +69,17 @@ void RestartRepair::Repair() {
            startMsg.robotId, startMsg.repairActionToPerform, startMsg.compName.c_str());
 
   repairControlPup.publish(startMsg);
+  */
+
+  ROS_INFO("... (starts and) monitors the system");
+  rosha_msgs::CareRepairControl startMonMsg;
+  startMonMsg.robotId = this->ownId;
+  startMonMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartNMonSys;
+  startMonMsg.compName = "";
+  ROS_INFO("... send repair control msg to care: robotId: %d repairAction: %d compName: %s",
+           startMonMsg.robotId, startMonMsg.repairActionToPerform, startMonMsg.compName.c_str());
+
+  this->repairControlPup.publish(startMonMsg);
 
   //feedback to the recovery controller if successfull or not ... cant say here! -> no feedback
   // ... perhaps feedback if repair sequence was finshed
