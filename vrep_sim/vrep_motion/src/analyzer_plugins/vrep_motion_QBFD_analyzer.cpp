@@ -30,7 +30,7 @@ VrepMotion_QBFD_Analyzer::VrepMotion_QBFD_Analyzer() :
   // a better way to do this? ... a config File for the analyzer (-> additional paramter for disturbances)
   // ros parameter server ?
   this->cpuNodeStateLimits[0] = 5;    //lower threshhold [100 x % cpu]
-  this->cpuNodeStateLimits[1] = 100;    //upper threshhold
+  this->cpuNodeStateLimits[1] = 175;    //upper threshhold
 
 
   this->memNodeStateLimits[0] = 8000.0;    //low bound [kB]
