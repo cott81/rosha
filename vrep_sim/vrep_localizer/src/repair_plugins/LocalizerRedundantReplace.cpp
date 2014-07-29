@@ -16,6 +16,24 @@ LocalizerRedundantReplace::LocalizerRedundantReplace()
   this->pluginName = "LocalizerRedundantReplace";
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_LOC_REPLACE;
   //this->corrsepondingCompName = "vrep_localizer_node";
+
+  std::string path;
+  char* roshaRoot = NULL;
+
+  roshaRoot = getenv("ROSHA_ROOT");
+
+  if ( roshaRoot == NULL || strcmp(roshaRoot, "") == 0)
+  {
+    ROS_WARN("Environment variable ROSHA_ROOT is empty. Use three level above from ROS package path vrep slam.");
+    std::string path = ros::package::getPath("vrep_localizer");
+    this->packagePath = path + "/../../../devel/lib/vrep_localizer";
+  }
+  else
+  {
+    std::string path(roshaRoot);
+    this->packagePath = path + "/lib/vrep_localizer";
+  }
+
 }
 
 LocalizerRedundantReplace::~LocalizerRedundantReplace()
@@ -53,7 +71,8 @@ void LocalizerRedundantReplace::Repair()
   replaceMsg.compId = -1; //not known
   replaceMsg.repairActionToPerform = rosha_msgs::CareRepairControl::ReplaceProcess;
   replaceMsg.compToPlace.name = "GPS2";
-  replaceMsg.compToPlace.workingDirectory = "/home/dominik/work/rosha_ws/devel/lib/vrep_localizer";
+  //TODO: replace with env var ROSHA ROOT
+  replaceMsg.compToPlace.workingDirectory = this->packagePath;
   replaceMsg.compToPlace.filename = "vrep_localizer_redundant";
   replaceMsg.compToPlace.arguments = "";
 
