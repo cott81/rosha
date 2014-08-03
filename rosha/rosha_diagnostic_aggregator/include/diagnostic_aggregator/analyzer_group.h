@@ -126,6 +126,11 @@ public:
   virtual bool match(const std::string name);
 
   /*!
+   * \brief Unmatch unregisteres analyzers (rosha extension)
+   */
+  bool unmatch(const std::string name);
+
+  /*!
    *\brief Analyze returns true if any sub-analyzers will analyze an item
    */
   virtual bool analyze(const boost::shared_ptr<StatusItem> item);

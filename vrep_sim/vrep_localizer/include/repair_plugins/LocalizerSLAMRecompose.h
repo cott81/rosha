@@ -13,6 +13,7 @@
 
 #include <GenRepairPlugins/BaseRepair.h>
 #include <rosha_msgs/RepairAction.h>
+#include <std_msgs/String.h>
 
 namespace vrep_localization_repair_plugins
 {
@@ -31,6 +32,8 @@ private:
   const std::string corrsepondingCompName;
   const int REPAIR_MSG_DELAY;
   std::string pathedModelFilename;
+
+  ros::Publisher diagDeactivatePup;
 };
 
 } /* namespace vrep_localization_repair_plugins */

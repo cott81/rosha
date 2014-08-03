@@ -58,6 +58,8 @@ VrepLocalizer_QBFD_Analyzer::VrepLocalizer_QBFD_Analyzer() :
   this->reasoningResults = NULL;
 
   this->linkRegistered = false;
+  this->matched = false;
+  this->unmatched = false;
 
   //get the robot id
   this->robotId = supplementary::SystemConfig::GetOwnRobotID();
@@ -303,16 +305,17 @@ bool VrepLocalizer_QBFD_Analyzer::match(const std::string name)
   // ... -> detach method? if no more diagnosis infos arrive (dyn role change should stop to monitor inactive nodes as well)
 
 
-  cout << "\n\n MATCH \n\n" << endl;
+  cout << "\n\n MATCH GPS \n\n" << endl;
 
 
-  bool matched = false;
+  bool m = false;
 
   ROS_DEBUG("%s: match(): try to match name: %s with fullName: %s ", this->CLASSNAME, name.c_str(), this->fullName.c_str());
   //fullName is <hostname>_<nodeToAnalyze>
   if (name == this->fullName) {
     ROS_INFO("%s, match(): name matched: %s", this->CLASSNAME, this->nodeToAnalyze.c_str());
     matched = true;
+    m = true;
   }
 
   //no match at all ... needs to match to the chanel for msgFreq as well
@@ -320,9 +323,21 @@ bool VrepLocalizer_QBFD_Analyzer::match(const std::string name)
   if (name == this->channelName) {
     ROS_INFO("%s, match(): name matched: %s", this->CLASSNAME, channelName.c_str());
     matched = true;
+    m = true;
   }
 
-  return matched;
+  //return matched;
+  return m;
+
+}
+
+bool VrepLocalizer_QBFD_Analyzer::unmatch(const std::string name)
+{
+  ROS_INFO("%s, unmatch(): unmatch: %s", this->CLASSNAME, name.c_str());
+  this->unmatched = true;  //set to be able to send a last report msgs
+
+  return true;
+
 }
 
 bool VrepLocalizer_QBFD_Analyzer::analyze(const boost::shared_ptr<StatusItem> item)
@@ -759,6 +774,37 @@ bool VrepLocalizer_QBFD_Analyzer::analyze(const boost::shared_ptr<StatusItem> it
 
 vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepLocalizer_QBFD_Analyzer::report()
 {
+
+  vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > output;
+  if (!this->matched)
+  {
+    //TODO: Problem: no rematch!
+    return output;
+  }
+
+  // if we do not have recent continous mon updates, we assume that this analyzer is deactiveded
+  if (this->unmatched)
+  {
+    // set the a priori probs to default values, here to 100% ok to have no influence in the reasoning any more
+    BayesianKB* bkb = (BayesianKB*) this->de->GetKnowledgeBase();
+    bkb->SetSystemModelNodeDefaultDef("GPS", 0.0, 1.0);
+
+    //better solution define stat. independance by resetting the definition of the parent (cap node)
+
+    //send msg to set the failure prob to 0 -> all ok, because else the last erronious state is kept in the SimBase error model
+    boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> ds(new diagnostic_msgs::DiagnosticStatus());
+    ds->name = this->fullName;
+    ds->hardware_id = this->robotIdString;
+    ds->level = diagnostic_msgs::DiagnosticStatus::OK;
+    ds->message = "OK: final message to reset this component";
+    output.push_back(ds);
+
+    this->unmatched = false;
+    this->matched = false;
+
+    return output;
+  }
+
   //called each 1s independend from analyze()
 
   // register link between compModel and system model
@@ -838,7 +884,7 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepLocalizer_QBFD
 
   mutexObj.unlock();
 
-  vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > output;
+
   if (this ->reasoningResults == NULL) {
     ROS_WARN("%s: report(): no reasoning results available. Empty report.", this->CLASSNAME);
     //do nothing here -> send empty msg.

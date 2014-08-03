@@ -4,7 +4,7 @@
 		<cpt id="Motion">
 			<state id="failure" />
 			<state id="operational" />
-			<probabilities>0.1 0.9</probabilities>
+			<probabilities>0 1</probabilities>
 		</cpt>
 		<cpt id="Move">
 			<state id="failure" />
@@ -15,13 +15,23 @@
 		<cpt id="GPS">
 			<state id="failure" />
 			<state id="operational" />
-			<probabilities>0.15 0.85</probabilities>
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="LaserDriver">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="SLAM">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
 		</cpt>
 		<cpt id="Localize">
 			<state id="failure" />
 			<state id="operational" />
-			<parents>GPS</parents>
-			<probabilities>1 0 0 1</probabilities>
+			<parents>GPS LaserDriver SLAM</parents>
+			<probabilities>1 0 1 0 1 0 1 0 1 0 1 0 1 0 0 1</probabilities>
 		</cpt>
 		<cpt id="Robot">
 			<state id="failure" />
@@ -66,6 +76,20 @@
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
 				<position>630 111 730 170</position>
+			</node>
+			<node id="LaserDriver">
+				<name>LaserDriver</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1018 462 1142 508</position>
+			</node>
+			<node id="SLAM">
+				<name>SLAM</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1214 449 1347 514</position>
 			</node>
 		</genie>
 	</extensions>

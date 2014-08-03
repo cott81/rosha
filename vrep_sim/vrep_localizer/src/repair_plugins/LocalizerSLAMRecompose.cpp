@@ -20,6 +20,8 @@ LocalizerSLAMRecompose::LocalizerSLAMRecompose()
   std::string path = ros::package::getPath("vrep_localizer");
   path = path + "/src/repair_plugins/";
   this->pathedModelFilename = path + "LocalizerSLAMRecomposeModel.xml";
+
+  this->diagDeactivatePup = nh->advertise<std_msgs::String>("/diagnostics_deactivate", 1000); //call Care to do some repair stuff
 }
 
 LocalizerSLAMRecompose::~LocalizerSLAMRecompose()
@@ -86,6 +88,14 @@ void LocalizerSLAMRecompose::Repair()
 
   this->repairControlPup.publish(startMsg_slam);
   */
+
+  //deactivates diagnosis for GPS
+  ROS_INFO("... deactivates vrep_localizer_node (GPS) diagnosis");
+  std_msgs::String deactivateDiagMsg_gps;
+  deactivateDiagMsg_gps.data = "iceland_GPS";
+
+  this->diagDeactivatePup.publish(deactivateDiagMsg_gps);
+
 
   sleep(REPAIR_MSG_DELAY);
 

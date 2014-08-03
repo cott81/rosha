@@ -75,6 +75,13 @@ void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 
 int main (int argc, char** argv)
 {
+
+  //TEMP ONLY
+
+  //exit(1);
+  //
+
+
   bool robotIdByArg = false;
   bool useRobotIdInTopic = false;
   string help = "Vrep SLAM\n"

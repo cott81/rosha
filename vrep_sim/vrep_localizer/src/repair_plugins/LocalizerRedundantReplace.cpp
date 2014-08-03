@@ -70,7 +70,7 @@ void LocalizerRedundantReplace::Repair()
   replaceMsg.compName = "GPS";
   replaceMsg.compId = -1; //not known
   replaceMsg.repairActionToPerform = rosha_msgs::CareRepairControl::ReplaceProcess;
-  replaceMsg.compToPlace.name = "GPS2";
+  replaceMsg.compToPlace.name = "GPS";
   //TODO: replace with env var ROSHA ROOT
   replaceMsg.compToPlace.workingDirectory = this->packagePath;
   replaceMsg.compToPlace.filename = "vrep_localizer_redundant";

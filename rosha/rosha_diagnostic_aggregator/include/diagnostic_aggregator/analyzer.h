@@ -112,6 +112,17 @@ public:
   virtual bool match(const std::string name) = 0;
 
   /*!
+   *\brief Returns true if analyzer successfully unmatches (rosha extension)
+   *
+   * Unmatch is called triggered by a msg with the name.
+   */
+  virtual bool unmatch(const std::string name)
+  {
+    ROS_WARN("Analyzer has not implemented the unmatch function.");
+    return false;
+  }
+
+  /*!
    *\brief Returns true if analyzer will analyze this name
    *
    * This is called with every new item that an analyzer matches.

@@ -58,6 +58,8 @@ VrepMotion_QBFD_Analyzer::VrepMotion_QBFD_Analyzer() :
   this->reasoningResults = NULL;
 
   this->linkRegistered = false;
+  this->matched = false;
+  this->unmatched = false;
 
   //get the robot id
   this->robotId = supplementary::SystemConfig::GetOwnRobotID();
@@ -303,16 +305,16 @@ bool VrepMotion_QBFD_Analyzer::match(const std::string name)
   // ... -> detach method? if no more diagnosis infos arrive (dyn role change should stop to monitor inactive nodes as well)
 
 
-  cout << "\n\n MATCH \n\n" << endl;
+  cout << "\n\n MATCH MOTION \n\n" << endl;
 
-
-  bool matched = false;
+  bool m = false;
 
   ROS_DEBUG("%s: match(): try to match name: %s with fullName: %s ", this->CLASSNAME, name.c_str(), this->fullName.c_str());
   //fullName is <hostname>_<nodeToAnalyze>
   if (name == this->fullName) {
     ROS_INFO("%s, match(): name matched: %s", this->CLASSNAME, this->nodeToAnalyze.c_str());
     matched = true;
+    m = true;
   }
 
   //no match at all ... needs to match to the chanel for msgFreq as well
@@ -320,9 +322,19 @@ bool VrepMotion_QBFD_Analyzer::match(const std::string name)
   if (name == this->channelName) {
     ROS_INFO("%s, match(): name matched: %s", this->CLASSNAME, channelName.c_str());
     matched = true;
+    m = true;
   }
 
-  return matched;
+  //return matched;
+  return m;
+}
+
+bool VrepMotion_QBFD_Analyzer::unmatch(const std::string name)
+{
+  ROS_INFO("%s, unmatch(): unmatch: %s", this->CLASSNAME, name.c_str());
+  this->unmatched = true;  //set to be able reset default node values
+
+  return true;
 }
 
 bool VrepMotion_QBFD_Analyzer::analyze(const boost::shared_ptr<StatusItem> item)
@@ -759,6 +771,27 @@ bool VrepMotion_QBFD_Analyzer::analyze(const boost::shared_ptr<StatusItem> item)
 
 vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepMotion_QBFD_Analyzer::report()
 {
+  vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > output;
+  if (!this->matched)
+  {
+    ROS_INFO("DEBUG: report() matched is false");
+    return output;
+  }
+
+  // if we do not have recent continous mon updates, we assume that this analyzer is deactiveded
+  if (this->unmatched)
+  {
+    // set the a priori probs to default values, here to 100% ok to have no influence in the reasoning any more
+    BayesianKB* bkb = (BayesianKB*) this->de->GetKnowledgeBase();
+    bkb->SetSystemModelNodeDefaultDef("Motion", 0.0, 1.0);
+
+    //better solution define stat. independance by resetting the definition of the parent (cap node)
+
+    this->unmatched = false;
+    this->matched = false;
+
+    return output;
+  }
   //called each 1s independend from analyze()
 
   // register link between compModel and system model
@@ -838,7 +871,7 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepMotion_QBFD_An
 
   mutexObj.unlock();
 
-  vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > output;
+
   if (this ->reasoningResults == NULL) {
     ROS_WARN("%s: report(): no reasoning results available. Empty report.", this->CLASSNAME);
     //do nothing here -> send empty msg.

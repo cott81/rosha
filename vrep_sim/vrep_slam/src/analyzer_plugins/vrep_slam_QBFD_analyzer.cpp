@@ -59,6 +59,8 @@ VrepSlam_QBFD_Analyzer::VrepSlam_QBFD_Analyzer() :
   this->reasoningResults = NULL;
 
   this->linkRegistered = false;
+  this->matched = false;
+  this->unmatched = false;
 
   //get the robot id
   this->robotId = supplementary::SystemConfig::GetOwnRobotID();
@@ -306,14 +308,15 @@ bool VrepSlam_QBFD_Analyzer::match(const std::string name)
 
   cout << "\n\n MATCH \n\n" << endl;
 
+  bool m = false;
 
-  bool matched = false;
 
   ROS_DEBUG("%s: match(): try to match name: %s with fullName: %s ", this->CLASSNAME, name.c_str(), this->fullName.c_str());
   //fullName is <hostname>_<nodeToAnalyze>
   if (name == this->fullName) {
     ROS_INFO("%s, match(): name matched: %s", this->CLASSNAME, this->nodeToAnalyze.c_str());
     matched = true;
+    m = true;
   }
 
   //no match at all ... needs to match to the chanel for msgFreq as well
@@ -321,9 +324,18 @@ bool VrepSlam_QBFD_Analyzer::match(const std::string name)
   if (name == this->channelName) {
     ROS_INFO("%s, match(): name matched: %s", this->CLASSNAME, channelName.c_str());
     matched = true;
+    m = true;
   }
 
-  return matched;
+  return m;
+}
+
+bool VrepSlam_QBFD_Analyzer::unmatch(const std::string name)
+{
+  ROS_INFO("%s, unmatch(): unmatch: %s", this->CLASSNAME, name.c_str());
+  this->unmatched = true;  //set to be able reset default node values
+
+  return true;
 }
 
 bool VrepSlam_QBFD_Analyzer::analyze(const boost::shared_ptr<StatusItem> item)
@@ -331,6 +343,7 @@ bool VrepSlam_QBFD_Analyzer::analyze(const boost::shared_ptr<StatusItem> item)
   //TODO: analyze() is only called once 1s ... not as fast as the msgs arrive! -> fixed freq, not event based!
 
   this->stampedTime = item->getStampedTime().toNSec() / (1000*1000); //in ms
+
 
   //TODO: replace hard coded stuff
   // -> get different Observers from config (yaml, parameter space)
@@ -760,6 +773,27 @@ bool VrepSlam_QBFD_Analyzer::analyze(const boost::shared_ptr<StatusItem> item)
 
 vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepSlam_QBFD_Analyzer::report()
 {
+  vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > output;
+  // do no reporting if we have no match yet
+  if (!this->matched)
+  {
+    return output;
+  }
+
+  // if we do not have recent continous mon updates, we assume that this analyzer is deactiveded
+  if (this->unmatched)
+  {
+    // set the a priori probs to default values, here to 100% ok to have no influence in the reasoning any more
+    BayesianKB* bkb = (BayesianKB*) this->de->GetKnowledgeBase();
+    bkb->SetSystemModelNodeDefaultDef("SLAM", 0.0, 1.0);
+
+    //better solution define stat. independance by resetting the definition of the parent (cap node)
+
+    this->unmatched = false;
+    this->matched = false;
+
+    return output;
+  }
 
   //called each 1s independend from analyze()
 
@@ -768,7 +802,7 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepSlam_QBFD_Anal
   if (!this->linkRegistered) {
     BayesianML modelLink;
   //  modelLink.SetCompModelNodeName("RoboPkgCS");
-    int failureDetectionNode = theNet->FindNode("RoboPkgCS");     //node for the failure probability
+    int failureDetectionNode = theNet->FindNode("SLAM");     //node for the failure probability
     modelLink.SetCompModelNodeId(failureDetectionNode);
     modelLink.SetModelId(this->modelId);
   //  modelLink.SetSystemModelNodeId(1000);
@@ -840,7 +874,7 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepSlam_QBFD_Anal
 
   mutexObj.unlock();
 
-  vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > output;
+
   if (this ->reasoningResults == NULL) {
     ROS_WARN("%s: report(): no reasoning results available. Empty report.", this->CLASSNAME);
     //do nothing here -> send empty msg.

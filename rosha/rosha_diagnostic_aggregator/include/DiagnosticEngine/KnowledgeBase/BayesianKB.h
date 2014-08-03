@@ -112,6 +112,13 @@ public:
    */
   void AddModelLink(BayesianML modelLink);
 
+  /*!
+   * \brief Sets the probabilities of a node in the system model to given values
+   *
+   * Sets the definition of a node of the system model hard to given values. This function is used with nodes that have t
+   * two states only. Porpose: reset nodes, that are not used any more to its default values.
+   */
+  void SetSystemModelNodeDefaultDef (const string nodeName, double prob1, double prob2);
 
 
 private:

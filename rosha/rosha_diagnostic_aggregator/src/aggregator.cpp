@@ -70,6 +70,8 @@ Aggregator::Aggregator() :
   diag_sub_ = n_.subscribe("/diagnostics", 1000, &Aggregator::diagCallback, this);
   agg_pub_ = n_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics_agg", 1);
   toplevel_state_pub_ = n_.advertise<diagnostic_msgs::DiagnosticStatus>("/diagnostics_toplevel_state", 1);
+
+  deactivate_diag_sub = n_.subscribe("/diagnostics_deactivate", 1000, &Aggregator::deactivateCallback, this);
 }
 
 void Aggregator::checkTimestamp(const diagnostic_msgs::DiagnosticArray::ConstPtr& diag_msg)
@@ -91,6 +93,12 @@ void Aggregator::checkTimestamp(const diagnostic_msgs::DiagnosticArray::ConstPtr
     ROS_WARN("%s", stamp_warn.c_str());
     ros_warnings_.insert(stamp_warn);
   }
+}
+
+void Aggregator::deactivateCallback(const std_msgs::String::ConstPtr& msg)
+{
+  ROS_INFO("Aggregator: deactivateCallback(): deaktivate for item name: %s", msg->data.c_str());
+  analyzer_group_->unmatch(msg->data);
 }
 
 void Aggregator::diagCallback(const diagnostic_msgs::DiagnosticArray::ConstPtr& diag_msg)

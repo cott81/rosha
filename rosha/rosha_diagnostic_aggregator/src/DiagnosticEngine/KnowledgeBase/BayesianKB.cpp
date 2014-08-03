@@ -469,6 +469,39 @@ void BayesianKB::AddModelLink(BayesianML modelLink) {
 
 }
 
+void BayesianKB::SetSystemModelNodeDefaultDef (const string nodeName, double prob1, double prob2)
+{
+
+  int systemNodeId = this->systemModel->GetDSLNetwork()->FindNode(nodeName.c_str());;
+
+  cout << "DEBUG: SetSystemModelNodeDefaultDef: node id: " <<  systemNodeId << endl;
+  DSL_doubleArray theProbs;
+  theProbs.SetSize(2);
+
+  theProbs[0] = prob1;
+  theProbs[1] = prob2;
+
+  this->systemModel->GetDSLNetwork()->GetNode(systemNodeId)->Definition()->SetDefinition(theProbs);
+
+  /*
+  //get the values again to check ... no use because values are not the same as the definition
+  DSL_sysCoordinates theCoordinates( *(this->systemModel->GetDSLNetwork()->GetNode(systemNodeId)->Value()) );
+
+  double p1 = 0.81;
+
+  theCoordinates[0] = 0;
+  theCoordinates.GoToCurrentPosition();
+  p1 = theCoordinates.UncheckedValue();
+
+  double p2 = 0.82;
+  theCoordinates[0] = 1;
+  theCoordinates.GoToCurrentPosition();
+  p2 = theCoordinates.UncheckedValue();
+
+  ROS_INFO("%s: SetSystemModelNodeDefaultDef(): update model id: %d, node %s, prop1: %f prop2: %f",
+           this->CLASSNAME, this->currentModelId, nodeName.c_str(), p1, p2);
+  */
+}
 
 void BayesianKB::UpdateSystemModel(DSLModel* dslModel, long modelId) {
 

@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   pluginlib
   rospy
   smile_lib
+  std_msgs
 )
 
 #message ( "rosha_diagnostic_aggregator: catkin include dirs: " ${catkin_INCLUDE_DIRS})

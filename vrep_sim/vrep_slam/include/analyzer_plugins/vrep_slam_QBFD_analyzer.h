@@ -46,6 +46,8 @@ public:
 
   bool match(const std::string name);
 
+  bool unmatch(const std::string name);
+
   bool analyze(const boost::shared_ptr<diagnostic_aggregator::StatusItem> item);
 
   std::vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > report();
@@ -110,6 +112,8 @@ private:
   boost::mutex mutexObj;
 
   bool linkRegistered;
+  bool matched;
+  bool unmatched;  //is set when unmatching a analyzer
 
 };
 

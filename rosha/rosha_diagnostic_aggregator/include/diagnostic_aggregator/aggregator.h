@@ -53,6 +53,7 @@
 #include "diagnostic_aggregator/analyzer_group.h"
 #include "diagnostic_aggregator/status_item.h"
 #include "diagnostic_aggregator/other_analyzer.h"
+#include <std_msgs/String.h>
 
 
 namespace diagnostic_aggregator {
@@ -128,12 +129,18 @@ private:
   ros::Subscriber diag_sub_; /**< DiagnosticArray, /diagnostics */
   ros::Publisher agg_pub_;  /**< DiagnosticArray, /diagnostics_agg */
   ros::Publisher toplevel_state_pub_;  /**< DiagnosticStatus, /diagnostics_toplevel_state */
+  ros::Subscriber deactivate_diag_sub; /**< std_msg String, /diagnostics_deactivate */
   double pub_rate_;
 
   /*!
    *\brief Callback for incoming "/diagnostics"
    */
   void diagCallback(const diagnostic_msgs::DiagnosticArray::ConstPtr& diag_msg);
+
+  /*!
+   * \brief Callback to deactivate diagnosis for a item name
+   */
+  void deactivateCallback(const std_msgs::String::ConstPtr& msg);
 
   AnalyzerGroup* analyzer_group_;
 
