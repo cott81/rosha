@@ -64,8 +64,10 @@ Aggregator::Aggregator() :
   
 
   // Last analyzer handles remaining data
+  /*
   other_analyzer_ = new OtherAnalyzer();
   other_analyzer_->init(base_path_); // This always returns true
+  */
 
   diag_sub_ = n_.subscribe("/diagnostics", 1000, &Aggregator::diagCallback, this);
   agg_pub_ = n_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics_agg", 1);
@@ -115,8 +117,11 @@ void Aggregator::diagCallback(const diagnostic_msgs::DiagnosticArray::ConstPtr& 
       analyzed = analyzer_group_->analyze(item);
     //analyzed if at least 1 analyzer matches and runs analyze()
 
+    //dki: no other analyzers
+    /*
     if (!analyzed)
       other_analyzer_->analyze(item); //some backup?
+     */
   }
 }
 
@@ -147,6 +152,8 @@ void Aggregator::publishData()
       min_level = processed[i]->level;
   }
  
+  //dki: no others processing, just the analyzers
+  /*
   vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > processed_other = other_analyzer_->report();
   for (unsigned int i = 0; i < processed_other.size(); ++i)
   {
@@ -157,6 +164,7 @@ void Aggregator::publishData()
     if (processed_other[i]->level < min_level)
       min_level = processed_other[i]->level;
   }
+  */
 
   diag_array.header.stamp = ros::Time::now();
 
