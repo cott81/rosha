@@ -37,7 +37,16 @@ SlamAdapterReplace::SlamAdapterReplace()
     this->packagePath = path + "/lib/vrep_slam/";
   }
 
+  int z;
+  z = gethostname(hostname, sizeof hostname);
+  this->fullName = "";
+  std::stringstream ss;
+  ss << this->hostname << "_" << "SLAM";
+  ss >> this->fullName;
+
   //this->packagePath = "/home/dominik/work/rosha_ws/devel/lib/vrep_slam";
+
+  this->diagDeactivatePup = nh->advertise<std_msgs::String>("/diagnostics_deactivate", 1000); //call Care to do some repair stuff
 }
 
 SlamAdapterReplace::~SlamAdapterReplace()
@@ -95,6 +104,15 @@ void SlamAdapterReplace::Repair()
 
   this->repairControlPup.publish(startMsg);
   */
+
+  //deactivates diagnosis for GPS
+  ROS_INFO("... deactivates vrep_slam_node (SLAM) diagnosis");
+  std_msgs::String deactivateDiagMsg_gps;
+  deactivateDiagMsg_gps.data = this->fullName; //e.g. "iceland_SLAM"
+
+  this->diagDeactivatePup.publish(deactivateDiagMsg_gps);
+
+  sleep(REPAIR_MSG_DELAY);
 
   ROS_INFO("... (starts and) monitors the system");
   rosha_msgs::CareRepairControl startMonMsg;

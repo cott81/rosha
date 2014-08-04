@@ -74,7 +74,6 @@ public:
    */
   bool init(std::string path)
   {
-    std::cout << "\n\nDEBUG: in other anaylzer init()" << std::endl;
     return GenericAnalyzerBase::init(path + "/Other", "Other", 5.0, -1, true);
   }
 

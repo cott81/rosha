@@ -8,6 +8,7 @@
 #ifndef LOCALIZERSLAMRECOMPOSE_H_
 #define LOCALIZERSLAMRECOMPOSE_H_
 
+#include <sstream>
 #include "ros/ros.h"
 #include <ros/package.h>
 
@@ -34,6 +35,9 @@ private:
   std::string pathedModelFilename;
 
   ros::Publisher diagDeactivatePup;
+
+  char hostname[128];
+  std::string fullName;
 };
 
 } /* namespace vrep_localization_repair_plugins */
