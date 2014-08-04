@@ -56,7 +56,7 @@ void LaserScanDataCallback(const vrep_msgs::LaserScanData::ConstPtr& msg)
 
 void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
-  cout << "get pose info from vrep" << endl;
+  //cout << "get pose info from vrep" << endl;
 
   //convert to a 2D pose
   tf::Pose pose;
