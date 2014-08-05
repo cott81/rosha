@@ -50,6 +50,73 @@ using namespace diagnostic_engine;
 
 int main(int argc, char **argv)
 {
+
+  string help = "RoSHA Diagnostic Aggregator\n"
+      "Synobsis: rosha_diagnostic_aggregator_node OPTIONS\n"
+      "Options:\n\n"
+      "ROS params: paramter for ROS, check the ROS wiki for more details.\n"
+      "-help: prints this help text\n"
+      "-loadFile: loads the specified yaml file for anayzer specifiactions relative to this package path.\n"
+      "-loadPath: Path of the yaml file. Default is this package location.\n"
+      ;
+
+  string helpParam = "-help";
+  string loadFileParam = "-loadFile";
+  bool isLoadFileSet = false;
+  string fileName;
+  string loadPathParam = "-loadPath";
+  bool isLoadPathSet = false;
+  string loadPath;
+  for (int i=1; i<argc; i++)
+  {
+    if(helpParam.compare(argv[i]) == 0)
+    {
+    cout << help << endl;
+    exit(0);
+    }
+    else if (loadFileParam.compare(argv[i]) == 0)
+    {
+      isLoadFileSet = true;
+      string s (argv[i+1]);
+      fileName = s;
+      ROS_INFO("yaml loadFile: %s", argv[i+1]);
+    }
+    else if (loadPathParam.compare(argv[i]) == 0)
+    {
+      isLoadPathSet = true;
+      string s (argv[i+1]);
+      loadPath = s;
+      ROS_INFO("yaml loadPath: %s", argv[i+1]);
+    }
+    else
+    {
+      //ros arguments ...
+    }
+  }
+
+
+  if (isLoadFileSet)
+  {
+    string path = "";
+    if (isLoadPathSet)
+    {
+      path = loadPath;
+    }
+    else
+    {
+      path = ros::package::getPath("rosha_diagnostic_aggregator");
+      ROS_INFO("yaml (default) loadPath: %s", path.c_str());
+      cout << "path " << path << endl;
+    }
+
+    //load the yaml file
+    string pathedFile = path + "/"+fileName;
+    string cmd = "rosparam load " + pathedFile + " /rosha_diagnostic_aggregator";
+    ROS_INFO("load analyzers command: %s", cmd.c_str());
+    cout << "cmd: " << cmd << endl;
+    system(cmd.c_str());
+  }
+
   //eager instantiation (heavilly used -> thread safe, because there is only one thread here)
   DiagnosticEngine* de = DiagnosticEngine::getInstance();
   de->Init("SystemModel.xdsl");
