@@ -9,7 +9,6 @@
 #define LOCALIZERSLAMRECOMPOSE_H_
 
 #include <sstream>
-#include "ros/ros.h"
 #include <ros/package.h>
 
 #include <GenRepairPlugins/BaseRepair.h>
@@ -31,7 +30,6 @@ public:
 private:
   std::string pluginName;
   const std::string corrsepondingCompName;
-  const int REPAIR_MSG_DELAY;
   std::string pathedModelFilename;
 
   ros::Publisher diagDeactivatePup;

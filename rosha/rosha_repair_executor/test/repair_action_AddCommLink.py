@@ -22,7 +22,7 @@ if __name__ == '__main__':
     #pub = rospy.Publisher('/testOut4', RepairAction)
     
     msg = RepairAction()
-    msg.robotId = 12
+    msg.robotId = 9
     #
     # add comm channel
     #

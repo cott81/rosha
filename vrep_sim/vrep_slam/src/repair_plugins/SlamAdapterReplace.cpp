@@ -14,7 +14,7 @@ namespace vrep_slam_repair_plugins
 {
 
 SlamAdapterReplace::SlamAdapterReplace()
-: corrsepondingCompName("vrep_slam_node"), REPAIR_MSG_DELAY(1)
+: BaseRepair(), corrsepondingCompName("vrep_slam_node")
 {
   this->pluginName = "SlamAdapterReplace";
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_SLAM_ADAPTER_REPLACE;
@@ -73,7 +73,7 @@ void SlamAdapterReplace::Repair()
   this->repairControlPup.publish(stopMsg);
 
   //time delay needed, because otherwise Care skips msgs
-  sleep(REPAIR_MSG_DELAY);
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
   //send msg to Care with infos: target comp, new comp, parameter, workspace ... more?
   ROS_INFO("... replace vrep_slam_node with vrep_slam_adapter in the robot configuration model");
@@ -91,19 +91,7 @@ void SlamAdapterReplace::Repair()
   this->repairControlPup.publish(replaceMsg);
 
   //time delay needed
-  sleep(REPAIR_MSG_DELAY);
-
-  /*
-  //send start msg ... recovery manager that triggers this reoair is only active if the system should perform its task
-  // ... not yet possible ... process dictionary is not yet updated with the new func name ... still the old!
-  ROS_INFO("... (re)start vrep_slam_adapter");
-  rosha_msgs::CareRepairControl startMsg;
-  startMsg.robotId = this->ownId;
-  startMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartProcess;
-  startMsg.compName = "SLAM_Adapter";
-
-  this->repairControlPup.publish(startMsg);
-  */
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
   //deactivates diagnosis for GPS
   ROS_INFO("... deactivates vrep_slam_node (SLAM) diagnosis");
@@ -112,7 +100,7 @@ void SlamAdapterReplace::Repair()
 
   this->diagDeactivatePup.publish(deactivateDiagMsg_gps);
 
-  sleep(REPAIR_MSG_DELAY);
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
   ROS_INFO("... (starts and) monitors the system");
   rosha_msgs::CareRepairControl startMonMsg;
