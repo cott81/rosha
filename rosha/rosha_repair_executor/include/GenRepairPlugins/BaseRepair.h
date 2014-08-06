@@ -55,7 +55,7 @@ namespace gen_repair_plugins
 
 
     protected:
-      BaseRepair(int msgDelay=1000) : REPAIR_MSG_DELAY_MS(msgDelay)
+      BaseRepair(int msgDelay=10) : REPAIR_MSG_DELAY_MS(msgDelay)
     {
         this->repairType = 100;
         this->nh = new ros::NodeHandle();

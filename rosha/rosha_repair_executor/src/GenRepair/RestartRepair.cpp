@@ -57,19 +57,7 @@ void RestartRepair::Repair() {
   repairControlPup.publish(stopMsg);
 
   //wait for some time ...
-  sleep(SLEEP_TIME);
-
-  /*
-  //send new message to restart the component
-  rosha_msgs::CareRepairControl startMsg;
-  startMsg.robotId = this->ownId;
-  startMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartProcess;
-  startMsg.compName = this->targetCompName;
-  ROS_INFO("... send repair control msg to care: robotId: %d repairAction: %d compName: %s",
-           startMsg.robotId, startMsg.repairActionToPerform, startMsg.compName.c_str());
-
-  repairControlPup.publish(startMsg);
-  */
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
   ROS_INFO("... (starts and) monitors the system");
   rosha_msgs::CareRepairControl startMonMsg;
