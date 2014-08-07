@@ -35,6 +35,7 @@ private:
 
   char hostname[128];
   std::string fullName;
+  std::string pathedModelFilename;
 
   ros::Publisher diagDeactivatePup;
 };

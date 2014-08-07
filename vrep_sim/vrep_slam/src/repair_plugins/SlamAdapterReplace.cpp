@@ -21,6 +21,7 @@ SlamAdapterReplace::SlamAdapterReplace()
   //this->corrsepondingCompName = "vrep_localizer_node";
 
   std::string path;
+  /*
   char* roshaRoot = NULL;
 
   roshaRoot = getenv("ROSHA_ROOT");
@@ -36,6 +37,13 @@ SlamAdapterReplace::SlamAdapterReplace()
     std::string path(roshaRoot);
     this->packagePath = path + "/lib/vrep_slam/";
   }
+  */
+
+  //get path to this package ...
+  path = ros::package::getPath("vrep_slam");
+  path = path + "/src/repair_plugins/";
+  this->pathedModelFilename = path + "Slam2SlamAdapterReplace.xml";
+
 
   int z;
   z = gethostname(hostname, sizeof hostname);
@@ -75,6 +83,7 @@ void SlamAdapterReplace::Repair()
   //time delay needed, because otherwise Care skips msgs
   std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
+  /*
   //send msg to Care with infos: target comp, new comp, parameter, workspace ... more?
   ROS_INFO("... replace vrep_slam_node with vrep_slam_adapter in the robot configuration model");
   rosha_msgs::CareRepairControl replaceMsg;
@@ -87,6 +96,19 @@ void SlamAdapterReplace::Repair()
   replaceMsg.compToPlace.workingDirectory = this->packagePath;
   replaceMsg.compToPlace.filename = "vrep_slam_adapter";
   replaceMsg.compToPlace.arguments = ""; //remote topics already hardcoded
+  */
+
+
+  //send msg to Care with infos: target comp, new comp, parameter, workspace ... more?
+  ROS_INFO("... replace vrep_slam_node with vrep_slam_adapter in the robot configuration model");
+  rosha_msgs::CareRepairControl replaceMsg;
+  replaceMsg.robotId = this->ownId;
+  replaceMsg.compName = "SLAM"; //this->targetCompName;
+  replaceMsg.compId = -1; //not known
+  replaceMsg.repairActionToPerform = rosha_msgs::CareRepairControl::RecomposeProcess;
+  replaceMsg.structureToPlace.modelFilename = this->pathedModelFilename;
+
+
 
   this->repairControlPup.publish(replaceMsg);
 

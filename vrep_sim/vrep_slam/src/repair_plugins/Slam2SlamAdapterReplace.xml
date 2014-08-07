@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>	
+
+	<func name="SLAM_Adapter" prio="6" working_dir="%ROSHA_ROOT%/lib/vrep_slam" filename="vrep_slam_adapter" >
+			<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="0" maxvalue="60" datatype="double"></charac>
+			<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="9000" maxvalue="12000" datatype="double"></charac>
+			<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="6"></charac>
+			<charac name="NewLineRate" type="OutputStream" source="stdout_log" regex_pattern="\n" output_type="match_rate" proptype="Range" minvalue="58" maxvalue="62"></charac>
+			<charac name="ExceptionRate" type="OutputStream" source="errout_log" regex_pattern="Exception" output_type="match_rate" proptype="Max" maxvalue="2"></charac>
+	</func>
