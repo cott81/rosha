@@ -30,8 +30,8 @@ VrepSlamAdapter_QBFD_Analyzer::VrepSlamAdapter_QBFD_Analyzer() :
 
   // a better way to do this? ... a config File for the analyzer (-> additional paramter for disturbances)
   // ros parameter server ?
-  this->cpuNodeStateLimits[0] = 20;    //lower threshhold [100 x % cpu]
-  this->cpuNodeStateLimits[1] = 175;    //upper threshhold
+  this->cpuNodeStateLimits[0] = 15;    //lower threshhold [100 x % cpu]
+  this->cpuNodeStateLimits[1] = 100;    //upper threshhold
 
 
   this->memNodeStateLimits[0] = 9000.0;    //low bound [kB]
@@ -46,8 +46,8 @@ VrepSlamAdapter_QBFD_Analyzer::VrepSlamAdapter_QBFD_Analyzer() :
   this->threadNodeStateLimits[1] = 6;  //upper bound
 
   //stream match count limits
-  this->streamNodeStateLimits_nl[0] = 58.0;    //lower bound old: 8
-  this->streamNodeStateLimits_nl[1] = 62.0;   //upper bound old: 10.0
+  this->streamNodeStateLimits_nl[0] = 28.0;    //lower bound old: 8
+  this->streamNodeStateLimits_nl[1] = 32.0;   //upper bound old: 10.0
 
   //stream rate exceptions per s
   this->streamNodeStateLimits_ex[0] = 0;        //everything above 0 is abnormal
