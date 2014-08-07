@@ -791,16 +791,35 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > VrepLocalizer_QBFD
 
     //better solution define stat. independance by resetting the definition of the parent (cap node)
 
-    //send msg to set the failure prob to 0 -> all ok, because else the last erronious state is kept in the SimBase error model
-    boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> ds(new diagnostic_msgs::DiagnosticStatus());
-    ds->name = this->fullName;
-    ds->hardware_id = this->robotIdString;
-    ds->level = diagnostic_msgs::DiagnosticStatus::OK;
-    ds->message = "OK: final message to reset this component";
-    output.push_back(ds);
-
     this->unmatched = false;
     this->matched = false;
+
+    //need to send a msg that everything is ok else the old failure state stays (Failure Recovery)
+    //TODO: hard coded ... be carefull ... replace with known strings ...
+    boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> ds = report_item_->toStatusMsg(path_);
+    ds->level = diagnostic_msgs::DiagnosticStatus::OK;
+    ds->message = "OK: Estimated failure probability < 50%. All in normal range";
+    ds->name = this->fullName;
+    ds->hardware_id = this->robotIdString;
+    vector<diagnostic_msgs::KeyValue> kvs;
+    diagnostic_msgs::KeyValue kv;
+    kv.key = "CompFailure_GPS_failure";
+    kv.value = "0";
+    kvs.push_back(kv); //copy ...
+    kv.key = "RootCause_FailureMode_deadlock";
+    kv.value = "0";
+    kvs.push_back(kv);
+    kv.key = "RootCause_FailureMode_endlessLoop";
+    kv.value = "0";
+    kvs.push_back(kv);
+    kv.key = "RootCause_FailureMode_crash";
+    kv.value = "0";
+    kvs.push_back(kv);
+    kv.key = "RootCause_FailureMode_normal";
+    kv.value = "1";
+    kvs.push_back(kv);
+    ds->values = kvs;
+    output.push_back(ds);
 
     return output;
   }
