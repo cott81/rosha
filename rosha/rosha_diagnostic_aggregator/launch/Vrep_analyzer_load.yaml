@@ -10,8 +10,8 @@ analyzers:
                                 path_group: System
                 #                 cap: Robot
                 #                 func: RobotAnalyzer
-                                systemNodesToAnalyze: [Robot, Move, Localize]
-                                systemNodesStateToAnalyze: [failure, failure, failure]
+                                systemNodesToAnalyze: [Robot, Move, Localize, RemoteProcessing]
+                                systemNodesStateToAnalyze: [failure, failure, failure, failure]
                                 type: vrep_system_analyzer_plugins/MagicCubeAnalyzer
                                 node_to_analyze: cf
 
