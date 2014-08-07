@@ -10,5 +10,26 @@
     
   </class>
   
+  
+  <class name="vrep_slam_adapter_analyzer_plugins/VrepSlamAdapter_QBFD_Analyzer" 
+  	type="vrep_slam_analyzer_plugins::VrepSlamAdapter_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the vrep slam adapter component
+    </description>
+    
+  </class>
+  
+  <class name="vrep_slam_remote_analyzer_plugins/VrepSlamRemote_QBFD_Analyzer" 
+  	type="vrep_slam_analyzer_plugins::VrepSlamRemote_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the vrep slam remote component
+    </description>
+    
+  </class>  
+  
 </library>
 

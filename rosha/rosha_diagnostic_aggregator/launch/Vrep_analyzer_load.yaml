@@ -38,8 +38,8 @@ analyzers:
                                                 path_group: Sensor
                                                 cap: localize
                                                 func: SLAM_Adapter
-                                                type: vrep_slam_analyzer_plugins/VrepSlam_QBFD_Analyzer
-                                                systemNodesToAnalyze: [SLAM, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                type: vrep_slam_adapter_analyzer_plugins/VrepSlamAdapter_QBFD_Analyzer
+                                                systemNodesToAnalyze: [SLAM_Adapter, FailureMode, FailureMode, FailureMode, FailureMode]
                                                 systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
                                                 node_to_analyze: SLAM_Adapter # needed?
                                         LaserDriver:
@@ -84,8 +84,8 @@ analyzers:
                                                 # USE THE SAME ANALYZER AS IN THE SLAM CASE
                                                 path_group: stuff
                                                 cap: remoteProcessing
-                                                func: SLAM_REMOTE
-                                                type: vrep_slam_analyzer_plugins/VrepSlam_QBFD_Analyzer
-                                                systemNodesToAnalyze: [SLAM, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                func: SLAM_Remote
+                                                type: vrep_slam_remote_analyzer_plugins/VrepSlamRemote_QBFD_Analyzer
+                                                systemNodesToAnalyze: [SLAM_Remote, FailureMode, FailureMode, FailureMode, FailureMode]
                                                 systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
-                                                node_to_analyze: SLAM_REMOTE # needed?
+                                                node_to_analyze: SLAM_Remote # needed?

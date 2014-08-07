@@ -39,7 +39,7 @@ void RemoteSlamProcessing::Repair()
   ROS_INFO("... integrate vrep_slam_node for remote processing in the robot configuration model");
   rosha_msgs::CareRepairControl remoteCompMsg;
   remoteCompMsg.robotId = this->ownId;
-  remoteCompMsg.compName = "SLAM_REMOTE";
+  remoteCompMsg.compName = "SLAM_Remote";
   remoteCompMsg.compId = -1; //not known
   remoteCompMsg.repairActionToPerform = rosha_msgs::CareRepairControl::IntegrateRemoteProcess;
   remoteCompMsg.structureToPlace.modelFilename = this->pathedModelFilename;

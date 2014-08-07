@@ -126,6 +126,8 @@ add_library(vrep_slam
  
 add_library(VrepSLAM_analyzer_plugins
    src/analyzer_plugins/vrep_slam_QBFD_analyzer.cpp
+   src/analyzer_plugins/vrep_slam_adapter_QBFD_analyzer.cpp
+   src/analyzer_plugins/vrep_slam_remote_QBFD_analyzer.cpp
    src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
 ) 
 
