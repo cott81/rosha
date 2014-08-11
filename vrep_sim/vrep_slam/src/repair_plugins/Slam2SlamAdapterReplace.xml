@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>	
 
-	<func name="SLAM_Adapter" prio="6" working_dir="%ROSHA_ROOT%/lib/vrep_slam" filename="vrep_slam_adapter" >
+	<func name="SLAM_Adapter" prio="6" working_dir="%ROSHA_ROOT%/lib/vrep_slam" filename="vrep_slam_adapter" arguments="-compId 201">
 			<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="0" maxvalue="60" datatype="double"></charac>
 			<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="9000" maxvalue="12000" datatype="double"></charac>
 			<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="6"></charac>

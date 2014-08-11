@@ -75,7 +75,7 @@ void LocalizerRedundantReplace::Repair()
   //TODO: replace with env var ROSHA ROOT
   replaceMsg.compToPlace.workingDirectory = this->packagePath;
   replaceMsg.compToPlace.filename = "vrep_localizer_redundant";
-  replaceMsg.compToPlace.arguments = "";
+  replaceMsg.compToPlace.arguments = "-compId 201";
 
   this->repairControlPup.publish(replaceMsg);
 
