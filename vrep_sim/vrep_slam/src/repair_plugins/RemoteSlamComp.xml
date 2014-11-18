@@ -2,9 +2,14 @@
 
 <cos name="remoteProcessing" id="1" prio="1" used_in_role="">
 <chan name="LocalizationInfo" senderNode="vrep_localizer_node" channel="/vrep/MagicCube/localizationInfo" msgType="Pose2D" msg_intervall="1000"> <!-- matches  -->
-	<func name="SLAM_REMOTE" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/vrep_slam" filename="vrep_slam_node" 
+	<func name="SLAM_Remote" prio="6" working_dir="%ROSHA_ROOT%/lib/vrep_slam" filename="vrep_slam_node" 
 		arguments="-robotId XY __name:=vrep_slam_node_REMOTE /vrep/MagicCube/localizationInfo:=/vrep/MagicCube/localizationInfo_REMOTE /vrep/MagicCube/LaserScanData:=/vrep/MagicCube/LaserScanData_REMOTE">
 		<!-- loc ground truth not part of the "normal" processing /vrep/MagicCube/localizationData:=/vrep/MagicCube/localizationData_REMOTE -->
+				<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="0" maxvalue="60" datatype="double"></charac>
+				<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="9000" maxvalue="12000" datatype="double"></charac>
+				<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="6"></charac>
+				<charac name="NewLineRate" type="OutputStream" source="stdout_log" regex_pattern="\n" output_type="match_rate" proptype="Range" minvalue="58" maxvalue="62"></charac>
+				<charac name="ExceptionRate" type="OutputStream" source="errout_log" regex_pattern="Exception" output_type="match_rate" proptype="Max" maxvalue="2"></charac>
 	    <chan name="TestChanName2" senderNode="ChanSenderNode2" channel="/channel2" msgType="MsgType2" msg_intervall="1000">
 	    </chan>
 	</func>

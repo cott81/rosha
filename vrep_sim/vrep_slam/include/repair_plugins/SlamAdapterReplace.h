@@ -8,13 +8,13 @@
 #ifndef SLAMADAPTERREPLACE_H_
 #define SLAMADAPTERREPLACE_H_
 
+#include <sstream>
 #include <exception>
-#include "ros/ros.h"
 #include <ros/package.h>
-
 
 #include <GenRepairPlugins/BaseRepair.h>
 #include <rosha_msgs/RepairAction.h>
+#include <std_msgs/String.h>
 
 namespace vrep_slam_repair_plugins
 {
@@ -32,7 +32,12 @@ private:
   std::string pluginName;
   std::string packagePath;
   const std::string corrsepondingCompName;
-  const int REPAIR_MSG_DELAY;
+
+  char hostname[128];
+  std::string fullName;
+  std::string pathedModelFilename;
+
+  ros::Publisher diagDeactivatePup;
 };
 
 } /* namespace vrep_localization_repair_plugins */

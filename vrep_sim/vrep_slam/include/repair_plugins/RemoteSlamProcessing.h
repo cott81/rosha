@@ -8,7 +8,6 @@
 #ifndef REMOTESLAMPROCESSING_H_
 #define REMOTESLAMPROCESSING_H_
 
-#include "ros/ros.h"
 #include <ros/package.h>
 
 #include <GenRepairPlugins/BaseRepair.h>
@@ -24,7 +23,7 @@ public:
   virtual ~RemoteSlamProcessing();
   void Initialize(void** data, int length);
   void Repair();
-  std::string GetName() {return this->pluginName;}
+  std::string GetName() {return this->PLUGIN_NAME;}
 
   void SetData(const rosha_msgs::RepairAction::ConstPtr& msg)
   {
@@ -35,10 +34,8 @@ public:
   }
 
 private:
-  std::string pluginName;
+  const std::string PLUGIN_NAME;
   std::string packagePath;
-  const std::string corrsepondingCompName;
-  const int REPAIR_MSG_DELAY;
   std::string pathedModelFilename;
   int failedRobotId;
 };

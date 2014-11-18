@@ -8,11 +8,12 @@
 #ifndef LOCALIZERSLAMRECOMPOSE_H_
 #define LOCALIZERSLAMRECOMPOSE_H_
 
-#include "ros/ros.h"
+#include <sstream>
 #include <ros/package.h>
 
 #include <GenRepairPlugins/BaseRepair.h>
 #include <rosha_msgs/RepairAction.h>
+#include <std_msgs/String.h>
 
 namespace vrep_localization_repair_plugins
 {
@@ -29,8 +30,12 @@ public:
 private:
   std::string pluginName;
   const std::string corrsepondingCompName;
-  const int REPAIR_MSG_DELAY;
   std::string pathedModelFilename;
+
+  ros::Publisher diagDeactivatePup;
+
+  char hostname[128];
+  std::string fullName;
 };
 
 } /* namespace vrep_localization_repair_plugins */

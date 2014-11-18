@@ -1,0 +1,14 @@
+<library path="lib/libVrepMotion_analyzer_plugins" >
+
+  <class name="vrep_motion_analyzer_plugins/VrepMotion_QBFD_Analyzer" 
+  	type="vrep_motion_analyzer_plugins::VrepMotion_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the vrep motion component
+    </description>
+    
+  </class>
+  
+</library>
+

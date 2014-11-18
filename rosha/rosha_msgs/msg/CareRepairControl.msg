@@ -3,6 +3,8 @@ int16 Undefined = -1
 int16 StartProcess = 10
 int16 StopProcess = 11
 int16 KillProcess = 12
+# starts and monitors the complete system (complete start needed due to the current care implementation) 
+int16 StartNMonSys = 13
 int16 ReplaceProcess = 20
 int16 RecomposeProcess = 21
 int16 IntegrateRemoteProcess = 22

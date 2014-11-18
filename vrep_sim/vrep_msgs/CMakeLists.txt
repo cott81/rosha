@@ -53,6 +53,7 @@ find_package(catkin REQUIRED COMPONENTS
 	RobotHealthInfo.msg
 	CapHealthInfo.msg
 	FuncHealthInfo.msg
+	MissionInfo.msg
  )
 
 ## Generate services in the 'srv' folder

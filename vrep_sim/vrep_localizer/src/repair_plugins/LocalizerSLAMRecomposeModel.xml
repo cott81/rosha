@@ -2,10 +2,21 @@
 
 <!-- <chan name="TestChanName" senderNode="ChanSenderNode" channel="/channel" msgType="MsgType" msg_intervall="1000"> --> <!-- dont matches --> 
 <!-- <chan name="LocalizationInfo" senderNode="vrep_localizer_node" channel="/vrep/MagicCube12/localizationInfo" msgType="Pose2D" msg_intervall="1000"> --> <!-- matches --> 
-	<func name="SLAM" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/vrep_slam" filename="vrep_slam_node" arguments="">
+	<func name="SLAM" prio="6" working_dir="%ROSHA_ROOT%/lib/vrep_slam" filename="vrep_slam_node" arguments="-compId 201">
+		<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="0" maxvalue="60" datatype="double"></charac>
+		<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="9000" maxvalue="12000" datatype="double"></charac>
+		<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="6"></charac>
+		<charac name="NewLineRate" type="OutputStream" source="stdout_log" regex_pattern="\n" output_type="match_rate" proptype="Range" minvalue="58" maxvalue="62"></charac>
+		<charac name="ExceptionRate" type="OutputStream" source="errout_log" regex_pattern="Exception" output_type="match_rate" proptype="Max" maxvalue="2"></charac>
+		
 	    <chan name="TestChanName2" senderNode="ChanSenderNode2" channel="/channel2" msgType="MsgType2" msg_intervall="1000">
-	      <func name="LaserDriver" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/vrep_laser_driver" filename="vrep_laser_driver_node" arguments="">
-<!-- 		<chan name="TestChanName3" senderNode="ChanSenderNode3" channel="/channel3" msgType="MsgType3" msg_intervall="1000"> -->
+	      <func name="LaserDriver" prio="6" working_dir="%ROSHA_ROOT%/lib/vrep_laser_driver" filename="vrep_laser_driver_node" arguments="-compId 202">
+
+			<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="0" maxvalue="60" datatype="double"></charac>
+			<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="7440" maxvalue="9500" datatype="double"></charac>
+			<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="6"></charac>
+			<charac name="NewLineRate" type="OutputStream" source="stdout_log" regex_pattern="\n" output_type="match_rate" proptype="Range" minvalue="29" maxvalue="30"></charac>
+			<charac name="ExceptionRate" type="OutputStream" source="errout_log" regex_pattern="Exception" output_type="match_rate" proptype="Max" maxvalue="2"></charac>
 		<chan name="someChan" senderNode="vrep_some_node" channel="/vrep/MagicCube12/some" msgType="Data" msg_intervall="1000">
 		</chan>
 	      </func>

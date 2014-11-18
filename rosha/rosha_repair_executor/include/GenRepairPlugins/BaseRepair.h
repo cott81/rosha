@@ -23,6 +23,8 @@
 #define BASEREPAIR_H_
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include <ros/ros.h>
 #include <rosha_msgs/CareRepairControl.h>
@@ -53,7 +55,7 @@ namespace gen_repair_plugins
 
 
     protected:
-      BaseRepair()
+      BaseRepair(int msgDelay=10) : REPAIR_MSG_DELAY_MS(msgDelay)
     {
         this->repairType = 100;
         this->nh = new ros::NodeHandle();
@@ -67,6 +69,8 @@ namespace gen_repair_plugins
       int targetCompId;
       std::string targetCompName;
       int ownId;
+
+      const int REPAIR_MSG_DELAY_MS;
 
   };
 };

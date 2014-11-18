@@ -1,0 +1,91 @@
+pub_rate: 1.0 # Optional
+base_path: '' # Optional, prepended to all diagnostic output
+
+analyzers:
+
+        system:
+                type: AnalyzerGroup
+                analyzers:
+                        MagicCubeAnalyzers:
+                                path_group: System
+                #                 cap: Robot
+                #                 func: RobotAnalyzer
+                                systemNodesToAnalyze: [Robot, Move, Localize, RemoteProcessing]
+                                systemNodesStateToAnalyze: [failure, failure, failure, failure]
+                                type: vrep_system_analyzer_plugins/MagicCubeAnalyzer
+                                node_to_analyze: cf
+
+        sensors:
+                type: AnalyzerGroup
+                analyzers:
+                        localize:
+                                type: AnalyzerGroup
+                                analyzers:
+                                        SLAM:
+                                                # defines a tree structure for the robot_monitor (not tested any more)
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: SLAM
+                                                # fully qualified type of the Analyzer (as specified in the plugin xml)
+                                                type: vrep_slam_analyzer_plugins/VrepSlam_QBFD_Analyzer
+                                                # specifies the nodes and states of the model (DBN) to query 
+                                                systemNodesToAnalyze: [SLAM, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: SLAM # needed for matching the monitoring information match() ... needs to be the name in the robot model
+                                                # ... paramters for mon classification? Up to now hard coded.
+                                        SLAM_Adapter:
+                                                # USE THE SAME ANALYZER AS IN THE SLAM CASE
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: SLAM_Adapter
+                                                type: vrep_slam_adapter_analyzer_plugins/VrepSlamAdapter_QBFD_Analyzer
+                                                systemNodesToAnalyze: [SLAM_Adapter, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: SLAM_Adapter # needed?
+                                        LaserDriver:
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: LaserDriver
+                                                type: vrep_laser_driver_analyzer_plugins/VrepLaserDriver_QBFD_Analyzer
+                                                systemNodesToAnalyze: [LaserDriver, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: LaserDriver # needed?                                       
+                                        GPS:
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: GPS
+                                                type: vrep_localizer_analyzer_plugins/VrepLocalizer_QBFD_Analyzer
+                                                systemNodesToAnalyze: [GPS, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: GPS
+
+        actuators:
+                type: AnalyzerGroup
+                analyzers:
+                        move:
+                                type: AnalyzerGroup
+                                analyzers:
+                                        Motion:
+                                                path_group: Actuators
+                                                cap: move
+                                                func: Motion
+                                                type: vrep_motion_analyzer_plugins/VrepMotion_QBFD_Analyzer
+                                                systemNodesToAnalyze: [Motion, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: Motion
+                                                
+        stuff:
+                type: AnalyzerGroup
+                analyzers:
+                        remoteProcessing:
+                                type: AnalyzerGroup
+                                analyzers:
+                                        SLAM_REMOTE:
+                                                # USE THE SAME ANALYZER AS IN THE SLAM CASE
+                                                path_group: stuff
+                                                cap: remoteProcessing
+                                                func: SLAM_Remote
+                                                type: vrep_slam_remote_analyzer_plugins/VrepSlamRemote_QBFD_Analyzer
+                                                systemNodesToAnalyze: [SLAM_Remote, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: SLAM_Remote # needed?

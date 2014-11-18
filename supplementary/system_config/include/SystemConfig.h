@@ -47,13 +47,14 @@ namespace supplementary
 		void setRootPath(string rootPath);
 		void setConfigPath(string configPath);
 		static string getEnv(const string& var);
-		static int ownRobotID;
+		//static int ownRobotID;
 
 	private:
 		SystemConfig();
 		~SystemConfig(){};
 	};
 
-	int SystemConfig::ownRobotID= 0;
+	//int SystemConfig::ownRobotID= 0;
+	static int ownRobotID = 0;
 }
 #endif /* SYSTEMCONFIG_H_ */

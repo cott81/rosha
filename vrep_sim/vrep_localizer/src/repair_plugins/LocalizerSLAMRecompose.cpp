@@ -11,7 +11,7 @@ namespace vrep_localization_repair_plugins
 {
 
 LocalizerSLAMRecompose::LocalizerSLAMRecompose()
-: corrsepondingCompName("vrep_localizer_node"), REPAIR_MSG_DELAY(1)
+: BaseRepair(), corrsepondingCompName("vrep_localizer_node")
 {
   this->pluginName = "LocalizerSLAMRecompose";
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_LOC_RECOMPOSE;
@@ -20,6 +20,15 @@ LocalizerSLAMRecompose::LocalizerSLAMRecompose()
   std::string path = ros::package::getPath("vrep_localizer");
   path = path + "/src/repair_plugins/";
   this->pathedModelFilename = path + "LocalizerSLAMRecomposeModel.xml";
+
+  this->diagDeactivatePup = nh->advertise<std_msgs::String>("/diagnostics_deactivate", 1000); //call Care to do some repair stuff
+
+  int z;
+  z = gethostname(hostname, sizeof hostname);
+  this->fullName = "";
+  std::stringstream ss;
+  ss << this->hostname << "_" << "GPS";
+  ss >> this->fullName;
 }
 
 LocalizerSLAMRecompose::~LocalizerSLAMRecompose()
@@ -46,7 +55,7 @@ void LocalizerSLAMRecompose::Repair()
   this->repairControlPup.publish(stopMsg);
 
   //time delay needed, because otherwise Care skips msgs
-  sleep(REPAIR_MSG_DELAY);
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
   //send msg to Care with infos: target comp, new comp, parameter, workspace ... more?
   ROS_INFO("... replace vrep_localizer_node with vrep_localizer_redundant in the robot configuration model");
@@ -60,29 +69,24 @@ void LocalizerSLAMRecompose::Repair()
   this->repairControlPup.publish(replaceMsg);
 
   //time delay needed
-  sleep(REPAIR_MSG_DELAY);
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
-  //send start msg ... recovery manager that triggers this reoair is only active if the system should perform its task
-  // start all funcs in the model ... maunal by name
-  //TODO: replace the hard coded names ... read this from the model file
+  //deactivates diagnosis for GPS
+  ROS_INFO("... deactivates vrep_localizer_node (GPS) diagnosis");
+  std_msgs::String deactivateDiagMsg_gps;
+  deactivateDiagMsg_gps.data = this->fullName; //e.g. "iceland_GPS"
 
-  ROS_INFO("... start vrep_laser_driver_node");
-  rosha_msgs::CareRepairControl startMsg_laser;
-  startMsg_laser.robotId = this->ownId;
-  startMsg_laser.repairActionToPerform = rosha_msgs::CareRepairControl::StartProcess;
-  startMsg_laser.compName = "LaserDriver";
+  this->diagDeactivatePup.publish(deactivateDiagMsg_gps);
 
-  this->repairControlPup.publish(startMsg_laser);
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
-  sleep(REPAIR_MSG_DELAY);
+  ROS_INFO("... (starts and) monitors the system");
+  rosha_msgs::CareRepairControl startMonMsg;
+  startMonMsg.robotId = this->ownId;
+  startMonMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartNMonSys;
+  startMonMsg.compName = "";
 
-  ROS_INFO("... start vrep_slam_node");
-  rosha_msgs::CareRepairControl startMsg_slam;
-  startMsg_slam.robotId = this->ownId;
-  startMsg_slam.repairActionToPerform = rosha_msgs::CareRepairControl::StartProcess;
-  startMsg_slam.compName = "SLAM";
-
-  this->repairControlPup.publish(startMsg_slam);
+  this->repairControlPup.publish(startMonMsg);
 
 
   return;

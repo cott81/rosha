@@ -56,7 +56,7 @@ void LaserScanDataCallback(const vrep_msgs::LaserScanData::ConstPtr& msg)
 
 void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
-  cout << "get pose info from vrep" << endl;
+  //cout << "get pose info from vrep" << endl;
 
   //convert to a 2D pose
   tf::Pose pose;
@@ -75,6 +75,13 @@ void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 
 int main (int argc, char** argv)
 {
+
+  //TEMP ONLY
+
+  //exit(1);
+  //
+
+
   bool robotIdByArg = false;
   bool useRobotIdInTopic = false;
   string help = "Vrep SLAM\n"

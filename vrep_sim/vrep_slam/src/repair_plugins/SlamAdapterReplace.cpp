@@ -14,17 +14,17 @@ namespace vrep_slam_repair_plugins
 {
 
 SlamAdapterReplace::SlamAdapterReplace()
-: corrsepondingCompName("vrep_slam_node"), REPAIR_MSG_DELAY(1)
+: BaseRepair(), corrsepondingCompName("vrep_slam_node")
 {
   this->pluginName = "SlamAdapterReplace";
   this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_SLAM_ADAPTER_REPLACE;
   //this->corrsepondingCompName = "vrep_localizer_node";
 
   std::string path;
+  /*
   char* roshaRoot = NULL;
 
   roshaRoot = getenv("ROSHA_ROOT");
-  ROS_INFO("... get rosha env var: %s", roshaRoot);
 
   if ( roshaRoot == NULL || strcmp(roshaRoot, "") == 0)
   {
@@ -37,8 +37,24 @@ SlamAdapterReplace::SlamAdapterReplace()
     std::string path(roshaRoot);
     this->packagePath = path + "/lib/vrep_slam/";
   }
+  */
+
+  //get path to this package ...
+  path = ros::package::getPath("vrep_slam");
+  path = path + "/src/repair_plugins/";
+  this->pathedModelFilename = path + "Slam2SlamAdapterReplace.xml";
+
+
+  int z;
+  z = gethostname(hostname, sizeof hostname);
+  this->fullName = "";
+  std::stringstream ss;
+  ss << this->hostname << "_" << "SLAM";
+  ss >> this->fullName;
 
   //this->packagePath = "/home/dominik/work/rosha_ws/devel/lib/vrep_slam";
+
+  this->diagDeactivatePup = nh->advertise<std_msgs::String>("/diagnostics_deactivate", 1000); //call Care to do some repair stuff
 }
 
 SlamAdapterReplace::~SlamAdapterReplace()
@@ -65,8 +81,9 @@ void SlamAdapterReplace::Repair()
   this->repairControlPup.publish(stopMsg);
 
   //time delay needed, because otherwise Care skips msgs
-  sleep(REPAIR_MSG_DELAY);
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
+  /*
   //send msg to Care with infos: target comp, new comp, parameter, workspace ... more?
   ROS_INFO("... replace vrep_slam_node with vrep_slam_adapter in the robot configuration model");
   rosha_msgs::CareRepairControl replaceMsg;
@@ -79,22 +96,41 @@ void SlamAdapterReplace::Repair()
   replaceMsg.compToPlace.workingDirectory = this->packagePath;
   replaceMsg.compToPlace.filename = "vrep_slam_adapter";
   replaceMsg.compToPlace.arguments = ""; //remote topics already hardcoded
+  */
+
+
+  //send msg to Care with infos: target comp, new comp, parameter, workspace ... more?
+  ROS_INFO("... replace vrep_slam_node with vrep_slam_adapter in the robot configuration model");
+  rosha_msgs::CareRepairControl replaceMsg;
+  replaceMsg.robotId = this->ownId;
+  replaceMsg.compName = "SLAM"; //this->targetCompName;
+  replaceMsg.compId = -1; //not known
+  replaceMsg.repairActionToPerform = rosha_msgs::CareRepairControl::RecomposeProcess;
+  replaceMsg.structureToPlace.modelFilename = this->pathedModelFilename;
+
+
 
   this->repairControlPup.publish(replaceMsg);
 
   //time delay needed
-  sleep(REPAIR_MSG_DELAY);
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
 
+  //deactivates diagnosis for GPS
+  ROS_INFO("... deactivates vrep_slam_node (SLAM) diagnosis");
+  std_msgs::String deactivateDiagMsg_gps;
+  deactivateDiagMsg_gps.data = this->fullName; //e.g. "iceland_SLAM"
 
-  //send start msg ... recovery manager that triggers this reoair is only active if the system should perform its task
-  // ... not yet possible ... process dictionary is not yet updated with the new func name ... still the old!
-  ROS_INFO("... (re)start vrep_slam_adapter");
-  rosha_msgs::CareRepairControl startMsg;
-  startMsg.robotId = this->ownId;
-  startMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartProcess;
-  startMsg.compName = "SLAM_Adapter";
+  this->diagDeactivatePup.publish(deactivateDiagMsg_gps);
 
-  this->repairControlPup.publish(startMsg);
+  std::this_thread::sleep_for(std::chrono::milliseconds(REPAIR_MSG_DELAY_MS));
+
+  ROS_INFO("... (starts and) monitors the system");
+  rosha_msgs::CareRepairControl startMonMsg;
+  startMonMsg.robotId = this->ownId;
+  startMonMsg.repairActionToPerform = rosha_msgs::CareRepairControl::StartNMonSys;
+  startMonMsg.compName = "";
+
+  this->repairControlPup.publish(startMonMsg);
 
   return;
 }

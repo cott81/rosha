@@ -17,5 +17,8 @@ float64 failureProb
 #robot local failure recovery failed
 bool localFailureRecoveryFailed
 
+#robot has unrecoverable failed
+bool isUnrecoverable
+
 #capabilities of the robot
 CapHealthInfo[] caps 

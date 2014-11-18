@@ -43,7 +43,7 @@ PLUGINLIB_DECLARE_CLASS(diagnostic_aggregator, AnalyzerGroup, diagnostic_aggrega
                         diagnostic_aggregator::Analyzer)
 
 AnalyzerGroup::AnalyzerGroup() :
-    path_(""), nice_name_(""), analyzer_loader_("my_diagnostic_aggregator", "diagnostic_aggregator::Analyzer")
+    path_(""), nice_name_(""), analyzer_loader_("rosha_diagnostic_aggregator", "diagnostic_aggregator::Analyzer")
 {
   //hard coded package name!
   //analyzer_loader_("diagnostic_aggregator", "diagnostic_aggregator::Analyzer") //orignal line
@@ -101,6 +101,7 @@ bool AnalyzerGroup::init(const string base_path, const ros::NodeHandle &n)
         vector<string> classes = analyzer_loader_.getDeclaredClasses();
         for (unsigned int i = 0; i < classes.size(); ++i)
         {
+          cout << "declared class: " << classes[i] << endl;
           if (an_type == analyzer_loader_.getName(classes[i]))
           {
             //if we've found a match... we'll get the fully qualified name and break out of the loop
@@ -173,9 +174,9 @@ bool AnalyzerGroup::match(const string name)
     return false;
 
   bool match_name = false;
-  if (matched_.count(name))
+  if (matched_.count(name))     //dki: name of the status item already in map?
   {
-    vector<bool> &mtch_vec = matched_[name];
+    vector<bool> &mtch_vec = matched_[name];    //vector of bools that matches for this item
     for (unsigned int i = 0; i < mtch_vec.size(); ++i)
     {
       if (mtch_vec[i])
@@ -184,15 +185,44 @@ bool AnalyzerGroup::match(const string name)
     return false;
   }
 
-  matched_[name].resize(analyzers_.size());
+  // item not yet in map?
+  matched_[name].resize(analyzers_.size()); //???
   for (unsigned int i = 0; i < analyzers_.size(); ++i)
   {
-    bool mtch = analyzers_[i]->match(name);
+    bool mtch = analyzers_[i]->match(name); //call match function of the analyzer
     match_name = mtch || match_name;
-    matched_[name].at(i) = mtch;
+    matched_[name].at(i) = mtch; //set true on this position
   }
 
   return match_name;
+}
+
+/*
+ * called by an callback of an rostopic to stop analyzing a component
+ */
+bool AnalyzerGroup::unmatch(const string itemName)
+{
+  // call unmatch of the registered analyzers -> send a last "corrective msg?, or simply reset the node in the system model?
+
+
+  // reset the bool vector to false
+  if (matched_.count(itemName))
+  {
+    for (unsigned int i = 0; i < matched_[itemName].size(); ++i)
+    {
+      //call unmatch for all registered analyzers
+      if (matched_[itemName][i])
+      {
+        analyzers_[i]->unmatch(itemName); //needs to be defined in the Analyzer
+      }
+
+      // unregister
+      matched_[itemName][i] = false;
+    }
+  }
+
+
+  return true;
 }
 
 bool AnalyzerGroup::analyze(const boost::shared_ptr<StatusItem> item)
@@ -203,7 +233,7 @@ bool AnalyzerGroup::analyze(const boost::shared_ptr<StatusItem> item)
   vector<bool> &mtch_vec = matched_[item->getName()];
   for (unsigned int i = 0; i < mtch_vec.size(); ++i)
   {
-    if (mtch_vec[i])
+    if (mtch_vec[i]) //check if matched
       analyzed = analyzers_[i]->analyze(item) || analyzed;
   }
 

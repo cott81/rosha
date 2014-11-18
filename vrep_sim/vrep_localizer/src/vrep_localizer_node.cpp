@@ -30,13 +30,10 @@ int robotId = 0; //robotId
 void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
 
-  cout << "get pose" << endl;
-
   tf::Pose pose;
   tf::poseMsgToTF(msg->pose, pose);
 
   double yaw_angle = tf::getYaw(pose.getRotation());
-  cout << "\tyaw: " << yaw_angle << endl;
 
   //publish msg with "resulting" localiation infos
   vrep_msgs::Pose2D msg2;
