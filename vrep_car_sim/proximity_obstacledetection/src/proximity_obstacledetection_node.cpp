@@ -271,13 +271,23 @@ int main(int argc,char* argv[]) {
 	//bring the lib in
 	proximityOD = new ProximityObstacledetection();
 
-	ros::init(argc, argv, "proximity_obstacledetection_node");
-	ros::NodeHandle n;
+	//ros::init(argc, argv, "proximity_obstacledetection_node");
+	//ros::NodeHandle n;
 
 	if (!robotIdByArg) {
 		robotId = supplementary::SystemConfig::GetOwnRobotID();
 	}
+
+        string nodeName;
+        stringstream sss;
+        sss << "proximity_obstacledetection_node__" << robotId;
+        sss >> nodeName;
+        ros::init(argc, argv, nodeName);
+        ros::NodeHandle n;
+
 	ROS_INFO("own robot Id: %d\n", robotId);
+
+
 
 //	error_seeder::ErrorSeederLib esl(compId);
 

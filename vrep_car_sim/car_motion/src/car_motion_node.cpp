@@ -352,15 +352,25 @@ int main(int argc,char* argv[]) {
 	//bring the lib in
 	carMotion = new CarMotion();
 
-	ros::init(argc, argv, "car_motion_node");
-	ros::NodeHandle n;
+	//ros::init(argc, argv, "car_motion_node");
+	//ros::NodeHandle n;
+
 //	string nodeName = "CarMotion" + boost::lexical_cast<std::string>(robotId);
 //	n.remapName(nodeName);
 
 	if (!robotIdByArg) {
 		robotId = supplementary::SystemConfig::GetOwnRobotID();
 	}
+
+	string nodeName;
+	stringstream sss;
+	sss << "car_motion_node__" << robotId;
+	sss >> nodeName;
+        ros::init(argc, argv, nodeName);
+        ros::NodeHandle n;
+
 	ROS_INFO("own robot Id: %d\n", robotId);
+
 
 //	error_seeder::ErrorSeederLib esl(compId);
 
