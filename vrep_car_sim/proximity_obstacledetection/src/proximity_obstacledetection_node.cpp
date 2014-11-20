@@ -2,7 +2,7 @@
 
 #include "ros/ros.h"
 #include "car_msgs/DetectedDistance.h"
-#include "car_msgs/ProximityDistance.h"
+#include "car_msgs/ProximityData.h"
 #include "std_msgs/Float32.h"
 #include "geometry_msgs/Point32.h"
 #include "vrep_common/ProximitySensorData.h"
@@ -21,6 +21,12 @@ ProximityObstacledetection* proximityOD;
 
 // Publisher
 ros::Publisher* distancePublisher;
+ros::Publisher* frontLeftPublisher;
+ros::Publisher* frontMidPublisher;
+ros::Publisher* frontRightPublisher;
+ros::Publisher* rearLeftPublisher;
+ros::Publisher* rearMidPublisher;
+ros::Publisher* rearRightPublisher;
 
 // Data queues
 queue <float> flQue;
@@ -150,10 +156,15 @@ void frontLeftCallback(const std_msgs::Float32::ConstPtr& msg) {
 //	proxMsg.distance = msg->data;
 //
 //	distancePublisher->publish(proxMsg);
-	cout << "FL_CALLBACK: " << flQue.size() << endl;
+//	cout << "FL_CALLBACK: " << flQue.size() << endl;
+//
+//	flQue.push(msg->data);
+//	publish();
+	car_msgs::ProximityData proximityMsg;
 
-	flQue.push(msg->data);
-	publish();
+	proximityMsg.robotId = robotId;
+	proximityMsg.distance = msg->data;
+	frontLeftPublisher->publish(proximityMsg);
 }
 
 void frontMiddleCallback(const std_msgs::Float32::ConstPtr& msg) {
@@ -300,6 +311,24 @@ int main(int argc,char* argv[]) {
 
 	ros::Publisher distancePub = n.advertise<car_msgs::DetectedDistance>(distancePubTopic, 1);
 	distancePublisher = &distancePub;
+
+	ros::Publisher frontLeftPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/frontLeftProx", 1);
+	frontLeftPublisher = &frontLeftPub;
+
+	ros::Publisher frontMidPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/frontMidProx", 1);
+	frontLeftPublisher = &frontMidPub;
+
+	ros::Publisher frontRightPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/frontRightProx", 1);
+	frontLeftPublisher = &frontRightPub;
+
+	ros::Publisher rearLeftPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/rearLeftProx", 1);
+	frontLeftPublisher = &rearLeftPub;
+
+	ros::Publisher rearMidPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/rearMidProx", 1);
+	frontLeftPublisher = &rearMidPub;
+
+	ros::Publisher rearRightPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/rearRightProx", 1);
+	frontLeftPublisher = &rearRightPub;
 
 	ros::Subscriber frontLeftSub = n.subscribe(proxSubTopic + "frontLeftProx", 1, frontLeftCallback);
 	ros::Subscriber frontMiddleSub = n.subscribe(proxSubTopic + "frontMiddleProx", 1, frontMiddleCallback);

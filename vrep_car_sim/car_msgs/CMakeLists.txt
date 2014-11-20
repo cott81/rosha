@@ -49,6 +49,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    DetectedSignals.msg
    ProximityDistance.msg
+   ProximityData.msg
    DetectedDistance.msg
  )
 
