@@ -136,12 +136,20 @@ int main(int argc,char* argv[]) {
 	//bring the lib in
 	cameraBlobdetection = new CameraBlobdetection();
 
-	ros::init(argc, argv, "camera_blobdetection_node");
-	ros::NodeHandle n;
+	//ros::init(argc, argv, "camera_blobdetection_node");
+	//ros::NodeHandle n;
 
 	if (!robotIdByArg) {
 		robotId = supplementary::SystemConfig::GetOwnRobotID();
 	}
+
+        string nodeName;
+        stringstream sss;
+        sss << "camera_blobdetection_node__" << robotId;
+        sss >> nodeName;
+        ros::init(argc, argv, nodeName);
+        ros::NodeHandle n;
+
 	ROS_INFO("own robot Id: %d\n", robotId);
 
 //	error_seeder::ErrorSeederLib esl(compId);
