@@ -10,7 +10,7 @@
 #include "car_msgs/ProximityDistance.h"
 #include "std_msgs/Float64.h"
 #include "vrep_common/VisionSensorData.h"
-//#include "error_seeder/ErrorSeederLib.h"
+#include "error_seeder/ErrorSeederLib.h"
 #include "SystemConfig.h"
 //#include "v_repLib.h"
 
@@ -372,7 +372,7 @@ int main(int argc,char* argv[]) {
 	ROS_INFO("own robot Id: %d\n", robotId);
 
 
-//	error_seeder::ErrorSeederLib esl(compId);
+	error_seeder::ErrorSeederLib esl(compId);
 
 	// build topic name
 	string leftMotorPubTopic;

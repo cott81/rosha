@@ -1,0 +1,14 @@
+<library path="lib/libCarMotion_analyzer_plugins" >
+
+  <class name="car_motion_analyzer_plugins/Car_Motion_QBFD_Analyzer" 
+  	type="car_motion_analyzer_plugins::Car_Motion_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the car motion component
+    </description>
+    
+  </class>
+  
+</library>
+
