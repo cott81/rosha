@@ -18,8 +18,11 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   car_msgs
   std_msgs
-  #error_seeder
-  system_config
+  error_seeder
+    system_config
+  roslib
+  smile_lib
+  rosha_diagnostic_aggregator  
 )
 
 ## System dependencies are found with CMake's conventions
@@ -117,6 +120,11 @@ include_directories(
 add_library(proximity_obstacledetection
    src/ProximityObstacledetection.cpp
  )
+ 
+add_library(ProximityObstacledetection_analyzer_plugins
+   src/analyzer_plugins/proximity_obstacledetection_QBFD_analyzer.cpp
+   src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
+)  
 
 ## Declare a cpp executable
 add_executable(proximity_obstacledetection_node src/proximity_obstacledetection_node.cpp)

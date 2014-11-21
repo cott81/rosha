@@ -20,6 +20,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   error_seeder
   system_config
+  roslib
+  smile_lib
+  rosha_diagnostic_aggregator  
 )
 
 ## System dependencies are found with CMake's conventions
@@ -117,6 +120,11 @@ include_directories(
 add_library(car_motion
    src/CarMotion.cpp
  )
+ 
+add_library(CarMotion_analyzer_plugins
+   src/analyzer_plugins/car_motion_QBFD_analyzer.cpp
+   src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
+) 
 
 ## Declare a cpp executable
 add_executable(car_motion_node src/car_motion_node.cpp)

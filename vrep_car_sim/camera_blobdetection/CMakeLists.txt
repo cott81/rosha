@@ -18,8 +18,11 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   car_msgs
   std_msgs
-  #error_seeder
+  error_seeder
   system_config
+  roslib
+  smile_lib
+  rosha_diagnostic_aggregator  
 )
 
 ## System dependencies are found with CMake's conventions
@@ -117,6 +120,11 @@ include_directories(
 add_library(camera_blobdetection
    src/CameraBlobdetection.cpp
  )
+ 
+add_library(CameraBlobDetection_analyzer_plugins
+   src/analyzer_plugins/camera_blobdetection_QBFD_analyzer.cpp
+   src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
+) 
 
 ## Declare a cpp executable
 add_executable(camera_blobdetection_node src/camera_blobdetection_node.cpp)
@@ -129,6 +137,11 @@ add_executable(camera_blobdetection_node src/camera_blobdetection_node.cpp)
 target_link_libraries(camera_blobdetection_node
   ${catkin_LIBRARIES}
   camera_blobdetection
+)
+
+target_link_libraries(CameraBlobDetection_analyzer_plugins
+   ${catkin_LIBRARIES}
+   # smile DiagnosticEngine DkiHelpersCpp
 )
 
 #############

@@ -1,0 +1,14 @@
+<library path="lib/libProximityObstacledetection_analyzer_plugins" >
+
+  <class name="proximity_obstacledetection_analyzer_plugins/Proximity_Obstacledetection_QBFD_Analyzer" 
+  	type="proximity_obstacledetection_analyzer_plugins::Proximity_Obstacledetection_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the proximity_obstacledetection component
+    </description>
+    
+  </class>
+  
+</library>
+

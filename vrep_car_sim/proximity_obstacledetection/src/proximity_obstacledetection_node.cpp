@@ -6,7 +6,7 @@
 #include "std_msgs/Float32.h"
 #include "geometry_msgs/Point32.h"
 #include "vrep_common/ProximitySensorData.h"
-//#include "error_seeder/ErrorSeederLib.h"
+#include "error_seeder/ErrorSeederLib.h"
 #include "SystemConfig.h"
 //#include "v_repLib.h"
  #include <queue>
@@ -300,7 +300,7 @@ int main(int argc,char* argv[]) {
 
 
 
-//	error_seeder::ErrorSeederLib esl(compId);
+	error_seeder::ErrorSeederLib esl(compId);
 
 	// build topic name
 	string distancePubTopic;
