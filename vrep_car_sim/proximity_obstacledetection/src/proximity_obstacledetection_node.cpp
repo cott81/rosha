@@ -175,11 +175,17 @@ void frontMiddleCallback(const std_msgs::Float32::ConstPtr& msg) {
 //	proxMsg.distance = msg->data;
 //
 //	distancePublisher->publish(proxMsg);
+//
+//	cout << "FM_CALLBACK: " << fmQue.size() << endl;
+//
+//	fmQue.push(msg->data);
+//	publish();
 
-	cout << "FM_CALLBACK: " << fmQue.size() << endl;
+	car_msgs::ProximityData proximityMsg;
 
-	fmQue.push(msg->data);
-	publish();
+	proximityMsg.robotId = robotId;
+	proximityMsg.distance = msg->data;
+	frontMidPublisher->publish(proximityMsg);
 }
 
 void frontRightCallback(const std_msgs::Float32::ConstPtr& msg) {
@@ -190,12 +196,17 @@ void frontRightCallback(const std_msgs::Float32::ConstPtr& msg) {
 //	proxMsg.distance = msg->data;
 //
 //	distancePublisher->publish(proxMsg);
+//
+//
+//	cout << "FR_CALLBACK: " << frQue.size() << endl;
+//
+//	frQue.push(msg->data);
+//	publish();
 
-
-	cout << "FR_CALLBACK: " << frQue.size() << endl;
-
-	frQue.push(msg->data);
-	publish();
+	car_msgs::ProximityData proximityMsg;
+	proximityMsg.robotId = robotId;
+	proximityMsg.distance = msg->data;
+	frontRightPublisher->publish(proximityMsg);
 }
 
 void rearLeftCallback(const std_msgs::Float32::ConstPtr& msg) {
@@ -206,11 +217,17 @@ void rearLeftCallback(const std_msgs::Float32::ConstPtr& msg) {
 //	proxMsg.distance = msg->data;
 //
 //	distancePublisher->publish(proxMsg);
+//
+//	cout << "RL_CALLBACK: " << rlQue.size() << endl;
+//
+//	rlQue.push(msg->data);
+//	publish();
 
-	cout << "RL_CALLBACK: " << rlQue.size() << endl;
+	car_msgs::ProximityData proximityMsg;
 
-	rlQue.push(msg->data);
-	publish();
+	proximityMsg.robotId = robotId;
+	proximityMsg.distance = msg->data;
+	rearLeftPublisher->publish(proximityMsg);
 }
 
 void rearMiddleCallback(const std_msgs::Float32::ConstPtr& msg) {
@@ -221,11 +238,17 @@ void rearMiddleCallback(const std_msgs::Float32::ConstPtr& msg) {
 //	proxMsg.distance = msg->data;
 //
 //	distancePublisher->publish(proxMsg);
+//
+//	cout << "RM_CALLBACK: " << rmQue.size() << endl;
+//
+//	rmQue.push(msg->data);
+//	publish();
 
-	cout << "RM_CALLBACK: " << rmQue.size() << endl;
+	car_msgs::ProximityData proximityMsg;
 
-	rmQue.push(msg->data);
-	publish();
+	proximityMsg.robotId = robotId;
+	proximityMsg.distance = msg->data;
+	rearMidPublisher->publish(proximityMsg);
 }
 
 void rearRightCallback(const std_msgs::Float32::ConstPtr& msg) {
@@ -236,10 +259,16 @@ void rearRightCallback(const std_msgs::Float32::ConstPtr& msg) {
 //	proxMsg.distance = msg->data;
 //
 //	distancePublisher->publish(proxMsg);
-	cout << "RR_CALLBACK: " << rrQue.size() << endl;
+//	cout << "RR_CALLBACK: " << rrQue.size() << endl;
+//
+//	rrQue.push(msg->data);
+//	publish();
 
-	rrQue.push(msg->data);
-	publish();
+	car_msgs::ProximityData proximityMsg;
+
+	proximityMsg.robotId = robotId;
+	proximityMsg.distance = msg->data;
+	rearRightPublisher->publish(proximityMsg);
 }
 
 // Main code:
@@ -326,19 +355,19 @@ int main(int argc,char* argv[]) {
 	frontLeftPublisher = &frontLeftPub;
 
 	ros::Publisher frontMidPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/frontMidProx", 1);
-	frontLeftPublisher = &frontMidPub;
+	frontMidPublisher = &frontMidPub;
 
 	ros::Publisher frontRightPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/frontRightProx", 1);
-	frontLeftPublisher = &frontRightPub;
+	frontRightPublisher = &frontRightPub;
 
 	ros::Publisher rearLeftPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/rearLeftProx", 1);
-	frontLeftPublisher = &rearLeftPub;
+	rearLeftPublisher = &rearLeftPub;
 
 	ros::Publisher rearMidPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/rearMidProx", 1);
-	frontLeftPublisher = &rearMidPub;
+	rearMidPublisher = &rearMidPub;
 
 	ros::Publisher rearRightPub = n.advertise<car_msgs::ProximityData>("/vrep/carSim/rearRightProx", 1);
-	frontLeftPublisher = &rearRightPub;
+	rearRightPublisher = &rearRightPub;
 
 	ros::Subscriber frontLeftSub = n.subscribe(proxSubTopic + "frontLeftProx", 1, frontLeftCallback);
 	ros::Subscriber frontMiddleSub = n.subscribe(proxSubTopic + "frontMiddleProx", 1, frontMiddleCallback);

@@ -76,7 +76,7 @@ float oldTS = 0.0;
 void timeCallback(const std_msgs::Float64::ConstPtr& msg) {
 	if (robotId == 0) {
 	oldTS = msg->data;
-	cout << "OLD_TS: " << oldTS << endl;
+//	cout << "OLD_TS: " << oldTS << endl;
 	}
 }
 
