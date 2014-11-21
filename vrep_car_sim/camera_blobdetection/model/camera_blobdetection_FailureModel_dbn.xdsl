@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<smile version="1.0" id="vrep_laser_driver_FailureModel" numsamples="1000" discsamples="10000">
+<smile version="1.0" id="camera_blobdetection_FailureModel" numsamples="1000" discsamples="10000">
 	<nodes>
 		<cpt id="FailureMode" diagtype="target" dynamic="plate" ranked="true">
 			<state id="endlessLoop" fault="true" />
@@ -21,7 +21,7 @@
 			<parents>FailureMode</parents>
 			<probabilities>0.1 0.2 0.7 0.7 0.25 0.05 0.99 0.01 0 0.15 0.7 0.15</probabilities>
 		</cpt>
-		<cpt id="LaserDriver" dynamic="plate">
+		<cpt id="Cam" dynamic="plate">
 			<state id="failure" />
 			<state id="operational" />
 			<parents>FailureMode</parents>
@@ -67,7 +67,7 @@
 		</cpt>
 	</dynamic>
 	<extensions>
-		<genie version="1.0" app="GeNIe 2.0.4535.0" name="vrep_laser_driver_FailureModel" faultnameformat="nodestate">
+		<genie version="1.0" app="GeNIe 2.0.4535.0" name="camera_blobdetection_FailureModel" faultnameformat="nodestate">
 			<plate leftwidth="120" rightwidth="120">192 122 1502 831</plate>
 			<node id="MemObs">
 				<name>MemObs</name>
@@ -77,9 +77,9 @@
 				<position>393 479 513 536</position>
 			</node>
 			<textbox>
-				<caption>Cap: Localize\nFunc: LaserDriver</caption>
+				<caption>Cap: ObjectDetection\nFunc: Cam</caption>
 				<font color="000000" name="Arial" size="14" />
-				<position>359 190 509 234</position>
+				<position>359 190 541 234</position>
 			</textbox>
 			<node id="ThreadObs">
 				<name>ThreadObs</name>
@@ -143,8 +143,8 @@
 				<font color="000000" name="Arial" size="8" />
 				<position>1122 410 1261 452</position>
 			</textbox>
-			<node id="LaserDriver">
-				<name>LaserDriver</name>
+			<node id="Cam">
+				<name>Cam</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />

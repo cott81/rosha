@@ -45,9 +45,8 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>car_msgs</build_depend>
   <build_depend>error_seeder</build_depend>
-<build_depend>system_config</build_depend>
-  <build_depend>rosha_repair_executor</build_depend>
   <build_depend>system_config</build_depend>
+  <build_depend>rosha_repair_executor</build_depend>
   <build_depend>roslib</build_depend>
   <build_depend>rosha_diagnostic_aggregator</build_depend>  
   
@@ -57,7 +56,6 @@
   <run_depend>error_seeder</run_depend>
   <run_depend>system_config</run_depend>
   <run_depend>rosha_repair_executor</run_depend>
-  <run_depend>system_config</run_depend>
   <run_depend>roslib</run_depend>
   <run_depend>rosha_diagnostic_aggregator</run_depend>    
 

@@ -1,0 +1,77 @@
+pub_rate: 1.0 # Optional
+base_path: '' # Optional, prepended to all diagnostic output
+
+analyzers:
+
+        #system:
+                #type: AnalyzerGroup
+                #analyzers:
+                        #MagicCubeAnalyzers:
+                                #path_group: System
+                ##                 cap: Robot
+                ##                 func: RobotAnalyzer
+                                #systemNodesToAnalyze: [Robot, Move, Localize, RemoteProcessing]
+                                #systemNodesStateToAnalyze: [failure, failure, failure, failure]
+                                #type: vrep_system_analyzer_plugins/MagicCubeAnalyzer
+                                #node_to_analyze: cf
+
+        sensors:
+                type: AnalyzerGroup
+                analyzers:
+                        DistanceMeasure:
+                                type: AnalyzerGroup
+                                analyzers:
+                                        UltraSonic:
+                                                # defines a tree structure for the robot_monitor (not tested any more)
+                                                path_group: Sensor
+                                                cap: DistanceMeasure
+                                                func: UltraSonic
+                                                # fully qualified type of the Analyzer (as specified in the plugin xml)
+                                                type: proximity_obstacledetection_analyzer_plugins/Proximity_Obstacledetection_QBFD_Analyzer
+                                                # specifies the nodes and states of the model (DBN) to query 
+                                                systemNodesToAnalyze: [UltraSonic, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: UltraSonic # needed for matching the monitoring information match() ... needs to be the name in the robot model
+                                                # ... paramters for mon classification? Up to now hard coded.
+                        ObjectDetection:
+                                type: AnalyzerGroup
+                                analyzers:
+                                        Cam:                                                
+                                                path_group: Sensor
+                                                cap: ObjectDetection
+                                                func: Cam
+                                                type: camera_blobdetection_analyzer_plugins/Camera_BlobDetection_QBFD_Analyzer
+                                                systemNodesToAnalyze: [Cam, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: Cam
+
+        actuators:
+                type: AnalyzerGroup
+                analyzers:
+                        Move:
+                                type: AnalyzerGroup
+                                analyzers:
+                                        Motion:
+                                                path_group: Actuators
+                                                cap: Move
+                                                func: Motion
+                                                type: car_motion_analyzer_plugins/Car_Motion_QBFD_Analyzer
+                                                systemNodesToAnalyze: [Motion, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: Motion
+                                                
+        #stuff:
+                #type: AnalyzerGroup
+                #analyzers:
+                        #remoteProcessing:
+                                #type: AnalyzerGroup
+                                #analyzers:
+                                        #SLAM_REMOTE:
+                                                ## USE THE SAME ANALYZER AS IN THE SLAM CASE
+                                                #path_group: stuff
+                                                #cap: remoteProcessing
+                                                #func: SLAM_Remote
+                                                #type: vrep_slam_remote_analyzer_plugins/VrepSlamRemote_QBFD_Analyzer
+                                                #systemNodesToAnalyze: [SLAM_Remote, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                #systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                #node_to_analyze: SLAM_Remote # needed?
