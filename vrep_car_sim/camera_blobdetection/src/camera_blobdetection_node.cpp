@@ -51,6 +51,7 @@ void sendBlobInformations(std::vector<float> sensorInformations) {
 
 				car_msgs::DetectedSignals signalMsg;
 
+				signalMsg.robotId = robotId;
 				signalMsg.blobsize = blobSize;
 				signalMsg.blobOrientation = blobOrientation;
 				signalMsg.blobPosX = blobPos[0];
@@ -67,7 +68,6 @@ void sendBlobInformations(std::vector<float> sensorInformations) {
 
 void blobDetectionCallback(const vrep_common::VisionSensorData::ConstPtr& msg) {
 	if (robotId == 0) {
-		cout << "BLOBDETECT" << endl;
 		std_msgs::Float64 timeMsg;
 
 		clock_t t;
@@ -75,9 +75,7 @@ void blobDetectionCallback(const vrep_common::VisionSensorData::ConstPtr& msg) {
 		float time = (float) t;
 
 		timeMsg.data = time;
-		cout << "BLOBDETECT - PUBLISH NOW" << endl;
 		timePub->publish(timeMsg);
-		cout << "BLOBDETECT - PUBLISHED" << endl;
 	}
 
 	std_msgs::Float32MultiArray array = msg->packetData;
@@ -159,7 +157,8 @@ int main(int argc,char* argv[]) {
 	string blobSubTopic;
 	stringstream ss;
 	if (useRobotIdInTopic) {
-		ss << "/vrep/carSim" << robotId << "/blobValues";
+//		ss << "/vrep/carSim" << robotId << "/blobValues";
+		ss << "/vrep/carSim/detectedSignals";
 		ss >> blobValuesPubTopic;
 
 		ss.str("");
@@ -176,10 +175,8 @@ int main(int argc,char* argv[]) {
 
 	// node time test
 //	if (robotId == 0) {
-		cout << "ROBOT ID IS 0 => Time pub" << endl;
 		ros::Publisher timePublisher = n.advertise<std_msgs::Float64>("/vrep/carSim0/startTime", 1);
 		timePub = &timePublisher;
-		cout << "ROBOT ID IS 0 => Time pub gesetzt" << endl;
 //	}
 
 //	time_t now = time(0);

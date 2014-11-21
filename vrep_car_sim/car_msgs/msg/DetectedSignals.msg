@@ -1,3 +1,4 @@
+int32 robotId
 float64 blobsize
 float64 blobOrientation
 float64 blobPosX
