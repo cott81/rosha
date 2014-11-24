@@ -55,6 +55,6 @@ namespace supplementary
 	};
 
 	//int SystemConfig::ownRobotID= 0;
-	static int ownRobotID = 0;
+	static int ownRobotID = -1;
 }
 #endif /* SYSTEMCONFIG_H_ */

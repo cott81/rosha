@@ -19,11 +19,15 @@ find_package(catkin REQUIRED COMPONENTS
   car_msgs
   std_msgs
   error_seeder
-    system_config
+  system_config
   roslib
   smile_lib
   rosha_diagnostic_aggregator  
 )
+
+message ( "proximity_obstacledetection: catkin include dirs: " ${catkin_INCLUDE_DIRS})
+
+message ( "proximity_obstacledetection: catkin libraries: " ${catkin_LIBRARIES})
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -137,6 +141,11 @@ add_executable(proximity_obstacledetection_node src/proximity_obstacledetection_
 target_link_libraries(proximity_obstacledetection_node
   ${catkin_LIBRARIES}
   proximity_obstacledetection
+)
+
+target_link_libraries(ProximityObstacledetection_analyzer_plugins
+   ${catkin_LIBRARIES}
+   # smile DiagnosticEngine DkiHelpersCpp
 )
 
 #############

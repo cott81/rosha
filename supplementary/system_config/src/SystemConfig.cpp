@@ -140,7 +140,7 @@ namespace supplementary
 
 	int SystemConfig::GetOwnRobotID()
 	{
-                if (ownRobotID != 0)
+                if (ownRobotID != -1)
                         return ownRobotID;
                 Configuration *tmp = (*SystemConfig::getInstance())["Globals"];
 

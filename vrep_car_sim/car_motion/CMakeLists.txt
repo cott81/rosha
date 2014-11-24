@@ -139,6 +139,11 @@ target_link_libraries(car_motion_node
   car_motion
 )
 
+target_link_libraries(CarMotion_analyzer_plugins
+   ${catkin_LIBRARIES}
+   # smile DiagnosticEngine DkiHelpersCpp
+)
+
 #############
 ## Install ##
 #############
