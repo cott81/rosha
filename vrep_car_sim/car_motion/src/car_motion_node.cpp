@@ -7,6 +7,7 @@
 #include "ros/ros.h"
 #include "car_msgs/DetectedSignals.h"
 #include "car_msgs/DetectedDistance.h"
+#include "car_msgs/DriveCmd.h"
 #include "car_msgs/ProximityDistance.h"
 #include "std_msgs/Float64.h"
 #include "vrep_common/VisionSensorData.h"
@@ -75,12 +76,12 @@ float oldTS = 0.0;
 
 void timeCallback(const std_msgs::Float64::ConstPtr& msg) {
 	if (robotId == 0) {
-	oldTS = msg->data;
+		oldTS = msg->data;
 //	cout << "OLD_TS: " << oldTS << endl;
 	}
 }
 
-void driveInDirection (float desiredSteeringAngle, float drivingSpeed) {
+void driveInDirection(float desiredSteeringAngle, float drivingSpeed) {
 	// publish driving speed
 	leftMotorMsg.data = drivingSpeed;
 	rightMotorMsg.data = drivingSpeed;
@@ -105,18 +106,19 @@ void driveInDirection (float desiredSteeringAngle, float drivingSpeed) {
 	rightSteerPub->publish(rightSteerMsg);
 
 	if (robotId == 0) {
-	clock_t t;
-	t = clock();
-	float timeDiff = t - oldTS;
-	float clocks_per_sec = CLOCKS_PER_SEC;
-	cout << "CLOCKS: " << clocks_per_sec << endl;
-	float realDiff = (((float)timeDiff)/CLOCKS_PER_SEC)*1000;
-	cout << "Needed time: " << realDiff << endl;
+		clock_t t;
+		t = clock();
+		float timeDiff = t - oldTS;
+		float clocks_per_sec = CLOCKS_PER_SEC;
+		cout << "CLOCKS: " << clocks_per_sec << endl;
+		float realDiff = (((float) timeDiff) / CLOCKS_PER_SEC) * 1000;
+		cout << "Needed time: " << realDiff << endl;
 	}
 } // end of driveInDirection function
 
 void driveOnRoad(float blobPosX, float drivingSpeed) {
-	float currentDirection = (blobPosX - standardBlobPos) * steeringAngleDx * (-100);
+	float currentDirection = (blobPosX - standardBlobPos) * steeringAngleDx
+			* (-100);
 	driveInDirection(currentDirection, drivingSpeed);
 } // end of driveOnRoad function
 
@@ -146,7 +148,8 @@ void motionCallback(const car_msgs::DetectedSignals::ConstPtr& msg) {
 	float speed = 10;
 	float driveNow = 0.0;
 
-	boost::posix_time::ptime ts = boost::posix_time::microsec_clock::local_time();
+	boost::posix_time::ptime ts =
+			boost::posix_time::microsec_clock::local_time();
 
 //	cout << "flDiff: " << flDiff.total_milliseconds() << endl;
 //	cout << "fmDiff: " << fmDiff.total_milliseconds() << endl;
@@ -191,8 +194,9 @@ void motionCallback(const car_msgs::DetectedSignals::ConstPtr& msg) {
 		if (((frDist == 0) && (fmDist == 0) && (rrDist == 0) /*&& (rmDist == 0)*/)
 				|| ((rrDist > 0) && (fmDist > 0) && (onRightSide == false))
 				|| ((frDist == 0) && (fmDist > 0) && (onRightSide == false))
-				|| ((frDist > 0) && (fmDist > 0) && (rrDist == 0) && (onRightSide == false))
-				|| ((rrDist > 1.0) && (frDist==0))) {
+				|| ((frDist > 0) && (fmDist > 0) && (rrDist == 0)
+						&& (onRightSide == false))
+				|| ((rrDist > 1.0) && (frDist == 0))) {
 //			cout << "avoid off" << endl;
 			avoidingMode = false;
 		} else {
@@ -252,7 +256,8 @@ void motionCallback(const car_msgs::DetectedSignals::ConstPtr& msg) {
 			driveOnRoad(blobPosX, speed);
 		} else if ((blobPosX >= 0.60) && (avoidingMode == true)) {
 			if (standardBlobPosLeft == 0.0) {
-				standardBlobPosLeft = standardBlobPosRight + stdBlobPosDifference;
+				standardBlobPosLeft = standardBlobPosRight
+						+ stdBlobPosDifference;
 			}
 			standardBlobPos = standardBlobPosLeft;
 			onRightSide = false;
@@ -312,19 +317,38 @@ void distanceCallback(const car_msgs::DetectedDistance::ConstPtr& msg) {
 	rrDist = msg->rrDist;
 }
 
+void driveCallback(const car_msgs::DriveCmd::ConstPtr& msg) {
+
+	if (msg->robotId != robotId) {
+		return;
+	}
+
+	// Get data and publish to vrep simulator
+	leftMotorMsg.data = msg->drivingSpeed;
+	rightMotorMsg.data = msg->drivingSpeed;
+	leftSteerMsg.data = msg->steerLeft;
+	rightSteerMsg.data = msg->steerRight;
+
+	leftMotorPub->publish(leftMotorMsg);
+	rightMotorPub->publish(rightMotorMsg);
+	leftSteerPub->publish(leftSteerMsg);
+	rightSteerPub->publish(rightSteerMsg);
+
+}
+
 // Main code:
-int main(int argc,char* argv[]) {
+int main(int argc, char* argv[]) {
 	bool robotIdByArg = false;
 	bool useRobotIdInTopic = false;
 	string help =
 			"CarMotion\n"
-			"Synobsis: car_motion_node OPTIONS\n"
-			"Options:\n\n"
-			"ROS params: paramter for ROS, check the ROS wiki for more details.\n"
-			"-help: prints this help text\n"
-			"-compId: specifies the Id of this component. (Used for failure simulation). Default is -1.\n"
-			"-useRobotIdInTopic: code the robotId in the topic. E.g. /vrep/carSim12/blobDetectionData instead of /vrep/carSim/blobDetectionData. Default is false. \n"
-			"-robotId: specifies the Id of this system/robot. If not set, the config file (Global.conf, in the configuration path) is used. \n";
+					"Synobsis: car_motion_node OPTIONS\n"
+					"Options:\n\n"
+					"ROS params: paramter for ROS, check the ROS wiki for more details.\n"
+					"-help: prints this help text\n"
+					"-compId: specifies the Id of this component. (Used for failure simulation). Default is -1.\n"
+					"-useRobotIdInTopic: code the robotId in the topic. E.g. /vrep/carSim12/blobDetectionData instead of /vrep/carSim/blobDetectionData. Default is false. \n"
+					"-robotId: specifies the Id of this system/robot. If not set, the config file (Global.conf, in the configuration path) is used. \n";
 
 	string helpParam = "-help";
 	string compIdParam = "-compId";
@@ -366,11 +390,10 @@ int main(int argc,char* argv[]) {
 	stringstream sss;
 	sss << "car_motion_node__" << robotId;
 	sss >> nodeName;
-        ros::init(argc, argv, nodeName);
-        ros::NodeHandle n;
+	ros::init(argc, argv, nodeName);
+	ros::NodeHandle n;
 
 	ROS_INFO("own robot Id: %d\n", robotId);
-
 
 	error_seeder::ErrorSeederLib esl(compId);
 
@@ -379,6 +402,10 @@ int main(int argc,char* argv[]) {
 	string rightMotorPubTopic;
 	string leftSteerPubTopic;
 	string rightSteerPubTopic;
+	string leftMotorSubTopic;
+	string rightMotorSubTopic;
+	string leftSteerSubTopic;
+	string rightSteerSubTopic;
 	string blobSubTopic;
 	string distanceSubTopic;
 	stringstream ss;
@@ -436,12 +463,14 @@ int main(int argc,char* argv[]) {
 	ros::Publisher rightSteerPublisher = n.advertise<std_msgs::Float64>(rightSteerPubTopic, 1);
 	rightSteerPub = &rightSteerPublisher;
 
-	ros::Subscriber blobDetectSub = n.subscribe(blobSubTopic, 1, motionCallback);
-	ros::Subscriber distanceSub = n.subscribe(distanceSubTopic, 1, distanceCallback);
+//	ros::Subscriber blobDetectSub = n.subscribe(blobSubTopic, 1, motionCallback);
+//	ros::Subscriber distanceSub = n.subscribe(distanceSubTopic, 1, distanceCallback);
+
+	ros::Subscriber blobDetectSub = n.subscribe("/vrep/carSim/driveCmd", 1, driveCallback);
 
 	// node time test
 //	if (robotId == 0) {
-		ros::Subscriber timeSub = n.subscribe("/vrep/carSim0/startTime", 1, timeCallback);
+//		ros::Subscriber timeSub = n.subscribe("/vrep/carSim0/startTime", 1, timeCallback);
 //	}
 
 	try {

@@ -164,6 +164,10 @@ void frontLeftCallback(const std_msgs::Float32::ConstPtr& msg) {
 
 	proximityMsg.robotId = robotId;
 	proximityMsg.distance = msg->data;
+
+	cout << "std msg: " << msg->data << endl;
+	cout << "prox msg: " << proximityMsg.distance << endl;
+
 	frontLeftPublisher->publish(proximityMsg);
 }
 
