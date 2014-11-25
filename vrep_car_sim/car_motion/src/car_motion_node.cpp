@@ -123,6 +123,9 @@ void driveOnRoad(float blobPosX, float drivingSpeed) {
 } // end of driveOnRoad function
 
 void motionCallback(const car_msgs::DetectedSignals::ConstPtr& msg) {
+
+//        cout << "Got motion msg" << endl;
+
 	float blobSize = msg->blobsize;
 	float blobOrientation = msg->blobOrientation;
 	float blobPosX = msg->blobPosX;
@@ -478,6 +481,8 @@ int main(int argc, char* argv[]) {
 
 		while (ros::ok()) {
 			ros::spinOnce();
+
+			cout << "motion spin" << endl;
 
 			pub_rate.sleep();
 		}

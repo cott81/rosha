@@ -60,6 +60,7 @@ private:
 
   const char* CLASSNAME;
   char hostname[128];
+  std::string robotname;
   std::string fullName;
   std::string channelName;
   //dki_helpers::DataLogger* logger;
