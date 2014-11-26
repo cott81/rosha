@@ -45,8 +45,8 @@ Proximity_Obstacledetection_QBFD_Analyzer::Proximity_Obstacledetection_QBFD_Anal
   this->threadNodeStateLimits[1] = 6;  //upper bound
 
   //stream match count limits
-  this->streamNodeStateLimits_nl[0] = 28.0;    //lower bound old: 8
-  this->streamNodeStateLimits_nl[1] = 32.0;   //upper bound old: 10.0
+  this->streamNodeStateLimits_nl[0] = 95.0;    //lower bound old: 8
+  this->streamNodeStateLimits_nl[1] = 105.0;   //upper bound old: 10.0
 
   //stream rate exceptions per s
   this->streamNodeStateLimits_ex[0] = 0;        //everything above 0 is abnormal
@@ -171,17 +171,23 @@ bool Proximity_Obstacledetection_QBFD_Analyzer::init(const string base_name, con
   else
     my_path = base_name + "/" + nice_name;
 
-  int z;
-  z = gethostname(hostname, sizeof hostname);
+
+//  int z;
+//  z = gethostname(hostname, sizeof hostname);
+  this->robotname =  supplementary::SystemConfig::getHostname();
   //char to string as stream operation
   this->fullName = "";
   stringstream ss;
-  ss << this->hostname << "_" << this->nodeToAnalyze;
+//  ss << this->hostname << "_" << this->nodeToAnalyze;
+  ss << this->robotname << "_" << this->nodeToAnalyze;
   ss >> this->fullName;
+
+  ROS_INFO("%s init(): full name: %s", this->CLASSNAME, this->robotname.c_str());
 
 
   stringstream sss;
-  sss << this->hostname << "_" << "outTopic_ActCap1Func1";
+//  sss << this->hostname << "_" << "outTopic_ActCap1Func1";
+  sss << this->robotname << "_" << "outTopic_ActCap1Func1";
   sss >> this->channelName;
 
 

@@ -389,6 +389,8 @@ int main(int argc,char* argv[]) {
 		while (ros::ok()) {
 			ros::spinOnce();
 
+			cout << "ultra sonic spin" << endl;
+
 			pub_rate.sleep();
 		}
 	} catch (exception& e) {
