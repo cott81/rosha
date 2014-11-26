@@ -52,6 +52,7 @@ find_package(catkin REQUIRED COMPONENTS
    ProximityData.msg
    DetectedDistance.msg
    DriveCmd.msg
+   DrivingSpeed.msg
  )
 
 ## Generate services in the 'srv' folder

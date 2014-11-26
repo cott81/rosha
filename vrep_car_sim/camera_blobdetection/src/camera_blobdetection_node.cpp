@@ -19,15 +19,17 @@ using namespace camera_blobdetection;
 CameraBlobdetection* cameraBlobdetection;
 
 // Publisher
-ros::Publisher* timePub;
-ros::Publisher* blobValuesPublisher;
+//ros::Publisher* timePub;
+ros::Publisher* camValuesPublisher;
 
 // Global variables:
 int robotId = 0;
 
-int countVariable = 0;
+// Constants
+const string CAM_TYPE_STREET = "street";
+const string CAM_TYPE_CAR = "car";
 
-void sendBlobInformations(std::vector<float> sensorInformations) {
+void sendBlobInformations(std::vector<float> sensorInformations, string camType) {
 
 	if (sensorInformations.size() > 0) { // in "sensorInformations" we should have the blob information if the camera was set-up correctly
 		int blobCount = sensorInformations[15];
@@ -52,6 +54,7 @@ void sendBlobInformations(std::vector<float> sensorInformations) {
 				car_msgs::DetectedSignals signalMsg;
 
 				signalMsg.robotId = robotId;
+				signalMsg.camType = camType;
 				signalMsg.blobsize = blobSize;
 				signalMsg.blobOrientation = blobOrientation;
 				signalMsg.blobPosX = blobPos[0];
@@ -59,29 +62,34 @@ void sendBlobInformations(std::vector<float> sensorInformations) {
 				signalMsg.blobBoxDimensionX = blobBoxDimensions[0];
 				signalMsg.blobBoxDimensionY = blobBoxDimensions[1];
 
-				blobValuesPublisher->publish(signalMsg);
+				camValuesPublisher->publish(signalMsg);
 			}
 		}
 	}
 } // end of sendBlobInformations function
 
 
-void blobDetectionCallback(const vrep_common::VisionSensorData::ConstPtr& msg) {
-	if (robotId == 0) {
-		std_msgs::Float64 timeMsg;
-
-		clock_t t;
-		t = clock();
-		float time = (float) t;
-
-		timeMsg.data = time;
-		timePub->publish(timeMsg);
-	}
+void streetDetectionCallback(const vrep_common::VisionSensorData::ConstPtr& msg) {
+//	if (robotId == 0) {
+//		std_msgs::Float64 timeMsg;
+//
+//		clock_t t;
+//		t = clock();
+//		float time = (float) t;
+//
+//		timeMsg.data = time;
+//		timePub->publish(timeMsg);
+//	}
 
 	std_msgs::Float32MultiArray array = msg->packetData;
 	std::vector<float> data = array.data;
-	sendBlobInformations(data);
-	countVariable = countVariable + 1;
+	sendBlobInformations(data, CAM_TYPE_STREET);
+}
+
+void carDetectionCallback(const vrep_common::VisionSensorData::ConstPtr& msg) {
+	std_msgs::Float32MultiArray array = msg->packetData;
+	std::vector<float> data = array.data;
+	sendBlobInformations(data, CAM_TYPE_CAR);
 }
 
 //void infoCallback(const vrep_common::VrepInfo::ConstPtr& info) {
@@ -141,49 +149,57 @@ int main(int argc,char* argv[]) {
 		robotId = supplementary::SystemConfig::GetOwnRobotID();
 	}
 
-        string nodeName;
-        stringstream sss;
-        sss << "camera_blobdetection_node__" << robotId;
-        sss >> nodeName;
-        ros::init(argc, argv, nodeName);
-        ros::NodeHandle n;
+	string nodeName;
+	stringstream sss;
+	sss << "camera_blobdetection_node__" << robotId;
+	sss >> nodeName;
+	ros::init(argc, argv, nodeName);
+	ros::NodeHandle n;
 
 	ROS_INFO("own robot Id: %d\n", robotId);
 
 	error_seeder::ErrorSeederLib esl(compId);
 
 	// build topic name
-	string blobValuesPubTopic;
-	string blobSubTopic;
+	string camValuesPubTopic;
+	string streetSubTopic;
+	string carSubTopic;
 	stringstream ss;
 	if (useRobotIdInTopic) {
 //		ss << "/vrep/carSim" << robotId << "/blobValues";
 		ss << "/vrep/carSim/detectedSignals";
-		ss >> blobValuesPubTopic;
+		ss >> camValuesPubTopic;
 
 		ss.str("");
 		ss.clear();
-		ss << "/vrep/carSim" << robotId << "/blobDetectionData";
-		ss >> blobSubTopic;
+		ss << "/vrep/carSim" << robotId << "/streetDetectionData";
+		ss >> streetSubTopic;
+
+		ss.str("");
+		ss.clear();
+		ss << "/vrep/carSim" << robotId << "/carDetectionData";
+		ss >> carSubTopic;
 	} else {
-		blobValuesPubTopic = "/vrep/carSim/blobValues";
-		blobSubTopic = "/vrep/carSim/blobDetectionData";
+		camValuesPubTopic = "/vrep/carSim/blobValues";
+		streetSubTopic = "/vrep/carSim/streetDetectionData";
+		carSubTopic = "/vrep/carSim/carDetectionData";
 	}
 
-	ros::Publisher blobValuesPub = n.advertise<car_msgs::DetectedSignals>(blobValuesPubTopic, 1);
-	blobValuesPublisher = &blobValuesPub;
+	ros::Publisher blobValuesPub = n.advertise<car_msgs::DetectedSignals>(camValuesPubTopic, 1);
+	camValuesPublisher = &blobValuesPub;
 
 	// node time test
 //	if (robotId == 0) {
-		ros::Publisher timePublisher = n.advertise<std_msgs::Float64>("/vrep/carSim0/startTime", 1);
-		timePub = &timePublisher;
+//		ros::Publisher timePublisher = n.advertise<std_msgs::Float64>("/vrep/carSim0/startTime", 1);
+//		timePub = &timePublisher;
 //	}
 
 //	time_t now = time(0);
 //	long nowts = now;
 //	cout << "nowTS !!!: " << nowts << endl;
 
-	ros::Subscriber blobDetectSub = n.subscribe(blobSubTopic, 1, blobDetectionCallback);
+	ros::Subscriber streetDetectSub = n.subscribe(streetSubTopic, 1, streetDetectionCallback);
+	ros::Subscriber carDetectSub = n.subscribe(carSubTopic, 1, carDetectionCallback);
 
 //	cout << "INIT" << endl;
 
