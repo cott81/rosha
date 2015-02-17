@@ -1,14 +1,31 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(car_msgs)
+project(car_localizer)
+
+## Find catkin and any catkin packages
+#find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg)
+
+## Declare ROS messages and services
+#add_message_files(FILES Num.msg)
+#add_service_files(FILES AddTwoInts.srv)
+
+## Generate added messages and services
+#generate_messages(DEPENDENCIES std_msgs)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  std_msgs
-  rospy
-  message_generation
+  geometry_msgs
+  tf
+  car_msgs
+  error_seeder
+  rosha_repair_executor
+  roslib
+  system_config
+  roslib
+  smile_lib
+  rosha_diagnostic_aggregator
 )
 
 ## System dependencies are found with CMake's conventions
@@ -45,22 +62,16 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   DetectedSignals.msg
-   ProximityDistance.msg
-   ProximityData.msg
-   DetectedDistance.msg
-   DriveCmd.msg
-   DrivingSpeed.msg
-   Pose2D.msg
-   SharedCarInfo.msg
- )
+# add_message_files(
+#   FILES
+#   NumTest.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
 #   FILES
-#   Service1.srv
+#   AddTwoInts.srv
 #   Service2.srv
 # )
 
@@ -72,10 +83,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+   #car_msgs
+# )
 
 ###################################
 ## catkin specific configuration ##
@@ -88,8 +100,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES car_msgs
-  CATKIN_DEPENDS roscpp std_msgs #message_runtime
+#  LIBRARIES car_localizer
+#  CATKIN_DEPENDS roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -97,29 +109,43 @@ catkin_package(
 ## Build ##
 ###########
 
+set(CMAKE_CXX_FLAGS "-std=c++0x -pthread -Wl,--no-as-needed ${CMAKE_CXX_FLAGS}")
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
-# add_library(car_msgs
-#   src/${PROJECT_NAME}/car_msgs.cpp
-# )
+add_library(car_localizer
+   src/CarLocalizer.cpp
+ )
+ 
+add_library(CarLocalizer_analyzer_plugins
+   src/analyzer_plugins/car_localizer_QBFD_analyzer.cpp
+   src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
+) 
 
 ## Declare a cpp executable
-# add_executable(car_msgs_node src/car_msgs_node.cpp)
+add_executable(car_localizer_node src/car_localizer_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(car_msgs_node car_msgs_generate_messages_cpp)
+#add_dependencies(car_localizer_node car_localizer_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(car_msgs_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(car_localizer_node
+  ${catkin_LIBRARIES}
+  car_localizer
+)
+
+target_link_libraries(CarLocalizer_analyzer_plugins
+   ${catkin_LIBRARIES}
+   # smile DiagnosticEngine DkiHelpersCpp
+)
 
 #############
 ## Install ##
@@ -136,7 +162,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS car_msgs car_msgs_node
+# install(TARGETS car_localizer car_localizer_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -161,7 +187,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_car_msgs.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_car_localizer.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
