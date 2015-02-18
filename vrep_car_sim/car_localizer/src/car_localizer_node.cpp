@@ -149,7 +149,7 @@ int main (int argc, char** argv)
     {
       ros::spinOnce();
       //do something
-//      cout << "loc loop" << endl;
+      cout << "loc loop" << endl;
       /*
       cout << "send test msg" << endl;
         car_msgs::Pose2D msg2;

@@ -1,0 +1,15 @@
+<library path="lib/libCarSystem_analyzer_plugins" >
+
+  <class name="car_system_analyzer_plugins/CarSystemAnalyzer" 
+  	type="car_system_analyzer_plugins::CarSystemAnalyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      System analyzer for the VREP car robot. This analyzer combines the results of the component analyzers
+      to derive failure infos for cap and robot layers.
+    </description>
+    
+  </class>
+  
+</library>
+

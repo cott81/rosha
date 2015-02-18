@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<smile version="1.0" id="Network1" numsamples="1000" discsamples="10000">
+	<nodes>
+		<cpt id="Motion">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="Move">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>Motion</parents>
+			<probabilities>1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="GPS">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="Cam">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="ObjectDetection">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>Cam</parents>
+			<probabilities>1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="UltraSonic">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="Localize">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>GPS</parents>
+			<probabilities>1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="SLAM_Remote">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="RemoteProcessing">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>SLAM_Remote</parents>
+			<probabilities>1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="DistanceMeasure">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>UltraSonic</parents>
+			<probabilities>1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="Car">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>Move Localize DistanceMeasure ObjectDetection</parents>
+			<probabilities>1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 0 1</probabilities>
+		</cpt>
+	</nodes>
+	<extensions>
+		<genie version="1.0" app="GeNIe 2.0.4535.0" name="Network1" faultnameformat="nodestate">
+			<node id="Motion">
+				<name>Motion</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>170 366 267 410</position>
+			</node>
+			<node id="Move">
+				<name>Move</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>171 245 268 289</position>
+			</node>
+			<node id="GPS">
+				<name>GPS</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>903 376 1000 420</position>
+			</node>
+			<node id="Localize">
+				<name>Localize</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>816 239 913 283</position>
+			</node>
+			<node id="Car">
+				<name>Car</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>616 51 716 110</position>
+			</node>
+			<node id="RemoteProcessing">
+				<name>RemoteProcessing</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1107 241 1216 292</position>
+			</node>
+			<node id="SLAM_Remote">
+				<name>SLAM_Remote</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1109 352 1216 403</position>
+			</node>
+			<node id="DistanceMeasure">
+				<name>DistanceMeasure</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>346 242 492 292</position>
+			</node>
+			<node id="ObjectDetection">
+				<name>ObjectDetection</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>553 241 683 289</position>
+			</node>
+			<node id="UltraSonic">
+				<name>UltraSonic</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>369 366 465 403</position>
+			</node>
+			<node id="Cam">
+				<name>Cam</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>570 361 689 412</position>
+			</node>
+		</genie>
+	</extensions>
+</smile>

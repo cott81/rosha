@@ -127,7 +127,7 @@ add_library(My_repair_plugins
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(rosha_repair_executor_node rosha_repair_executor_generate_messages_cpp)
-add_dependencies(rosha_repair_executor_node ${catkin_EXPORTED_TARGETS})
+add_dependencies(rosha_repair_executor_node ${catkin_EXPORTED_TARGETS} rosha_msgs_generate_messages_cpp)
 add_dependencies(My_repair_plugins ${catkin_EXPORTED_TARGETS})
 add_dependencies(RepairExecutor ${catkin_EXPORTED_TARGETS})
 

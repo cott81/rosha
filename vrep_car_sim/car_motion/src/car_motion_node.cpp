@@ -506,7 +506,7 @@ int main(int argc, char* argv[]) {
 		while (ros::ok()) {
 			ros::spinOnce();
 
-//			cout << "motion spin" << endl;
+			cout << "motion spin" << endl;
 
 			pub_rate.sleep();
 		}
