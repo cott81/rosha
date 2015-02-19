@@ -110,13 +110,19 @@ int main (int argc, char** argv)
   //bring the lib in
   carLoc = new CarLocalizer();
 
-  ros::init(argc, argv, "car_localizer_node");
-  ros::NodeHandle n;
-
   if (!robotIdByArg)
   {
     robotId = supplementary::SystemConfig::GetOwnRobotID();
   }
+
+	string nodeName;
+	stringstream sss;
+	sss << "car_localizer_node__" << robotId;
+	sss >> nodeName;
+  ros::init(argc, argv, nodeName);
+  ros::NodeHandle n;
+
+
   ROS_INFO("own robot Id: %d\n", robotId);
 
   error_seeder::ErrorSeederLib esl(ownId);
