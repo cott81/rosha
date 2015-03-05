@@ -26,11 +26,12 @@ ErrorSeederLib::ErrorSeederLib(int ownCompId) :
   errorConfSub = nh.subscribe("/ErrorSeeder/ErrorConf", 1000, &ErrorSeederLib::ErrorConfCallback, this);
 
   //default values of failure rates (1/s)
-  this->failureRates[0] = 0.001; //np MTTF=1000s
-  this->failureRates[1] = 0.001; //ar
-  this->failureRates[2] = 0.001; //dl
-  this->failureRates[3] = 0.001; //el
-  this->failureRates[4] = 0.001; //ex
+  //this->failureRates[0] = 0.001; //np MTTF=1000s
+  this->failureRates[0] = 0.1; //np MTTF=1000s
+  this->failureRates[1] = 0.0; //ar
+  this->failureRates[2] = 0.0; //dl
+  this->failureRates[3] = 0.0; //el
+  this->failureRates[4] = 0.0; //ex
 }
 
 ErrorSeederLib::~ErrorSeederLib()
@@ -164,8 +165,15 @@ void ErrorSeederLib::TriggerError(int errorId)
   {
     ROS_INFO("start random error triggering due to given probs");
 
-    //what happens if the object goes out of scope?
-    randErrorThread = new std::thread(&ErrorSeederLib::StartRandErrorTrigger, this);
+    if (randErrorThread == NULL)
+    {
+      //what happens if the object goes out of scope?
+      randErrorThread = new std::thread(&ErrorSeederLib::StartRandErrorTrigger, this);
+    }
+    else
+    {
+      ROS_INFO("error thread is already created. Do not create another one.");
+    }
 
   }
   else if (errorId == DISABLE_PROBABILITY)

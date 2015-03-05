@@ -10,6 +10,8 @@
 
 #include "ros/ros.h"
 #include <exception>
+#include <thread>
+#include <algorithm>
 
 #include "error_seeder_msgs/Error.h"
 #include "error_seeder_msgs/ErrorConf.h"
@@ -38,6 +40,9 @@ private:
   ros::Publisher errorPub;
   ros::Publisher errorConfPub;
   //ros::Subscriber errorFeedbackSub;
+  //std::thread* resendThread_probMode;
+  std::vector<std::thread*>resendThreadPool;
+  std::vector<int> registeredResendCompIds;
 
   int compId;
   ErrorId errorId;
@@ -122,6 +127,13 @@ private:
    * \brief: Callback for incoming messages of successfully triggered failures. Needed for depend failure probabilies. NOT YET IMPLEMENTD
    */
   void ErrorTriggerCallback(const error_seeder_msgs::Error::ConstPtr& msg);
+
+  /*!
+   * \brief: Function to resend the error trigger message to activate the probability mode. Used to keep the prob mode active after restarting nodes
+   *
+   * \param: int msgCompId: compId to resend the msg for
+   */
+  void ResendEPMessage(int msgCompId);
 
 };
 

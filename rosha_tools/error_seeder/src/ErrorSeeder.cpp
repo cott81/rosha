@@ -17,6 +17,7 @@ ErrorSeeder::ErrorSeeder(int argc, char** argv)
   ros::init(argc, argv, "ErrorSeeder");
   n = new ros::NodeHandle();
   pub_rate = new ros::Rate(5.0);
+  //resendThread_probMode = NULL;
 
   errorPub = n->advertise<error_seeder_msgs::Error>("/ErrorSeeder/ErrorTrigger", 1000);
   errorConfPub = n->advertise<error_seeder_msgs::ErrorConf>("/ErrorSeeder/ErrorConf", 1000);
@@ -57,7 +58,7 @@ void ErrorSeeder::HandleUserInteraction()
   string s;
 
   cout << "command:> ";
-  cin >> s;
+  cin >> s; //blocking ... no problem because node does not receive any msgs
   IsValidCommand(s);
 
   return;
@@ -79,6 +80,7 @@ void ErrorSeeder::PrintHelp()
   cout << endl;
 
 }
+
 bool ErrorSeeder::IsValidCommand(string command)
 {
   bool valid = false;
@@ -112,6 +114,37 @@ bool ErrorSeeder::IsValidCommand(string command)
       if (IsValidId(elems[0], compId) && IsValidErrorId(elems[1], errorId) )
       {
         SendErrorMsg();
+
+        //
+        //new threads that resent the x:EP periodically
+        //
+        if ( (errorId == ENABLE_PROBABILITY)
+            &&  !(std::find(registeredResendCompIds.begin(), registeredResendCompIds.end(), compId) != registeredResendCompIds.end() )
+            )
+        {
+          // need the current compId
+          cout << "CREATE new THREAD" << endl;
+          registeredResendCompIds.push_back(compId);
+          resendThreadPool.push_back(new std::thread(&ErrorSeeder::ResendEPMessage, this, compId));
+        }
+
+        if ( errorId == DISABLE_PROBABILITY)
+        {
+
+          //check if the compId is registered, join thread, erase compId and thread from pool
+          for (int i = 0; i < registeredResendCompIds.size(); i++)
+          {
+            if (registeredResendCompIds[i] == compId)
+            {
+              registeredResendCompIds.erase(registeredResendCompIds.begin() + i);
+              resendThreadPool[i]->join();
+              resendThreadPool.erase(resendThreadPool.begin() + i);
+              break;
+            }
+          }
+
+        }
+
         valid = true;
       }
       else
@@ -299,6 +332,37 @@ void ErrorSeeder::ErrorTriggerCallback(const error_seeder_msgs::Error::ConstPtr&
 {
   ROS_INFO(".. error feedback for changing dependend failure not yet supported");
 }
+
+
+void ErrorSeeder::ResendEPMessage(int msgCompId)
+{
+
+  ros::Rate r(0.5);
+  while (ros::ok())
+  {
+
+    //break if msgCompId is not any more in list ... very inefficient!!
+    if (std::find(registeredResendCompIds.begin(), registeredResendCompIds.end(), msgCompId) == registeredResendCompIds.end()  )
+    {
+      // not any more registered
+      cout << "BREAK" << endl;
+      break;
+    }
+
+    cout << "loop"<< msgCompId << endl;
+
+    error_seeder_msgs::Error msg;
+    msg.compId = msgCompId;
+    msg.errorId = ENABLE_PROBABILITY;
+
+    errorPub.publish(msg);
+
+    r.sleep();
+  }
+
+  return;
+}
+
 
 
 } /* namespace error_seeder */
