@@ -105,6 +105,7 @@ include_directories(
 ## Declare a cpp library
 add_library(error_seeder
    src/ErrorSeeder.cpp
+   src/CompFailureConf.cpp
  )
  
 add_library(error_seeder_lib

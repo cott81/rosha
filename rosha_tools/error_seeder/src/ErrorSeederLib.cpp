@@ -57,32 +57,13 @@ void ErrorSeederLib::ErrorConfCallback(const error_seeder_msgs::ErrorConf::Const
   {
     return;
   }
-  ROS_INFO("received error conf msg: compId: %d, errorId: %d, errorProb: %f", msg->compId, msg->errorId,
-           msg->errorProb);
+  //ROS_INFO("received error conf msg: compId: %d, errorId: %d, errorProb: %f", msg->compId, msg->errorId,
+          // msg->errorProb);
 
-  if (msg->errorId == NULLPOINTER)
+  for (int i=0; i<5; i++)
   {
-    this->failureRates[0] = msg->errorProb;
-  }
-  else if (msg->errorId == ARRAYINDEXERROR)
-  {
-    this->failureRates[1] = msg->errorProb;
-  }
-  else if (msg->errorId == DEADLOCK)
-  {
-    this->failureRates[2] = msg->errorProb;
-  }
-  else if (msg->errorId == ENDLESSLOOP)
-  {
-    this->failureRates[3] = msg->errorProb;
-  }
-  else if (msg->errorId == GENERAL_EXCEPTION)
-  {
-    this->failureRates[4] = msg->errorProb;
-  }
-  else
-  {
-    ROS_ERROR("Type of failure not supported: %d", msg->errorId);
+  this->failureRates[i] = msg->errorProbs[i]; //copy, better to pass ref?
+  //cout << "prob " << i << ": " << this->failureRates[i]<< endl;
   }
 }
 

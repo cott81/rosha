@@ -27,6 +27,12 @@ ErrorSeeder::~ErrorSeeder()
 {
   delete n;
   delete pub_rate;
+
+  for (int i=0; i < compFailureConfs.size(); i++)
+  {
+    delete compFailureConfs[i];
+  }
+
 }
 
 void ErrorSeeder::Start()
@@ -123,7 +129,7 @@ bool ErrorSeeder::IsValidCommand(string command)
             )
         {
           // need the current compId
-          cout << "CREATE new THREAD" << endl;
+          //cout << "CREATE new THREAD" << endl;
           registeredResendCompIds.push_back(compId);
           resendThreadPool.push_back(new std::thread(&ErrorSeeder::ResendEPMessage, this, compId));
         }
@@ -161,7 +167,35 @@ bool ErrorSeeder::IsValidCommand(string command)
       {
         //send conf msg
         cout << "is valid -> send conf msg" << endl;
-        SendErrorConfMsg(errorTypeProb);
+
+        //
+        //store configuration
+        //
+
+        //check if key is already in vector
+        bool elementExists = false;
+        for (int i=0; i<compFailureConfs.size(); i++)
+        {
+          //check for key
+          if (compFailureConfs[i]->getCompId() == compId)
+          {
+            //update conf element
+            elementExists = true;
+            compFailureConfs[i]->SetFailureProb(errorId, errorTypeProb);
+            break;
+          }
+        }
+
+        //if element is not in vector, create on and add it to the vector
+        if (!elementExists)
+        {
+          CompFailureConf* cfc = new CompFailureConf(); //all probs are init as 0
+          cfc->setCompId(compId);
+          cfc->SetFailureProb(errorId, errorTypeProb);
+          compFailureConfs.push_back(cfc);
+        }
+
+        SendErrorConfMsg(compId);
       }
       else
       {
@@ -319,13 +353,48 @@ void ErrorSeeder::SendErrorMsg()
   errorPub.publish(msg);
 }
 
-void ErrorSeeder::SendErrorConfMsg(double errorProb)
+void ErrorSeeder::SendErrorConfMsg(int compId)
 {
+
+  //TODO: rebuild error msgs as a collection of all failure probs
+
+  /*
   error_seeder_msgs::ErrorConf msg;
   msg.compId = this->compId;
   msg.errorId = this->errorId;
   msg.errorProb = errorProb;
   errorConfPub.publish(msg);
+  */
+
+  //TODO: thread safe ...
+
+  CompFailureConf* cfc = NULL;
+  for (int i=0; i<compFailureConfs.size(); i++)
+  {
+    if (compFailureConfs[i]->getCompId() == compId)
+    {
+      cfc = compFailureConfs[i];
+      break;
+    }
+  }
+
+  if (cfc != NULL)
+  {
+    error_seeder_msgs::ErrorConf msg;
+    msg.compId = compId;
+    msg.errorProbs[0]=cfc->GetFailureProb(NULLPOINTER);
+    msg.errorProbs[1]=cfc->GetFailureProb(ARRAYINDEXERROR);
+    msg.errorProbs[2]=cfc->GetFailureProb(DEADLOCK);
+    msg.errorProbs[3]=cfc->GetFailureProb(ENDLESSLOOP);
+    msg.errorProbs[4]=cfc->GetFailureProb(GENERAL_EXCEPTION);
+
+    errorConfPub.publish(msg);
+  }
+  else
+  {
+    ROS_ERROR("No CompFailureConf for this component (id %d) found. Do not send a msg.", compId);
+  }
+
 }
 
 void ErrorSeeder::ErrorTriggerCallback(const error_seeder_msgs::Error::ConstPtr& msg)
@@ -345,11 +414,8 @@ void ErrorSeeder::ResendEPMessage(int msgCompId)
     if (std::find(registeredResendCompIds.begin(), registeredResendCompIds.end(), msgCompId) == registeredResendCompIds.end()  )
     {
       // not any more registered
-      cout << "BREAK" << endl;
       break;
     }
-
-    cout << "loop"<< msgCompId << endl;
 
     error_seeder_msgs::Error msg;
     msg.compId = msgCompId;
@@ -357,12 +423,19 @@ void ErrorSeeder::ResendEPMessage(int msgCompId)
 
     errorPub.publish(msg);
 
+    SendErrorConfMsg(msgCompId);
+
     r.sleep();
   }
 
   return;
 }
 
+void ErrorSeeder::StoreCompFailureConf()
+{
+
+  return;
+}
 
 
 } /* namespace error_seeder */

@@ -18,6 +18,7 @@
 
 #include "ErrorSeederLib.h"
 #include "Defs.h"
+#include "CompFailureConf.h"
 
 namespace error_seeder
 {
@@ -43,6 +44,7 @@ private:
   //std::thread* resendThread_probMode;
   std::vector<std::thread*>resendThreadPool;
   std::vector<int> registeredResendCompIds;
+  std::vector<CompFailureConf*> compFailureConfs;
 
   int compId;
   ErrorId errorId;
@@ -116,7 +118,7 @@ private:
   /*!
    * \brief Sends a config message to tell the error_lib to configure the failure probabilities
    */
-  void SendErrorConfMsg(double errorProb);
+  void SendErrorConfMsg(int compId);
 
   /*!
    * \brief Prints a help text on the console.
@@ -134,6 +136,13 @@ private:
    * \param: int msgCompId: compId to resend the msg for
    */
   void ResendEPMessage(int msgCompId);
+
+  /*!
+   * \brief: Store the failure probability for a compId and failure type.
+   *
+   *
+   */
+  void StoreCompFailureConf();
 
 };
 
