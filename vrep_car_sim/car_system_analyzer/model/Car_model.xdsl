@@ -33,11 +33,26 @@
 			<state id="operational" />
 			<probabilities>0 1</probabilities>
 		</cpt>
+		<cpt id="LaserDriver">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="SLAM">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
+		<cpt id="SLAM_Adapter">
+			<state id="failure" />
+			<state id="operational" />
+			<probabilities>0 1</probabilities>
+		</cpt>
 		<cpt id="Localize">
 			<state id="failure" />
 			<state id="operational" />
-			<parents>GPS</parents>
-			<probabilities>1 0 0 1</probabilities>
+			<parents>GPS LaserDriver SLAM SLAM_Adapter</parents>
+			<probabilities>1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 0 1</probabilities>
 		</cpt>
 		<cpt id="SLAM_Remote">
 			<state id="failure" />
@@ -59,8 +74,8 @@
 		<cpt id="Car">
 			<state id="failure" />
 			<state id="operational" />
-			<parents>Move Localize DistanceMeasure ObjectDetection</parents>
-			<probabilities>1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 0 1</probabilities>
+			<parents>Move Localize DistanceMeasure ObjectDetection RemoteProcessing</parents>
+			<probabilities>1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 0 1</probabilities>
 		</cpt>
 	</nodes>
 	<extensions>
@@ -70,77 +85,98 @@
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>170 366 267 410</position>
+				<position>73 451 170 495</position>
 			</node>
 			<node id="Move">
 				<name>Move</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>171 245 268 289</position>
+				<position>74 330 171 374</position>
 			</node>
 			<node id="GPS">
 				<name>GPS</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>903 376 1000 420</position>
+				<position>657 452 754 496</position>
 			</node>
 			<node id="Localize">
 				<name>Localize</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>816 239 913 283</position>
+				<position>820 319 917 363</position>
 			</node>
 			<node id="Car">
 				<name>Car</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>616 51 716 110</position>
+				<position>519 136 619 195</position>
 			</node>
 			<node id="RemoteProcessing">
 				<name>RemoteProcessing</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>1107 241 1216 292</position>
+				<position>1358 336 1467 387</position>
 			</node>
 			<node id="SLAM_Remote">
 				<name>SLAM_Remote</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>1109 352 1216 403</position>
+				<position>1360 447 1467 498</position>
 			</node>
 			<node id="DistanceMeasure">
 				<name>DistanceMeasure</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>346 242 492 292</position>
+				<position>249 327 395 377</position>
 			</node>
 			<node id="ObjectDetection">
 				<name>ObjectDetection</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>553 241 683 289</position>
+				<position>456 326 586 374</position>
 			</node>
 			<node id="UltraSonic">
 				<name>UltraSonic</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>369 366 465 403</position>
+				<position>272 451 368 488</position>
 			</node>
 			<node id="Cam">
 				<name>Cam</name>
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>570 361 689 412</position>
+				<position>473 446 592 497</position>
+			</node>
+			<node id="LaserDriver">
+				<name>LaserDriver</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>779 452 903 498</position>
+			</node>
+			<node id="SLAM">
+				<name>SLAM</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>923 441 1056 506</position>
+			</node>
+			<node id="SLAM_Adapter">
+				<name>SLAM_Adapter</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1083 442 1216 507</position>
 			</node>
 		</genie>
 	</extensions>

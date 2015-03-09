@@ -7,6 +7,7 @@ project(vrep_slam)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   vrep_msgs
+  rosha_msgs
   std_msgs
   error_seeder
   geometry_msgs

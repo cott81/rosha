@@ -17,6 +17,7 @@ project(camera_blobdetection)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   car_msgs
+  vrep_common
   std_msgs
   error_seeder
   system_config

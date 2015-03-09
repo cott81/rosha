@@ -50,6 +50,7 @@ from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus, KeyValue
 if __name__ == '__main__':
 
     nodeName = 'iceland_SLAM'
+    #nodeName = 'vehicle1_SLAM'
     rospy.init_node('diag_'+nodeName+'_pub')
     pub = rospy.Publisher('/diagnostics', DiagnosticArray)    
      

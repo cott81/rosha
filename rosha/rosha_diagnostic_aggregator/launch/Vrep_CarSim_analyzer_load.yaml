@@ -54,7 +54,34 @@ analyzers:
                                                 type: car_localizer_analyzer_plugins/Car_Localizer_QBFD_Analyzer
                                                 systemNodesToAnalyze: [GPS, FailureMode, FailureMode, FailureMode, FailureMode]
                                                 systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
-                                                node_to_analyze: GPS                                                
+                                                node_to_analyze: GPS    
+                                                
+                                        SLAM:
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: SLAM
+                                                type: car_slam_analyzer_plugins/CarSlam_QBFD_Analyzer
+                                                systemNodesToAnalyze: [SLAM, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: SLAM
+                                                
+                                        LaserDriver:
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: LaserDriver
+                                                type: car_laser_driver_analyzer_plugins/CarLaserDriver_QBFD_Analyzer
+                                                systemNodesToAnalyze: [LaserDriver, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: LaserDriver   
+                                                
+                                        Inertia:
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: Inertia
+                                                type: car_inertia_analyzer_plugins/CarInertia_QBFD_Analyzer
+                                                systemNodesToAnalyze: [Inertia, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: Inertia
 
         actuators:
                 type: AnalyzerGroup

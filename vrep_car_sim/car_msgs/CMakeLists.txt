@@ -53,8 +53,10 @@ find_package(catkin REQUIRED COMPONENTS
    DetectedDistance.msg
    DriveCmd.msg
    DrivingSpeed.msg
-   Pose2D.msg
+   CarPose2D.msg
+   CarLaserScanData.msg
    SharedCarInfo.msg
+   InertiaSensorData.msg
  )
 
 ## Generate services in the 'srv' folder

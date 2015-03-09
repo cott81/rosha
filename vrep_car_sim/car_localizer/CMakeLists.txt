@@ -26,6 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   smile_lib
   rosha_diagnostic_aggregator
+  rosha_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -127,7 +128,12 @@ add_library(car_localizer
 add_library(CarLocalizer_analyzer_plugins
    src/analyzer_plugins/car_localizer_QBFD_analyzer.cpp
    src/analyzer_plugins/RegisterAnalyzerPlugins.cpp
-) 
+)
+
+add_library(CarLocalizer_repair_plugins   
+   src/repair_plugins/GPS_SLAM_Recompose.cpp   
+   src/repair_plugins/RegisterPlugins.cpp
+ )
 
 ## Declare a cpp executable
 add_executable(car_localizer_node src/car_localizer_node.cpp)
@@ -145,6 +151,10 @@ target_link_libraries(car_localizer_node
 target_link_libraries(CarLocalizer_analyzer_plugins
    ${catkin_LIBRARIES}
    # smile DiagnosticEngine DkiHelpersCpp
+)
+
+target_link_libraries(CarLocalizer_repair_plugins
+   ${catkin_LIBRARIES}
 )
 
 #############

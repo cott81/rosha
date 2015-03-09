@@ -9,7 +9,7 @@
 
 #include "ros/ros.h"
 #include "geometry_msgs/PoseStamped.h"
-#include "car_msgs/Pose2D.h"
+#include "car_msgs/CarPose2D.h"
 #include "tf/tf.h"
 #include <math.h>
 
@@ -37,7 +37,7 @@ void SimLocalizationCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
   double yaw_angle = tf::getYaw(pose.getRotation());
 
   //publish msg with "resulting" localisation infos
-  car_msgs::Pose2D msg2;
+  car_msgs::CarPose2D msg2;
   msg2.robotId = robotId;
   msg2.x = msg->pose.position.x;
   msg2.y = msg->pose.position.y;
@@ -115,10 +115,11 @@ int main (int argc, char** argv)
     robotId = supplementary::SystemConfig::GetOwnRobotID();
   }
 
-	string nodeName;
-	stringstream sss;
-	sss << "car_localizer_node__" << robotId;
-	sss >> nodeName;
+  string nodeName;
+  stringstream sss;
+  sss << "car_localizer_node__" << robotId;
+  sss >> nodeName;
+
   ros::init(argc, argv, nodeName);
   ros::NodeHandle n;
 
@@ -141,7 +142,7 @@ int main (int argc, char** argv)
   }
 
 
-  ros::Publisher pub = n.advertise<car_msgs::Pose2D>("/vrep/carSim/localizationInfo", 1000);
+  ros::Publisher pub = n.advertise<car_msgs::CarPose2D>("/vrep/carSim/localizationInfo", 1000);
   locPublisher = &pub;
 
   ros::Subscriber locDataSub = n.subscribe(locGroundTruthSubTopic, 1000, SimLocalizationCallback);

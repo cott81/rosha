@@ -1,4 +1,4 @@
 int32 robotId
-Pose2D pose
+CarPose2D pose
 bool isFollower
 int32[] followers

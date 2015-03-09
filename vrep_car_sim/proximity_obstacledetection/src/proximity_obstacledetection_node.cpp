@@ -5,7 +5,7 @@
 #include "car_msgs/ProximityData.h"
 #include "std_msgs/Float32.h"
 #include "geometry_msgs/Point32.h"
-#include "vrep_common/ProximitySensorData.h"
+//#include "vrep_common/ProximitySensorData.h"
 #include "error_seeder/ErrorSeederLib.h"
 #include "SystemConfig.h"
 //#include "v_repLib.h"

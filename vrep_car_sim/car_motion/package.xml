@@ -59,7 +59,8 @@
   <run_depend>rosha_repair_executor</run_depend>
   <run_depend>system_config</run_depend>
   <run_depend>roslib</run_depend>
-  <run_depend>rosha_diagnostic_aggregator</run_depend>  
+  <run_depend>rosha_diagnostic_aggregator</run_depend>
+  
 
 
   <!-- The export tag contains other, unspecified, tags -->
