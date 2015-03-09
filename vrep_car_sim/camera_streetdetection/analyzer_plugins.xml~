@@ -1,0 +1,14 @@
+<library path="lib/libCameraCarDetection_analyzer_plugins" >
+
+  <class name="camera_cardetection_analyzer_plugins/Camera_CarDetection_QBFD_Analyzer" 
+  	type="camera_cardetection_analyzer_plugins::Camera_CarDetection_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the camera car detection component
+    </description>
+    
+  </class>
+  
+</library>
+
