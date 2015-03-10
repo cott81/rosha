@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<smile version="1.0" id="car_slam_adapter_FailureModel" numsamples="1000" discsamples="10000">
+	<nodes>
+		<cpt id="FailureMode" diagtype="target" dynamic="plate" ranked="true">
+			<state id="endlessLoop" fault="true" />
+			<state id="deadlock" default="true" />
+			<state id="crash" />
+			<state id="normal" />
+			<probabilities>0.1668000000000001 0.1666 0.1666 0.5</probabilities>
+		</cpt>
+		<cpt id="MsgFreqObs" diagtype="observation" dynamic="plate" ranked="true">
+			<state id="normal" />
+			<state id="abnormal" />
+			<parents>FailureMode</parents>
+			<probabilities>0.3 0.7 0.3 0.7 0.3 0.7 0.7 0.3</probabilities>
+		</cpt>
+		<cpt id="CpuObs" diagtype="observation" dynamic="plate" ranked="true">
+			<state id="low" />
+			<state id="normal" />
+			<state id="high" />
+			<parents>FailureMode</parents>
+			<probabilities>0.1 0.2 0.7 0.7 0.25 0.05 0.99 0.01 0 0.15 0.7 0.15</probabilities>
+		</cpt>
+		<cpt id="SLAM_Adapter" dynamic="plate">
+			<state id="failure" />
+			<state id="operational" />
+			<parents>FailureMode</parents>
+			<probabilities>1 0 1 0 1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="StreamObs_NewLine" diagtype="observation" dynamic="plate" ranked="true">
+			<state id="low" />
+			<state id="normal" />
+			<state id="high" />
+			<parents>FailureMode</parents>
+			<probabilities>0.6 0.01 0.39 0.8 0.15 0.05 0.9 0.05 0.05 0.15 0.7 0.15</probabilities>
+		</cpt>
+		<cpt id="MemObs" diagtype="observation" dynamic="plate" ranked="true">
+			<state id="low" />
+			<state id="normal" />
+			<state id="high" />
+			<parents>FailureMode</parents>
+			<probabilities>0.1500000000000001 0.7 0.15 0.1500000000000001 0.7 0.15 0.99 0.01 0 0.15 0.7 0.15</probabilities>
+		</cpt>
+		<cpt id="ThreadObs" diagtype="observation" dynamic="plate" ranked="true">
+			<state id="normal" />
+			<state id="abnormal" />
+			<parents>FailureMode</parents>
+			<probabilities>0.4 0.6 0.4 0.6 0.01 0.99 0.7 0.3</probabilities>
+		</cpt>
+		<cpt id="HeartBeatIntervallReceiver" diagtype="observation" dynamic="plate" ranked="true">
+			<state id="low" />
+			<state id="normal" />
+			<state id="high" />
+			<probabilities>0 0 1</probabilities>
+		</cpt>
+		<cpt id="StreamObs_Exception" diagtype="observation" dynamic="plate" ranked="true">
+			<state id="normal" />
+			<state id="abnormal" />
+			<parents>FailureMode</parents>
+			<probabilities>0.7 0.3 0.7 0.3 0.7 0.3 0.7 0.3</probabilities>
+		</cpt>
+	</nodes>
+	<dynamic numslices="20">
+		<cpt id="FailureMode" order="1">
+			<parents>FailureMode</parents>
+			<probabilities>0.95 0 0 0.05 0 0.95 0 0.05 0 0 0.95 0.05 0.01 0.01 0.01 0.97</probabilities>
+		</cpt>
+	</dynamic>
+	<extensions>
+		<genie version="1.0" app="GeNIe 2.0.4535.0" name="car_slam_adapter_FailureModel" faultnameformat="nodestate">
+			<plate leftwidth="120" rightwidth="120">195 123 1505 832</plate>
+			<node id="MemObs">
+				<name>MemObs</name>
+				<interior color="ccffcc" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>396 480 516 537</position>
+			</node>
+			<textbox>
+				<caption>Cap: Localize\nFunc: SLAM Adapter</caption>
+				<font color="000000" name="Arial" size="14" />
+				<position>359 190 535 234</position>
+			</textbox>
+			<node id="ThreadObs">
+				<name>ThreadObs</name>
+				<interior color="ccffcc" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>868 482 988 539</position>
+			</node>
+			<node id="HeartBeatIntervallReceiver">
+				<name>HeartBeatIntervallReceiver</name>
+				<interior color="ccffff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>648 731 768 788</position>
+			</node>
+			<textbox>
+				<caption>passive Monitoring</caption>
+				<font color="000000" name="Arial" size="8" />
+				<position>281 503 371 517</position>
+			</textbox>
+			<textbox>
+				<caption>aktive Monitoring</caption>
+				<font color="000000" name="Arial" size="8" />
+				<position>400 758 480 772</position>
+			</textbox>
+			<textbox>
+				<caption>Obs with no relevant information</caption>
+				<font color="000000" name="Arial" size="8" />
+				<position>958 679 1115 693</position>
+			</textbox>
+			<node id="FailureMode">
+				<name>FailureMode</name>
+				<interior color="ffcc99" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>721 340 823 392</position>
+			</node>
+			<node id="StreamObs_NewLine">
+				<name>StreamObs_NewLine</name>
+				<interior color="ccffcc" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1045 483 1165 540</position>
+			</node>
+			<node id="MsgFreqObs">
+				<name>MsgFreqObs</name>
+				<interior color="ccffcc" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>710 483 830 540</position>
+			</node>
+			<node id="CpuObs">
+				<name>CpuObs</name>
+				<interior color="ccffcc" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>552 483 662 545</position>
+			</node>
+			<textbox>
+				<caption>combined failures types\n-&gt; only on failure can occure simunantiously</caption>
+				<font color="000000" name="Arial" size="8" />
+				<position>1122 410 1261 452</position>
+			</textbox>
+			<node id="SLAM_Adapter">
+				<name>SLAM_Adapter</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>727 205 824 249</position>
+			</node>
+			<node id="StreamObs_Exception">
+				<name>StreamObs_Exception</name>
+				<interior color="ccffcc" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1208 476 1328 533</position>
+			</node>
+		</genie>
+	</extensions>
+</smile>

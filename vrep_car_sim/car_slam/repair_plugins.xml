@@ -1,0 +1,24 @@
+<library path="lib/libCarSLAM_repair_plugins">
+	
+	<class name="car_slam_plugins/adapter_replace" 
+		type = "car_slam_repair_plugins::SlamAdapterReplace" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	This is a repair plugin specially for the car_slam component that replaces the orignal 
+	    	component by an adapter. Use Case: remote processing of the original slam.
+	    </description>    
+	</class>
+	
+	<class name="car_slam_plugins/remote_processing" 
+		type = "car_slam_repair_plugins::RemoteSlamProcessing" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	This is a repair plugin specially for the car_slam component that integrates slam processing 
+	    	for remote processing in combination with the adapter_replace. 
+	    	Use Case: remote processing of the original slam.
+	    </description>    
+	</class>
+		
+</library>

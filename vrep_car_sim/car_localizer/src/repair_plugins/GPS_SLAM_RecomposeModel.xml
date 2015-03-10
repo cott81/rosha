@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>	
+
+<!-- <chan name="TestChanName" senderNode="ChanSenderNode" channel="/channel" msgType="MsgType" msg_intervall="1000"> --> <!-- dont matches --> 
+<!-- <chan name="LocalizationInfo" senderNode="vrep_localizer_node" channel="/vrep/MagicCube12/localizationInfo" msgType="Pose2D" msg_intervall="1000"> --> <!-- matches -->
+ 
+			<func name="SLAM" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/car_slam" filename="car_slam_node" arguments="-compId 401">
+				
+				<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="10" maxvalue="100" datatype="double"></charac>
+				<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="10" maxvalue="12000" datatype="double"></charac>
+				<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="6"></charac>
+				<charac name="NewLineRate" type="OutputStream" source="stdout_log" regex_pattern="\n" output_type="match_rate" proptype="Range" minvalue="99" maxvalue="101"></charac>
+				<charac name="ExceptionRate" type="OutputStream" source="errout_log" regex_pattern="Exception" output_type="match_rate" proptype="Max" maxvalue="2"></charac>
+			
+				<chan name="LaserDataTopic" senderNode="car_laser_driver_node" channel="/vrep/carSimX/LaserScanData" msgType="car_msgs/LaserScanData" msg_intervall="1000">
+					<func name="LaserDriver" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/car_laser_driver" filename="car_laser_driver_node" arguments="-compId 402">
+						
+					<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="10" maxvalue="100" datatype="double"></charac>
+					<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="10" maxvalue="12000" datatype="double"></charac>
+					<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="7" optvalue="5"></charac>
+					<charac name="NewLineRate" type="OutputStream" source="stdout_log" regex_pattern="\n" output_type="match_rate" proptype="Range" minvalue="99" maxvalue="101"></charac>
+					<charac name="ExceptionRate" type="OutputStream" source="errout_log" regex_pattern="Exception" output_type="match_rate" proptype="Max" maxvalue="2"></charac>
+						
+						<chan name="someChan" senderNode="vrep_some_node" channel="/vrep/carSim1/some" msgType="Data" msg_intervall="1000">
+						</chan>
+					</func>
+				</chan>
+				
+				<chan name="InertiaDataTopic" senderNode="car_inertia_node" channel="/vrep/carSimX/InertiaData" msgType="car_msgs/InertiaSensorData" msg_intervall="1000">
+					<func name="Inertia" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/car_inertia" filename="car_inertia_node" arguments="-compId 403">
+						
+					<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="10" maxvalue="100" datatype="double"></charac>
+					<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="10" maxvalue="12000" datatype="double"></charac>
+					<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="7" optvalue="5"></charac>
+					<charac name="NewLineRate" type="OutputStream" source="stdout_log" regex_pattern="\n" output_type="match_rate" proptype="Range" minvalue="99" maxvalue="101"></charac>
+					<charac name="ExceptionRate" type="OutputStream" source="errout_log" regex_pattern="Exception" output_type="match_rate" proptype="Max" maxvalue="2"></charac>
+						
+						<chan name="someChan" senderNode="vrep_some_node" channel="/vrep/carSim1/some" msgType="Data" msg_intervall="1000">
+						</chan>
+					</func>
+				</chan>
+				
+				
+			</func>
+	
+	
+<!-- </chan> -->

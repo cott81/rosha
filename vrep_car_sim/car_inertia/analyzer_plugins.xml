@@ -1,0 +1,14 @@
+<library path="lib/libCarInertia_analyzer_plugins" >
+
+  <class name="car_inertia_analyzer_plugins/CarInertia_QBFD_Analyzer" 
+  	type="car_inertia_analyzer_plugins::CarInertia_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the inertia driver component
+    </description>
+    
+  </class>
+  
+</library>
+

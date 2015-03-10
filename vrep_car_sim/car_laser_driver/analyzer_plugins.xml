@@ -1,0 +1,14 @@
+<library path="lib/libCarLaserDriver_analyzer_plugins" >
+
+  <class name="car_laser_driver_analyzer_plugins/CarLaserDriver_QBFD_Analyzer" 
+  	type="car_laser_driver_analyzer_plugins::CarLaserDriver_QBFD_Analyzer" 
+  	base_class_type="diagnostic_aggregator::Analyzer">
+  	
+    <description>
+      QBFD analyzer for the car laser driver component
+    </description>
+    
+  </class>
+  
+</library>
+

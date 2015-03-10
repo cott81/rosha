@@ -1,0 +1,14 @@
+<library path="lib/libCarLocalizer_repair_plugins">
+
+	
+	<class name="car_localization_repair_plugins/gps_slam_recompose" 
+		type = "car_localization_repair_plugins::GPS_SLAM_Recompose" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	This is a repair plugin specially for the car_localizer component that replaces the orignal GPS component by 
+	    	a dummy SLAM version. This version consists of 2 components, a laser driver, inertia node and a slam component.
+	    </description>    
+	</class>	
+		
+</library>
