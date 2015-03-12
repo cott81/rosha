@@ -150,7 +150,7 @@ int main (int argc, char** argv)
   string inertiaDataTopic;
   string locGroundTruthSubTopic;
   stringstream ss;
-  //if (useRobotIdInTopic) {
+  if (useRobotIdInTopic) {
     ss << "/vrep/carSim" << robotId << "/localizationInfo";
     ss >> locResultTopic;
 
@@ -168,7 +168,7 @@ int main (int argc, char** argv)
     ss.clear();
     ss << "/vrep/carSim" << robotId << "/InertiaData";
     ss >> inertiaDataTopic;
-  /*}
+  }
   else
   {
     locResultTopic = "/vrep/carSim/localizationInfo";
@@ -179,7 +179,7 @@ int main (int argc, char** argv)
     ss << "/vrep/carSim" << robotId << "/localizationData";
     ss >> locGroundTruthSubTopic;
   }
-  */
+
 
   // localization result relay
   ros::Publisher pub = n.advertise<car_msgs::CarPose2D>( locResultTopic, 1000);

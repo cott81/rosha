@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>	
 
+<chan name="LocalizationInfoTopic" senderNode="car_localizer_node" channel="/vrep/carSim/localizationInfo" msgType="car_msgs/DetectedSignals" msg_intervall="1000">
+	
 	<func name="SLAM_Adapter" prio="6" working_dir="%ROSHA_ROOT%/lib/car_slam" filename="car_slam_adapter" arguments="-compId 410">
+		
 			<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="10" maxvalue="100" datatype="double"></charac>
 			<charac name="MemUsage" type="MemUsage" proptype="Range" minvalue="10" maxvalue="12000" datatype="double"></charac>
 			<charac name="ThreadUsage" type="ThreadUsage" proptype="Range" minvalue="4" maxvalue="6"></charac>
 			<charac name="NewLineRate" type="OutputStream" source="stdout_log" regex_pattern="\n" output_type="match_rate" proptype="Range" minvalue="99" maxvalue="101"></charac>
 			<charac name="ExceptionRate" type="OutputStream" source="errout_log" regex_pattern="Exception" output_type="match_rate" proptype="Max" maxvalue="2"></charac>
 			
-			<chan name="TestChanName2" senderNode="ChanSenderNode2" channel="/channel2" msgType="MsgType2" msg_intervall="1000">
+			<chan name="LaserDataTopic" senderNode="car_laser_driver_node" channel="/vrep/carSimX/LaserScanData" msgType="car_msgs/LaserScanData" msg_intervall="1000">
 			</chan>
+			
+			<chan name="InertiaDataTopic" senderNode="car_inertia_node" channel="/vrep/carSimX/InertiaData" msgType="car_msgs/InertiaSensorData" msg_intervall="1000">
+			</chan>
+			
 	</func>
+</chan>
