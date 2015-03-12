@@ -1,6 +1,6 @@
 #enum of possible repair actions
 uint8 REPAIR_ACTION__RESTART = 0
-uint8 REPAIR_ACTION__STOP = 1
+uint8 REPAIR_ACTION__STOP = 1 # and deactivates diagnosis
 uint8 REPAIR_ACTION__START = 2
 uint8 REPAIR_ACTION__REPLACE = 3
 uint8 REPAIR_ACTION__ADD_COMM_LINK = 4

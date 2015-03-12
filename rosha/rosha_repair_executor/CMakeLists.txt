@@ -116,6 +116,7 @@ add_library(My_repair_plugins
     src/GenRepair/AddCommLink.cpp
 	src/GenRepair/TestRepair.cpp
 	src/GenRepair/RestartRepair.cpp
+	src/GenRepair/StopRepair.cpp
 	src/GenRepair/CapFailureReport.cpp
 	src/GenRepair/RegisterPlugins.cpp
 )

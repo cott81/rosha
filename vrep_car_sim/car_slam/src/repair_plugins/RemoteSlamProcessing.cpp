@@ -15,7 +15,7 @@ RemoteSlamProcessing::RemoteSlamProcessing()
   PLUGIN_NAME("RemoteSlamProcessing"),
   failedRobotId(-1)
 {
-  this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_SLAM_REMOTE_PROCESS;
+  this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__CAR_SLAM_REMOTE_PROCESS;
 
   std::string path = ros::package::getPath("car_slam");
   path = path + "/src/repair_plugins/";

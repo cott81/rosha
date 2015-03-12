@@ -16,6 +16,8 @@
 #include <rosha_msgs/RepairAction.h>
 #include <std_msgs/String.h>
 
+#include <SystemConfig.h>
+
 namespace car_slam_repair_plugins
 {
 
@@ -34,6 +36,7 @@ private:
   const std::string corrsepondingCompName;
 
   char hostname[128];
+  std::string robotname;
   std::string fullName;
   std::string pathedModelFilename;
 
