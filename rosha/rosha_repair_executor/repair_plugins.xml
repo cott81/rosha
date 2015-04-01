@@ -21,6 +21,16 @@
     
 	</class>
 	
+ 	<class name="repair_executer_plugins/stop_plug" 
+		type = "gen_repair_plugins::StopRepair" 
+		base_class_type = "gen_repair_plugins::BaseRepair" >
+  
+	    <description>
+	    	Plugin to stop a component AND deactivate the diagnosis. Uses CARE to do the stop and rosha_diag_aggregator for deactivation.
+	    </description>
+    
+	</class>	
+	
 	<class name="repair_executer_plugins/add_remote_communication" 
 		type = "gen_repair_plugins::AddCommLink" 
 		base_class_type = "gen_repair_plugins::BaseRepair" >

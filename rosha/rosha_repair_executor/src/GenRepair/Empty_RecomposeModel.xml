@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>	
+
+<!-- <chan name="TestChanName" senderNode="ChanSenderNode" channel="/channel" msgType="MsgType" msg_intervall="1000"> --> <!-- dont matches --> 
+<!-- <chan name="LocalizationInfo" senderNode="vrep_localizer_node" channel="/vrep/MagicCube12/localizationInfo" msgType="Pose2D" msg_intervall="1000"> --> <!-- matches -->
+
+				<func name="FAIL_REMOVED" prio="1" working_dir="" filename="" arguments="">
+				</func>
+	
+	
+<!-- </chan> -->

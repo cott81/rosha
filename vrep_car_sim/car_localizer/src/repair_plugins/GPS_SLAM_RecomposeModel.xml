@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>	
-
-<!-- <chan name="TestChanName" senderNode="ChanSenderNode" channel="/channel" msgType="MsgType" msg_intervall="1000"> --> <!-- dont matches --> 
-<!-- <chan name="LocalizationInfo" senderNode="vrep_localizer_node" channel="/vrep/MagicCube12/localizationInfo" msgType="Pose2D" msg_intervall="1000"> --> <!-- matches -->
  
+ <!-- remove a node form cares robot model (replace with nothing) -->
+ 
+<!-- <chan name="LocalizationInfo" senderNode="vrep_localizer_node" channel="/vrep/MagicCube12/localizationInfo" msgType="Pose2D" msg_intervall="1000"> --> <!-- matches -->
+
+<!-- empty func ??? --> 
+	
+	
 			<func name="SLAM" prio="6" working_dir="%HOME%/work/rosha_ws/devel/lib/car_slam" filename="car_slam_node" arguments="-compId 401">
 				
 				<charac name="CpuLoad" type="CpuLoad" proptype="Range" minvalue="10" maxvalue="100" datatype="double"></charac>
@@ -40,7 +44,6 @@
 				</chan>
 				
 				
-			</func>
-	
+			</func>	
 	
 <!-- </chan> -->

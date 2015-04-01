@@ -128,7 +128,7 @@ bool Camera_CarDetection_QBFD_Analyzer::init(const string base_name, const ros::
   //default
   if (systemNodesToAnalyze.size() == 0) {
     //set default
-    systemNodesToAnalyze[0] = "Cam";
+    systemNodesToAnalyze[0] = "Cam_Car";
   }
 
   n.getParam("systemNodesStateToAnalyze", systemNodesStateToAnalyze);
@@ -787,7 +787,7 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > Camera_CarDetectio
   {
     // set the a priori probs to default values, here to 100% ok to have no influence in the reasoning any more
     BayesianKB* bkb = (BayesianKB*) this->de->GetKnowledgeBase();
-    bkb->SetSystemModelNodeDefaultDef("Cam", 0.0, 1.0);
+    bkb->SetSystemModelNodeDefaultDef("Cam_Car", 0.0, 1.0);
 
     //better solution define stat. independance by resetting the definition of the parent (cap node)
 
@@ -829,7 +829,7 @@ vector<boost::shared_ptr<diagnostic_msgs::DiagnosticStatus> > Camera_CarDetectio
   if (!this->linkRegistered) {
     BayesianML modelLink;
   //  modelLink.SetCompModelNodeName("RoboPkgCS");
-    int failureDetectionNode = theNet->FindNode("Cam");     //node for the failure probability
+    int failureDetectionNode = theNet->FindNode("Cam_Car");     //node for the failure probability
     modelLink.SetCompModelNodeId(failureDetectionNode);
     modelLink.SetModelId(this->modelId);
   //  modelLink.SetSystemModelNodeId(1000);

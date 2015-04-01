@@ -78,6 +78,7 @@ void AddCommLink::Repair()
   if (this->topicNames.size() != this->msgTypes.size())
   {
     ROS_ERROR("Number of given topics (%d) and number of given types (%d) do not match!.", this->topicNames.size(), this->msgTypes.size());
+    return;
   }
   ROS_INFO("doing repair stuff ADD COMM LINK.");
 
@@ -104,6 +105,7 @@ void AddCommLink::Repair()
     {
       //already present ... nothing to do
       ROS_INFO("... topic: %s already in conf file. Nothing to do.", topicName.c_str());
+      break; //????
     }
     else
     {

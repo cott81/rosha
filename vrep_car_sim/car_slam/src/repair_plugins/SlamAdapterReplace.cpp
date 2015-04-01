@@ -17,7 +17,7 @@ SlamAdapterReplace::SlamAdapterReplace()
 : BaseRepair(), corrsepondingCompName("car_slam_node")
 {
   this->pluginName = "SlamAdapterReplace";
-  this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__VREP_SLAM_ADAPTER_REPLACE;
+  this->repairType = rosha_msgs::RepairAction::REPAIR_ACTION__CAR_SLAM_ADAPTER_REPLACE;
   //this->corrsepondingCompName = "car_localizer_node";
 
   std::string path;
@@ -45,11 +45,12 @@ SlamAdapterReplace::SlamAdapterReplace()
   this->pathedModelFilename = path + "Slam2SlamAdapterReplace.xml";
 
 
-  int z;
-  z = gethostname(hostname, sizeof hostname);
+  //int z;
+  //z = gethostname(hostname, sizeof hostname);
+  this->robotname =  supplementary::SystemConfig::getHostname();
   this->fullName = "";
   std::stringstream ss;
-  ss << this->hostname << "_" << "SLAM";
+  ss << this->robotname << "_" << "SLAM";
   ss >> this->fullName;
 
   //this->packagePath = "/home/dominik/work/rosha_ws/devel/lib/car_slam";

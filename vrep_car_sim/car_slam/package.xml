@@ -73,7 +73,7 @@
 
     <!-- Other tools can request additional information be placed here -->
     
-    <!-- <rosha_repair_executor plugin="${prefix}/repair_plugins.xml" /> -->
+	<rosha_repair_executor plugin="${prefix}/repair_plugins.xml" />
     <rosha_diagnostic_aggregator plugin="${prefix}/analyzer_plugins.xml" />
 
   </export>
