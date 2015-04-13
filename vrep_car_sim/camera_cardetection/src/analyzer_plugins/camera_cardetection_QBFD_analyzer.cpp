@@ -33,8 +33,8 @@ Camera_CarDetection_QBFD_Analyzer::Camera_CarDetection_QBFD_Analyzer() :
   this->cpuNodeStateLimits[1] = 175;    //upper threshhold
 
 
-  this->memNodeStateLimits[0] = 8000.0;    //low bound [kB]
-  this->memNodeStateLimits[1] = 11000.0;   //upper bound
+  this->memNodeStateLimits[0] = 10.0;    //low bound [kB]
+  this->memNodeStateLimits[1] = 12000.0;   //upper bound
 
   //heart beat interval: 1s (NOT INCLUDED)
   this->heartBeatIntervalLimits[0] = 900;      //low: below 900ms
@@ -42,7 +42,7 @@ Camera_CarDetection_QBFD_Analyzer::Camera_CarDetection_QBFD_Analyzer() :
 
   //thread usage limits
   this->threadNodeStateLimits[0] = 5;   //lower bound
-  this->threadNodeStateLimits[1] = 6;  //upper bound
+  this->threadNodeStateLimits[1] = 7;  //upper bound
 
   //stream match count limits
   this->streamNodeStateLimits_nl[0] = 95.0;    //lower bound old: 8

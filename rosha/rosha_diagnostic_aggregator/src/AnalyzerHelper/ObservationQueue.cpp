@@ -195,6 +195,7 @@ void ObservationQueue::UpdateRelativeDelay(unsigned int arrival) {
         timeSlice = this->observations[(*iter).first][i].delay / this->sliceTime;
         r = this->observations[(*iter).first][i].delay % this->sliceTime;    //in intervall [0, sliceTime]
 
+        // round to nearest int
         if (r < limit) {
           this->observations[(*iter).first][i].correspondingTimeSlice = timeSlice;
         } else {

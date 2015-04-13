@@ -160,7 +160,7 @@ int main (int argc, char** argv)
 
       //some dummy data processing
       double dummyData = 0.0;
-      for (int ii=0; ii<100; ii++)
+      for (int ii=0; ii<1000; ii++)
       {
         dummyData = (3 + ii) / dummyData;
       }

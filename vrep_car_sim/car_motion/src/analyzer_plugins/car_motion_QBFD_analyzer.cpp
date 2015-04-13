@@ -42,7 +42,7 @@ Car_Motion_QBFD_Analyzer::Car_Motion_QBFD_Analyzer() :
 
   //thread usage limits
   this->threadNodeStateLimits[0] = 5;   //lower bound
-  this->threadNodeStateLimits[1] = 6;  //upper bound
+  this->threadNodeStateLimits[1] = 7;  //upper bound
 
   //stream match count limits
   this->streamNodeStateLimits_nl[0] = 95.0;    //lower bound old: 8

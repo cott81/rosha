@@ -507,6 +507,13 @@ int main(int argc, char* argv[]) {
 
 			cout << "motion spin" << endl;
 
+                        //some dummy data processing
+                        double dummyData = 0.0;
+                        for (int ii=0; ii<1000; ii++)
+                        {
+                          dummyData = (3 + ii) / dummyData;
+                        }
+
 			pub_rate.sleep();
 		}
 	} catch (exception& e) {
