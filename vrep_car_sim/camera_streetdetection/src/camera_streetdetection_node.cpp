@@ -26,13 +26,25 @@ int robotId = 0;
 // Constants
 const string CAM_TYPE_STREET = "street";
 
-void sendBlobInformations(std::vector<float> sensorInformations, string camType) {
+void sendBlobInformations(std::vector<float> sensorInformations) {
 
 	if (sensorInformations.size() > 0) { // in "sensorInformations" we should have the blob information if the camera was set-up correctly
 		int blobCount = sensorInformations[15];
 		int dataSizePerBlob = sensorInformations[16];
 		if (blobCount == 0) {
 			// no blob found => can't find the street line to follow
+			car_msgs::DetectedSignals signalMsg;
+
+			signalMsg.robotId = robotId;
+			signalMsg.camType = CAM_TYPE_STREET;
+			signalMsg.blobsize = 0.0;
+			signalMsg.blobOrientation = 0.0;
+			signalMsg.blobPosX = 0.0;
+			signalMsg.blobPosY = 0.0;
+			signalMsg.blobBoxDimensionX = 0.0;
+			signalMsg.blobBoxDimensionY = 0.0;
+
+			camValuesPublisher->publish(signalMsg);
 		} else {
 			// Now we get the data from the street line
 			for (int i = 1; i <= blobCount; i++) {
@@ -51,7 +63,7 @@ void sendBlobInformations(std::vector<float> sensorInformations, string camType)
 				car_msgs::DetectedSignals signalMsg;
 
 				signalMsg.robotId = robotId;
-				signalMsg.camType = camType;
+				signalMsg.camType = CAM_TYPE_STREET;
 				signalMsg.blobsize = blobSize;
 				signalMsg.blobOrientation = blobOrientation;
 				signalMsg.blobPosX = blobPos[0];
@@ -69,7 +81,7 @@ void sendBlobInformations(std::vector<float> sensorInformations, string camType)
 void streetDetectionCallback(const vrep_common::VisionSensorData::ConstPtr& msg) {
 	std_msgs::Float32MultiArray array = msg->packetData;
 	std::vector<float> data = array.data;
-	sendBlobInformations(data, CAM_TYPE_STREET);
+	sendBlobInformations(data);
 }
 
 // Main code:
