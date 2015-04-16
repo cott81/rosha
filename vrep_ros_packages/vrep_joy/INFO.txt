@@ -1,0 +1,3 @@
+problems building the package ... see the vrep ros tutorial 
+
+... sudo apt-get install ros-indigo-pr2-controllers ros-indigo-joystick-drivers
