@@ -142,7 +142,7 @@ int main (int argc, char** argv)
 
   ROS_INFO("own robot Id: %d\n", robotId);
 
-  //error_seeder::ErrorSeederLib esl(compId);
+  error_seeder::ErrorSeederLib esl(compId);
 
   // build topic name
   string locResultTopic;
