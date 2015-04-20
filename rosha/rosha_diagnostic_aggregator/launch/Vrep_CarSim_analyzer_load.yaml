@@ -92,6 +92,16 @@ analyzers:
                                                 systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
                                                 node_to_analyze: SLAM
                                                 
+                                        SLAM_Adapter:
+                                        # not yet working ...
+                                                path_group: Sensor
+                                                cap: localize
+                                                func: SLAM_Adapter
+                                                type: car_slam_analyzer_plugins/CarSlamAdapter_QBFD_Analyzer
+                                                systemNodesToAnalyze: [SLAM_Adapter, FailureMode, FailureMode, FailureMode, FailureMode]
+                                                systemNodesStateToAnalyze: [failure, deadlock, endlessLoop, crash, normal]
+                                                node_to_analyze: SLAM_Adapter                                                
+                                                
                                         LaserDriver:
                                                 path_group: Sensor
                                                 cap: localize
