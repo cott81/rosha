@@ -93,6 +93,7 @@ analyzers:
                                                 node_to_analyze: SLAM
                                                 
                                         SLAM_Adapter:
+                                        # not yet working ...
                                                 path_group: Sensor
                                                 cap: localize
                                                 func: SLAM_Adapter
